@@ -1,0 +1,31 @@
+{
+  "name": "range-slider",
+  "version": "0.1.0",
+  "description": "Range slider jQuery plugin, written in TypeScript.",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack-dev-server --config webpack.config.js",
+    "test": "./node_modules/karma/bin/karma start karma.conf.js"
+  },
+  "author": "Andrey Larionov",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/jasmine": "^3.4.6",
+    "css-loader": "^3.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "karma": "^4.4.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-cli": "^2.0.0",
+    "karma-jasmine": "^2.0.1",
+    "karma-spec-reporter": "0.0.32",
+    "karma-webpack": "^4.0.2",
+    "mini-css-extract-plugin": "^0.8.0",
+    "node-sass": "^4.13.0",
+    "sass-loader": "^8.0.0",
+    "ts-loader": "^5.4.5",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  }
+}
