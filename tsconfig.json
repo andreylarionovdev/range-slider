@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "allowSyntheticDefaultImports": true,
     "sourceMap": true
   },
   "include": [

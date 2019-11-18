@@ -7,7 +7,7 @@ module.exports = {
   devtool: 'inline-source-map',
   mode: 'development',
   entry: [
-    './src/ts/app.ts',
+    './src/ts/slider.ts',
     './src/scss/index.scss'
   ],
   output: {

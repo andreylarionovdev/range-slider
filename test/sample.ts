@@ -1,14 +1,14 @@
-import { Slider } from '../src/ts/slider';
+import Model from '../src/ts/Model/Model';
 
-describe('Slider', () => {
+describe('Model', () => {
   it('can create', () => {
-    const slider: Slider = new Slider();
-    expect(slider).not.toBe(null);
+    const model: Model = new Model();
+    expect(model).not.toBe(null);
   });
 
-  it('log() works', () => {
-    const slider: Slider = new Slider();
-    const returnValue = slider.log('test');
-    expect(returnValue).toEqual('test');
+  it('echo() works', () => {
+    const model: Model = new Model();
+    let echo = model.echo('test');
+    expect(echo).toEqual('test');
   });
 });
