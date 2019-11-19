@@ -7,9 +7,8 @@ export default class App {
   private view: View;
 
   constructor(target: JQuery, options: Options) {
-    this.model = new Model();
-    this.view = new View();
-    target.text(options.orientation);
-    console.log('__app instance__');
+    this.model = new Model(options);
+    this.view = new View(target, options);
+    console.log('__app instance created__');
   }
 }

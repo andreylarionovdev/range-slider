@@ -1,3 +1,19 @@
-.slider {
-
+.range-slider {
+  &__input {
+    position: relative;
+    height: 25px;
+  }
+  &__rail {
+    background: greenyellow;
+    height: 10px;
+  }
+  &__handle {
+    display: block;
+    position: absolute;
+    top: 0;
+    width:14px;
+    height: 14px;
+    border-radius: 7px;
+    background: mediumvioletred;
+  }
 }

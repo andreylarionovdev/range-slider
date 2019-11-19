@@ -1,5 +1,6 @@
 export default interface Options {
-  orientation: string,
+  orientation?: string,
+  range?: boolean,
   onChange?: null | Function,
   onBlur?: null | Function
 }
