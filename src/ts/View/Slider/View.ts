@@ -1,42 +1,42 @@
-import Options from '../../Interfaces/Options';
+import State from '../../Interfaces/State';
 import $ from 'jquery';
 import observable from '../../../../node_modules/@riotjs/observable/dist/observable';
 
 export default class View {
-  private options: Options;
   private $target: JQuery;
   private $input: JQuery;
   private $handle: JQuery;
   private dragging: boolean;
   private announcer: any = observable(this);
 
-  constructor($target: JQuery, options?: Options) {
-    this.initDOM($target, options);
+  constructor($target: JQuery) {
+    this.render($target);
     this.attachListeners();
   }
 
   onDrag(callback): void {
     this.announcer.on('drag', callback);
   }
+  update(state: State) {
+    console.log('__state transferred to view__', state);
+  }
   echo(msg: string): string {
     return msg;
   }
 
-  private attachListeners() {
-    this.$input.mousedown(this.jumpHandle);
-
-    this.$handle.mousedown(e => this.dragStart(this, e));
+  private attachListeners(): void {
+    this.$input.mousedown(View.jumpHandle);
+    this.$handle.mousedown(e => View.dragStart(this, e));
 
     $(document)
-      .mouseup(e => this.dragEnd(this, e))
-      .mousemove(e => this.drag(this, e));
+      .mouseup(e => View.dragEnd(this, e))
+      .mousemove(e => View.drag(this, e));
 
     console.log('__listeners attached to DOM elements__');
   }
 
-  private initDOM($target: JQuery, options?: Options) {
+  private render($target: JQuery): void {
     this.$target = $target;
-    this.options = options;
 
     let blockName = 'range-slider';
 
@@ -53,10 +53,10 @@ export default class View {
     console.log('__slider view DOM initialized__');
   }
 
-  private jumpHandle(e) {
+  private static jumpHandle(e): void {
     console.log('__jump handle__');
   }
-  private dragStart(that, e) {
+  private static dragStart(that, e): void {
     e.stopPropagation();
     e.preventDefault();
 
@@ -64,14 +64,14 @@ export default class View {
 
     console.log('__drag start__', that.dragging);
   }
-  private drag(that, e) {
+  private static drag(that, e): void {
     if (that.dragging) {
       e.preventDefault();
       // console.log('__dragging__', that.dragging);
-      that.announcer.trigger('drag');
+      that.announcer.trigger('drag', {values: [0, 101]});
     }
   }
-  private dragEnd(that, e) {
+  private static dragEnd(that, e): void {
     e.preventDefault();
     if (that.dragging) {
       that.dragging = false;

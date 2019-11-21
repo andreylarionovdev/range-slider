@@ -1,20 +1,29 @@
-import Options from "../Interfaces/Options";
+import State from "../Interfaces/State";
 import observable from '../../../node_modules/@riotjs/observable/dist/observable';
 
 export default class Model {
-  private options: Options;
+  private state: State;
   private announcer: any = observable(this);
 
-  constructor(options?: Options) {
-    this.init(options);
+  constructor(state?: State) {
+    this.init(state);
   }
 
   onChange(callback) {
-    this.announcer.on('change', callback);
+    this.announcer.on('change.state', callback);
   }
 
-  private init(options? : Options) {
-    this.options = options;
+  update(state: State) {
+    this.state = Object.assign({}, this.state, state);
+    this.announcer.trigger(
+      'change.state',
+      Object.assign({}, this.state)
+    );
+    console.log('__model.state__', this.state);
+  }
+
+  private init(state? : State) {
+    this.update(state);
   }
 
   echo(msg): any {

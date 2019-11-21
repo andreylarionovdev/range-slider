@@ -1,5 +1,6 @@
-import View from "../View/Slider/View";
-import Model from "../Model/Model";
+import View from '../View/Slider/View';
+import Model from '../Model/Model';
+import State from '../Interfaces/State';
 
 export default class Presenter {
   private view: View;
@@ -9,14 +10,14 @@ export default class Presenter {
     this.view = view;
     this.model = model;
 
-    view.onDrag(() => this.updateState());
-    model.onChange(() => this.updateView());
+    this.view.onDrag(state => this.updateState(state));
+    this.model.onChange(state => this.updateView(state));
   }
 
-  updateState() {
-    console.log('__echo__', this.model.echo('updateState'));
+  updateState(state: State) {
+    this.model.update(state);
   }
-  updateView() {
-    console.log('__echo__', this.view.echo('updateView'));
+  updateView(state: State) {
+    this.view.update(state);
   }
 }

@@ -1,16 +1,16 @@
 import $ from 'jquery';
 import App from './App/App';
-import Options from './Interfaces/Options';
+import State from './Interfaces/State';
 
 declare global {
   interface JQuery {
-    range(options?: Options): JQuery;
+    range(options?: State): JQuery;
   }
 }
 
 (function ($: JQueryStatic): void {
-  $.fn.range = function(this: JQuery, options?: Options): JQuery {
-    const defaults: Options = {
+  $.fn.range = function(this: JQuery, options?: State): JQuery {
+    const defaults: State = {
       orientation: 'horizontal',
       onChange: null,
       onBlur: null
@@ -23,6 +23,6 @@ declare global {
 })($);
 
 $(document).ready(function () {
-  $('h1').range({orientation: 'vertical'});
-  $('h2').range({orientation: 'horizontal'});
+  $('input#first').range();
+  $('input#second').range();
 });
