@@ -12,6 +12,8 @@ declare global {
   $.fn.range = function(this: JQuery, options?: State): JQuery {
     const defaults: State = {
       orientation: 'horizontal',
+      min: 0,
+      max: 100,
       onChange: null,
       onBlur: null
     };

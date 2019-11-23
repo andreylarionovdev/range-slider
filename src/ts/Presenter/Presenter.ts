@@ -10,12 +10,12 @@ export default class Presenter {
     this.view = view;
     this.model = model;
 
-    this.view.onDrag(state => this.updateState(state));
+    this.view.onDrag((iw, hw, pos) => this.updateValues(iw, hw, pos));
     this.model.onChange(state => this.updateView(state));
   }
 
-  updateState(state: State) {
-    this.model.update(state);
+  updateValues(inputWidth: number, handleWidth: number, position: number) {
+    this.model.updateValues(inputWidth, handleWidth, position);
   }
   updateView(state: State) {
     this.view.update(state);

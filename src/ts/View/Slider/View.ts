@@ -6,7 +6,7 @@ export default class View {
   private $target: JQuery;
   private $input: JQuery;
   private $handle: JQuery;
-  private dragging: boolean;
+  private $draggingHandle: JQuery;
   private announcer: any = observable(this);
 
   constructor($target: JQuery) {
@@ -25,12 +25,12 @@ export default class View {
   }
 
   private attachListeners(): void {
-    this.$input.mousedown(View.jumpHandle);
-    this.$handle.mousedown(e => View.dragStart(this, e));
+    this.$input.mousedown(this.jumpHandle);
+    this.$handle.mousedown(e => this.dragStart(e));
 
     $(document)
-      .mouseup(e => View.dragEnd(this, e))
-      .mousemove(e => View.drag(this, e));
+      .mouseup(e => this.dragEnd(e))
+      .mousemove(e => this.drag(e));
 
     console.log('__listeners attached to DOM elements__');
   }
@@ -53,29 +53,48 @@ export default class View {
     console.log('__slider view DOM initialized__');
   }
 
-  private static jumpHandle(e): void {
+  private jumpHandle(e): void {
     console.log('__jump handle__');
   }
-  private static dragStart(that, e): void {
+  private dragStart(e): void {
     e.stopPropagation();
     e.preventDefault();
 
-    that.dragging = true;
-
-    console.log('__drag start__', that.dragging);
+    this.$draggingHandle = $(e.currentTarget);
   }
-  private static drag(that, e): void {
-    if (that.dragging) {
+  private drag(e): void {
+    if (this.$draggingHandle) {
       e.preventDefault();
-      // console.log('__dragging__', that.dragging);
-      that.announcer.trigger('drag', {values: [0, 101]});
+      let position = e.pageX - this.$input.offset().left;
+      this.moveHandle(position);
     }
   }
-  private static dragEnd(that, e): void {
+  private dragEnd(e): void {
     e.preventDefault();
-    if (that.dragging) {
-      that.dragging = false;
-      console.log('__drag end__', that.dragging);
+    if (this.$draggingHandle) {
+      this.$draggingHandle = null;
     }
+  }
+  private moveHandle(position: number): void {
+    let boundLeft   = 0;
+    let boundRight  = this.$input.width() - this.$draggingHandle.width();
+
+    if (position > boundRight) {
+      position = boundRight;
+    }
+    if (position < boundLeft) {
+      position = boundLeft;
+    }
+
+    this.$draggingHandle.css({
+      position: 'absolute',
+      left    : position
+    });
+
+    this.announcer.trigger('drag'
+      , this.$input.width()
+      , this.$draggingHandle.width()
+      , position
+    );
   }
 }
