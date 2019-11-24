@@ -5,12 +5,19 @@ export default class Model {
   private state: State;
   private announcer: any = observable(this);
 
-  constructor(state?: State) {
-    this.init(state);
+  constructor (state: State) {
+    this.state = state;
   }
 
-  onChange(callback) {
-    this.announcer.on('change.state', callback);
+  onInit(callback) {
+    this.announcer.on('create.state', callback);
+  }
+
+  init() {
+    this.announcer.trigger(
+      'create.state',
+      Object.assign({}, this.state)
+    );
   }
 
   update(state: State) {
@@ -36,10 +43,6 @@ export default class Model {
     let range = this.state.max - this.state.min;
 
     return Math.round(position/(width/range) + this.state.min);
-  }
-
-  private init(state? : State) {
-    this.update(state);
   }
 
   echo(msg): any {

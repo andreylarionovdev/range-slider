@@ -9,35 +9,20 @@ export default class View {
   private $draggingHandle: JQuery;
   private announcer: any = observable(this);
 
+  // To bind/unbind with class context
+  private funcOnDragStart = e => this.dragStart(e);
+  private funcOnDrag      = e => this.drag(e);
+  private funcOnDragEnd   = e => this.dragEnd(e);
+
   constructor($target: JQuery) {
-    this.render($target);
-    this.attachListeners();
+    this.$target = $target;
   }
 
   onDrag(callback): void {
     this.announcer.on('drag', callback);
   }
-  update(state: State) {
-    console.log('__state transferred to view__', state);
-  }
-  echo(msg: string): string {
-    return msg;
-  }
 
-  private attachListeners(): void {
-    this.$input.mousedown(this.jumpHandle);
-    this.$handle.mousedown(e => this.dragStart(e));
-
-    $(document)
-      .mouseup(e => this.dragEnd(e))
-      .mousemove(e => this.drag(e));
-
-    console.log('__listeners attached to DOM elements__');
-  }
-
-  private render($target: JQuery): void {
-    this.$target = $target;
-
+  render(state: State): void {
     let blockName = 'range-slider';
 
     this.$input = $('<div/>', {class: `${blockName}__input`});
@@ -50,12 +35,35 @@ export default class View {
       .after(this.$input)
       .hide();
 
-    console.log('__slider view DOM initialized__');
+    this.bindListeners();
+  }
+
+  destroy(): this {
+    if (this.$input && this.$target) {
+      this.$input.remove();
+      this.$target.show().data('range', null);
+
+      $(document)
+        .unbind('mouseup',    this.funcOnDragEnd)
+        .unbind('mousedown',  this.funcOnDrag);
+    }
+
+    return this;
   }
 
   private jumpHandle(e): void {
     console.log('__jump handle__');
   }
+
+  private bindListeners(): void {
+    this.$input.bind('mousedown', this.jumpHandle);
+    this.$handle.bind('mousedown', this.funcOnDragStart);
+
+    $(document)
+      .bind('mouseup',    this.funcOnDragEnd)
+      .bind('mousemove',  this.funcOnDrag);
+  }
+
   private dragStart(e): void {
     e.stopPropagation();
     e.preventDefault();
