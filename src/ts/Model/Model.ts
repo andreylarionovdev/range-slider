@@ -13,6 +13,10 @@ export default class Model {
     this.announcer.on('create.state', callback);
   }
 
+  onChangeValues(callback) {
+    this.announcer.on('change.values', callback);
+  }
+
   init() {
     this.announcer.trigger(
       'create.state',
@@ -20,25 +24,38 @@ export default class Model {
     );
   }
 
-  update(state: State) {
+  private update(state: State, callback: null | Function) {
     this.state = Object.assign({}, this.state, state);
-    this.announcer.trigger(
-      'change.state',
-      Object.assign({}, this.state)
-    );
-    console.log('__model.state__', this.state);
+
+    if (typeof callback === 'function') {
+      callback();
+    }
+    console.log('__state__', this.state);
   }
 
-  updateValues(inputWidth: number, handleWidth: number, position) {
-    let value = this.positionToValue(inputWidth, handleWidth, position);
-    let values = [];
+  updateValues(inputWidth: number, handleWidth: number, position, emitState: boolean) {
+    let value
+      , values
+      , trigger
+    ;
+    value   = this.positionToValue(inputWidth, handleWidth, position);
+    values  = [];
 
     values.push(value);
 
-    this.update({values});
+    if (emitState) {
+      trigger = () => {
+        this.announcer.trigger(
+          'change.values',
+          Object.assign({}, this.state)
+        );
+      }
+    }
+
+    this.update({values}, trigger);
   }
 
-  positionToValue(axisWidth: number, handleWidth: number, position: number) {
+  private positionToValue(axisWidth: number, handleWidth: number, position: number) {
     let width = axisWidth - handleWidth;
     let range = this.state.max - this.state.min;
 
