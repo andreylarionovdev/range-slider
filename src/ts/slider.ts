@@ -26,5 +26,7 @@ declare global {
 
 $(document).ready(function () {
   $('input#first').range();
-  $('input#second').range();
+  $('input#second').range({
+    step: 10
+  });
 });

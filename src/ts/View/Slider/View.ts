@@ -34,7 +34,15 @@ export default class View {
   }
 
   renderHandle(state: State): void {
-    let position = this.valueToPosition(state.min, state.max, state.values[0]);
+    let min   = state.min;
+    let max   = state.max;
+    let step  = state.step;
+
+    let position = this.valueToPx(min, max, state.values[0]);
+    if (step) {
+      let stepPx = this.valueToPx(min, max, step);
+      position = Math.round(position / stepPx) * stepPx;
+    }
     this.moveHandle(position);
   }
 
@@ -79,12 +87,12 @@ export default class View {
 
     if (! this.$handleTo) {
       this.$draggingHandle = this.$handleFrom;
-      this.moveHandle(cursorPosition);
+      // this.moveHandle(cursorPosition);
       this.announcer.trigger('jump'
         , this.$input.width()
         , this.$draggingHandle.width()
         , cursorPosition
-        , false
+        , true
       );
     }
   }
@@ -101,11 +109,12 @@ export default class View {
       e.preventDefault();
       let cursorPosition = e.pageX - this.$input.offset().left;
 
-      this.moveHandle(cursorPosition);
+      // this.moveHandle(cursorPosition);
       this.announcer.trigger('drag'
         , this.$input.width()
         , this.$draggingHandle.width()
         , cursorPosition
+        , true
       );
     }
   }
@@ -136,7 +145,7 @@ export default class View {
     });
   }
 
-  private valueToPosition(min: number, max: number, value: number): number {
+  private valueToPx(min: number, max: number, value: number): number {
     let width     = this.$input.width();
     let range     = max - min;
 

@@ -38,7 +38,7 @@ export default class Model {
       , values
       , trigger
     ;
-    value   = this.positionToValue(inputWidth, handleWidth, position);
+    value   = this.pxToValue(inputWidth, handleWidth, position);
     values  = [];
 
     values.push(value);
@@ -55,19 +55,26 @@ export default class Model {
     this.update({values}, trigger);
   }
 
-  private positionToValue(axisWidth: number, handleWidth: number, position: number) {
+  private pxToValue(axisWidth: number, handleWidth: number, position: number) {
+    let min   = this.state.min;
+    let max   = this.state.max;
+    let step  = this.state.step;
     let width = axisWidth - handleWidth;
     let range = this.state.max - this.state.min;
-    let value = Math.round(position/(width/range) + this.state.min);
+    let value = position/(width/range) + this.state.min;
 
-    if (value > this.state.max) {
-      value = this.state.max;
+    if (value > max) {
+      value = max;
     }
-    if (value < this.state.min) {
-      value = this.state.min;
+    if (value < min) {
+      value = min;
     }
 
-    return value;
+    if (step) {
+      return Math.floor(value / step) * step;
+     }
+
+    return Math.round(value);
   }
 
   echo(msg): any {
