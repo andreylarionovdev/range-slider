@@ -58,8 +58,16 @@ export default class Model {
   private positionToValue(axisWidth: number, handleWidth: number, position: number) {
     let width = axisWidth - handleWidth;
     let range = this.state.max - this.state.min;
+    let value = Math.round(position/(width/range) + this.state.min);
 
-    return Math.round(position/(width/range) + this.state.min);
+    if (value > this.state.max) {
+      value = this.state.max;
+    }
+    if (value < this.state.min) {
+      value = this.state.min;
+    }
+
+    return value;
   }
 
   echo(msg): any {

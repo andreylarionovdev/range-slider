@@ -79,11 +79,12 @@ export default class View {
 
     if (! this.$handleTo) {
       this.$draggingHandle = this.$handleFrom;
+      this.moveHandle(cursorPosition);
       this.announcer.trigger('jump'
         , this.$input.width()
         , this.$draggingHandle.width()
         , cursorPosition
-        , true
+        , false
       );
     }
   }
@@ -117,8 +118,8 @@ export default class View {
   }
 
   private moveHandle(position: number): void {
-    let boundLeft   = 0;
-    let boundRight  = this.$input.width() - this.$draggingHandle.width();
+    let boundLeft   = this.$draggingHandle.width() / 2;
+    let boundRight  = this.$input.width() - this.$draggingHandle.width() / 2;
 
     if (position > boundRight) {
       position = boundRight;
@@ -126,6 +127,8 @@ export default class View {
     if (position < boundLeft) {
       position = boundLeft;
     }
+
+    position -= this.$draggingHandle.width() / 2;
 
     this.$draggingHandle.css({
       position: 'absolute',
