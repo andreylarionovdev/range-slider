@@ -14,6 +14,10 @@ declare global {
       orientation: 'horizontal',
       min: 0,
       max: 100,
+      step: 0,
+      values: [0, 0],
+      range: false,
+      showConfig: false,
       onChange: null,
       onBlur: null
     };
@@ -23,10 +27,3 @@ declare global {
     });
   };
 })($);
-
-$(document).ready(function () {
-  $('input#first').range();
-  $('input#second').range({
-    step: 10
-  });
-});

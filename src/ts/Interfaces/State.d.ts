@@ -5,6 +5,7 @@ export default interface State {
   step?: number,
   values?: Array<number>,
   range?: boolean,
+  showConfig?: boolean,
   onChange?: null | Function,
   onBlur?: null | Function
 }

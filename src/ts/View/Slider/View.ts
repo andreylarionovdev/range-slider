@@ -8,6 +8,7 @@ export default class View {
   private $handleFrom: JQuery;
   private $handleTo: JQuery;
   private $draggingHandle: JQuery;
+  private $configView: JQuery;
   private announcer: any = observable(this);
 
   // To bind/unbind with class context
@@ -29,7 +30,12 @@ export default class View {
   }
 
   render(state: State): void {
+    let showConfig = state.showConfig;
+
     this.initDOM(state);
+    if (showConfig) {
+      this.initConfigView(state);
+    }
     this.bindListeners();
   }
 
@@ -68,9 +74,17 @@ export default class View {
     this.$handleFrom = $('<a/>', {class: `${blockName}__handle`});
     this.$handleFrom.appendTo(this.$input);
 
-    this.$target
-      .after(this.$input)
-      .hide();
+    this.$target.after(this.$input).hide();
+  }
+
+  // TODO: Create separate View
+  private initConfigView(state: State) {
+    const blockName = 'range-slider-config';
+
+    this.$configView = $('<div/>', {class: blockName});
+    $('<p/>').html('State').appendTo(this.$configView);
+
+    this.$input.after(this.$configView);
   }
 
   private bindListeners(): void {
