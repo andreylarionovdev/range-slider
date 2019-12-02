@@ -3,9 +3,8 @@ export default interface State {
   min?: number,
   max?: number,
   step?: number,
-  values?: Array<number>,
+  value?: number,
+  value2?: number,
   range?: boolean,
-  showConfig?: boolean,
-  onChange?: null | Function,
-  onBlur?: null | Function
+  showConfig?: boolean
 }

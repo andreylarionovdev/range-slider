@@ -15,11 +15,10 @@ declare global {
       min: 0,
       max: 100,
       step: 0,
-      values: [0, 0],
+      value: 0,
+      value2: 0,
       range: false,
       showConfig: false,
-      onChange: null,
-      onBlur: null
     };
 
     return this.each(function () {

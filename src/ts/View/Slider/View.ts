@@ -16,6 +16,7 @@ export default class View {
   private funcOnDrag      = e => this.drag(e);
   private funcOnDragEnd   = e => this.dragEnd(e);
   private funcOnJump      = e => this.jump(e);
+  private funcOnChangeConfig = e => this.changeConfig(e);
 
   constructor($target: JQuery) {
     this.$target = $target;
@@ -29,26 +30,39 @@ export default class View {
     this.announcer.on('jump', callback);
   }
 
-  render(state: State): void {
-    let showConfig = state.showConfig;
+  onChangeConfig(callback): void {
+    this.announcer.on('change.config', callback);
+  }
 
-    this.initDOM(state);
-    if (showConfig) {
+  render(state: State): void {
+    this.destroy().initDOM(state);
+
+    if (state.showConfig) {
       this.initConfigView(state);
+      this.bindConfigViewListeners()
     }
+
     this.bindListeners();
   }
 
   renderHandle(state: State): void {
-    let min   = state.min;
-    let max   = state.max;
-    let step  = state.step;
+    const min   = state.min;
+    const max   = state.max;
+    const step  = state.step;
 
-    let position = this.valueToPx(min, max, state.values[0]);
+    let value = state.value;
+
+    if (this.$draggingHandle === this.$handleTo) {
+      value = state.value2;
+    }
+
+    let position = this.valueToPx(min, max, value);
+
     if (step) {
-      let stepPx = this.valueToPx(min, max, step);
+      const stepPx = this.valueToPx(min, max, step);
       position = Math.round(position / stepPx) * stepPx;
     }
+
     this.moveHandle(position);
   }
 
@@ -60,6 +74,12 @@ export default class View {
       $(document)
         .unbind('mouseup',    this.funcOnDragEnd)
         .unbind('mousedown',  this.funcOnDrag);
+    }
+    if (this.$configView) {
+      this.$configView.find('input').each((_, input) => {
+        $(input).unbind('blur', this.funcOnChangeConfig);
+      });
+      this.$configView.remove();
     }
 
     return this;
@@ -82,7 +102,17 @@ export default class View {
     const blockName = 'range-slider-config';
 
     this.$configView = $('<div/>', {class: blockName});
-    $('<p/>').html('State').appendTo(this.$configView);
+
+    $('<p/>').html('Options').appendTo(this.$configView);
+    for (let option of Object.entries(state)) {
+      let key   = option[0];
+      let value = option[1];
+
+      let $inputGroup = $('<div/>', {class: `${blockName}__input-group`});
+      $('<label/>').text(`${key}: `).attr('for', key).appendTo($inputGroup);
+      $('<input type="text">').val(value).attr('data-name', key).appendTo($inputGroup);
+      $inputGroup.appendTo(this.$configView);
+    }
 
     this.$input.after(this.$configView);
   }
@@ -96,18 +126,21 @@ export default class View {
       .bind('mousemove',  this.funcOnDrag);
   }
 
-  private jump(e): void {
-    let cursorPosition = e.pageX - this.$input.offset().left;
+  private bindConfigViewListeners(): void {
+    this.$configView.find('input').each((_, input) => {
+      $(input).bind('blur', this.funcOnChangeConfig);
+    });
+  }
 
+  private jump(e): void {
     if (! this.$handleTo) {
-      this.$draggingHandle = this.$handleFrom;
-      // this.moveHandle(cursorPosition);
-      this.announcer.trigger('jump'
-        , this.$input.width()
-        , this.$draggingHandle.width()
-        , cursorPosition
-        , true
-      );
+      this.$draggingHandle  = this.$handleFrom;
+      const data = {
+        inputWidth  : this.$input.width() - this.$draggingHandle.width(),
+        position    : this.getCursorPositionWithOffset(e)
+      };
+
+      this.announcer.trigger('jump', 'value', null, data);
     }
   }
 
@@ -121,15 +154,13 @@ export default class View {
   private drag(e): void {
     if (this.$draggingHandle) {
       e.preventDefault();
-      let cursorPosition = e.pageX - this.$input.offset().left;
+      const key   = (this.$draggingHandle === this.$handleTo) ? 'value2' : 'value';
+      const data  = {
+        inputWidth  : this.$input.width() - this.$draggingHandle.width(),
+        position    : this.getCursorPositionWithOffset(e)
+      };
 
-      // this.moveHandle(cursorPosition);
-      this.announcer.trigger('drag'
-        , this.$input.width()
-        , this.$draggingHandle.width()
-        , cursorPosition
-        , true
-      );
+      this.announcer.trigger('drag', key, null, data);
     }
   }
 
@@ -140,18 +171,19 @@ export default class View {
     }
   }
 
+  private changeConfig(e): void {
+    const key   = $(e.currentTarget).data('name');
+    const value = $(e.currentTarget).val();
+
+    this.announcer.trigger('change.config', key, value);
+  }
+
   private moveHandle(position: number): void {
-    let boundLeft   = this.$draggingHandle.width() / 2;
-    let boundRight  = this.$input.width() - this.$draggingHandle.width() / 2;
+    const boundLeft   = 0;
+    const boundRight  = this.$input.width() - this.$draggingHandle.width();
 
-    if (position > boundRight) {
-      position = boundRight;
-    }
-    if (position < boundLeft) {
-      position = boundLeft;
-    }
-
-    position -= this.$draggingHandle.width() / 2;
+    position = position > boundRight  ? boundRight  : position;
+    position = position < boundLeft   ? boundLeft   : position;
 
     this.$draggingHandle.css({
       position: 'absolute',
@@ -159,9 +191,13 @@ export default class View {
     });
   }
 
+  private getCursorPositionWithOffset(e: JQueryMouseEventObject): number {
+    return e.pageX - this.$input.offset().left - this.$draggingHandle.width() / 2;
+  }
+
   private valueToPx(min: number, max: number, value: number): number {
-    let width     = this.$input.width();
-    let range     = max - min;
+    const width = this.$input.width() - this.$draggingHandle.width();
+    const range = max - min;
 
     return value * (width / range) - min;
   }

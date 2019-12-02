@@ -1,4 +1,4 @@
-import State from "../Interfaces/State";
+import State from '../Interfaces/State';
 import observable from '../../../node_modules/@riotjs/observable/dist/observable';
 
 export default class Model {
@@ -9,75 +9,62 @@ export default class Model {
     this.state = state;
   }
 
-  onInit(callback) {
-    this.announcer.on('create.state', callback);
+  onEmitState(callback) {
+    this.announcer.on('emit.state', callback);
   }
 
-  onChangeValues(callback) {
-    this.announcer.on('change.values', callback);
+  onChangeValue(callback) {
+    this.announcer.on('change.value', callback);
+    this.announcer.on('change.value2', callback);
   }
 
-  init() {
+  emitState() {
     this.announcer.trigger(
-      'create.state',
+      'emit.state',
       Object.assign({}, this.state)
     );
   }
 
-  private update(state: State, callback: null | Function) {
-    this.state = Object.assign({}, this.state, state);
+  set(key: string, value: string, data?: any) {
+    let v: any;
 
-    if (typeof callback === 'function') {
-      callback();
+    switch (key) {
+      case 'value':
+      case 'value2':
+        v = this.pxToValue(data.inputWidth, data.position);
+        break;
+      case 'min':
+      case 'max':
+      case 'step':
+        v = Number(value);
+        break;
+      default:
+        v = value;
     }
-    console.log('__state__', this.state);
+
+    this.state[key] = v;
+
+    this.announcer.trigger(
+      `change.${key}`,
+      Object.assign({}, this.state)
+    );
   }
 
-  updateValues(inputWidth: number, handleWidth: number, position, emitState: boolean) {
-    let value
-      , values
-      , trigger
-    ;
-    value   = this.pxToValue(inputWidth, handleWidth, position);
-    values  = [];
+  private pxToValue(px: number, position: number) {
+    const min   = this.state.min;
+    const max   = this.state.max;
+    const step  = this.state.step;
+    const range = max - min;
 
-    values.push(value);
+    let value = position / (px / range) + min;
 
-    if (emitState) {
-      trigger = () => {
-        this.announcer.trigger(
-          'change.values',
-          Object.assign({}, this.state)
-        );
-      }
-    }
-
-    this.update({values}, trigger);
-  }
-
-  private pxToValue(axisWidth: number, handleWidth: number, position: number) {
-    let min   = this.state.min;
-    let max   = this.state.max;
-    let step  = this.state.step;
-    let width = axisWidth - handleWidth;
-    let range = this.state.max - this.state.min;
-    let value = position/(width/range) + this.state.min;
-
-    if (value > max) {
-      value = max;
-    }
-    if (value < min) {
-      value = min;
-    }
+    value = value > max ? max : value;
+    value = value < min ? min : value;
 
     if (step) {
       return Math.floor(value / step) * step;
      }
 
     return Math.round(value);
-  }
-
-  echo(msg): any {
-    return msg;
   }
 }
