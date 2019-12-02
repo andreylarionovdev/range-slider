@@ -25,29 +25,26 @@ export default class Model {
     );
   }
 
-  set(key: string, value: string, data?: any) {
-    let v: any;
-
+  set(key: string, value: any, data?: any) {
     switch (key) {
       case 'value':
       case 'value2':
-        v = this.pxToValue(data.inputWidth, data.position);
+        this.state[key] = this.pxToValue(data.inputWidth, data.position);
+        this.announcer.trigger(
+          `change.${key}`,
+          Object.assign({}, this.state)
+        );
         break;
       case 'min':
       case 'max':
       case 'step':
-        v = Number(value);
+        this.state[key] = Number(value);
+        this.emitState();
         break;
       default:
-        v = value;
+        this.state[key] = value;
+        this.emitState();
     }
-
-    this.state[key] = v;
-
-    this.announcer.trigger(
-      `change.${key}`,
-      Object.assign({}, this.state)
-    );
   }
 
   private pxToValue(px: number, position: number) {

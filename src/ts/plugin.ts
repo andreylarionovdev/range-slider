@@ -11,13 +11,13 @@ declare global {
 (function ($: JQueryStatic): void {
   $.fn.range = function(this: JQuery, options?: State): JQuery {
     const defaults: State = {
-      orientation: 'horizontal',
       min: 0,
       max: 100,
       step: 0,
       value: 0,
       value2: 0,
       range: false,
+      vertical: false,
       showConfig: false,
     };
 

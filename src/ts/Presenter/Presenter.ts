@@ -19,7 +19,7 @@ export default class Presenter {
     this.model.emitState();
   }
 
-  updateState(key: string, value: string, data?: Object) {
+  updateState(key: string, value: any, data?: Object) {
     this.model.set(key, value, data);
   }
   renderView(state: State) {

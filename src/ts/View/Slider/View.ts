@@ -97,7 +97,7 @@ export default class View {
     this.$target.after(this.$input).hide();
   }
 
-  // TODO: Create separate View
+  // TODO: Create separate View using templating
   private initConfigView(state: State) {
     const blockName = 'range-slider-config';
 
@@ -105,12 +105,26 @@ export default class View {
 
     $('<p/>').html('Options').appendTo(this.$configView);
     for (let option of Object.entries(state)) {
-      let key   = option[0];
-      let value = option[1];
+      const key   = option[0];
+      const value = option[1];
 
       let $inputGroup = $('<div/>', {class: `${blockName}__input-group`});
+
       $('<label/>').text(`${key}: `).attr('for', key).appendTo($inputGroup);
-      $('<input type="text">').val(value).attr('data-name', key).appendTo($inputGroup);
+      let $input = $('<input>').attr('name', key);
+
+      switch (typeof value) {
+        case 'boolean':
+          $input.attr('type', 'checkbox');
+          if (value === true) {
+            $input.prop('checked', true);
+          }
+          break;
+        default:
+          $input.attr('type', 'text').val(value);
+      }
+
+      $input.appendTo($inputGroup);
       $inputGroup.appendTo(this.$configView);
     }
 
@@ -128,7 +142,10 @@ export default class View {
 
   private bindConfigViewListeners(): void {
     this.$configView.find('input').each((_, input) => {
-      $(input).bind('blur', this.funcOnChangeConfig);
+      const eventName = $(input).attr('type') === 'checkbox'
+        ? 'change'
+        : 'blur';
+      $(input).bind(eventName, this.funcOnChangeConfig);
     });
   }
 
@@ -172,8 +189,11 @@ export default class View {
   }
 
   private changeConfig(e): void {
-    const key   = $(e.currentTarget).data('name');
-    const value = $(e.currentTarget).val();
+    const $input = $(e.currentTarget);
+    const checkboxes = ['vertical', 'range', 'showConfig'];
+
+    const key   = $input.attr('name');
+    const value = checkboxes.includes(key) ? $input.is(':checked') : $input.val();
 
     this.announcer.trigger('change.config', key, value);
   }
