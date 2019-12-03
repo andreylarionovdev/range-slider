@@ -6,6 +6,9 @@ $(document).ready(function () {
     step: 10
   });
   $('input#with-config').range({
+    range: true,
+    // value: 20,
+    // value2: 30,
     showConfig: true
   });
 });

@@ -6,7 +6,12 @@ export default class Model {
   private announcer: any = observable(this);
 
   constructor (state: State) {
+    const {max, value2, range} = state;
+
     this.state = state;
+    if (range && ! value2) {
+      this.state.value2 = max;
+    }
   }
 
   onEmitState(callback) {

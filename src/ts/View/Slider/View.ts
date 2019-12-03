@@ -41,14 +41,13 @@ export default class View {
       this.initConfigView(state);
       this.bindConfigViewListeners()
     }
-
-    this.bindListeners();
   }
 
   renderHandle(state: State): void {
-    const min   = state.min;
-    const max   = state.max;
-    const step  = state.step;
+    const {min, max, step} = state;
+
+    const boundLeft   = 0;
+    const boundRight  = this.$input.width() - this.$draggingHandle.width();
 
     let value = state.value;
 
@@ -63,7 +62,13 @@ export default class View {
       position = Math.round(position / stepPx) * stepPx;
     }
 
-    this.moveHandle(position);
+    position = position > boundRight  ? boundRight  : position;
+    position = position < boundLeft   ? boundLeft   : position;
+
+    this.$draggingHandle.css({
+      position: 'absolute',
+      left    : position
+    });
   }
 
   destroy(): this {
@@ -91,10 +96,28 @@ export default class View {
     this.$input = $('<div/>', {class: `${blockName}__input`});
     $('<div/>', {class: `${blockName}__rail`}).appendTo (this.$input);
 
-    this.$handleFrom = $('<a/>', {class: `${blockName}__handle`});
-    this.$handleFrom.appendTo(this.$input);
-
     this.$target.after(this.$input).hide();
+    this.$input.bind('mousedown', this.funcOnJump);
+
+    this.$handleFrom = $('<a/>', {class: `${blockName}__handle`}).attr('name', 'from')
+      .appendTo(this.$input)
+      .bind('mousedown', this.funcOnDragStart);
+
+    this.$draggingHandle = this.$handleFrom;
+    this.renderHandle(state);
+
+    if (state.range) {
+      this.$handleTo = this.$handleFrom.clone().attr('name', 'to')
+        .appendTo(this.$input).bind('mousedown', this.funcOnDragStart);
+
+      this.$draggingHandle = this.$handleTo;
+      this.renderHandle(state);
+    }
+    this.$draggingHandle = null;
+
+    $(document)
+      .bind('mouseup',    this.funcOnDragEnd)
+      .bind('mousemove',  this.funcOnDrag);
   }
 
   // TODO: Create separate View using templating
@@ -129,15 +152,6 @@ export default class View {
     }
 
     this.$input.after(this.$configView);
-  }
-
-  private bindListeners(): void {
-    this.$input.bind('mousedown', this.funcOnJump);
-    this.$handleFrom.bind('mousedown', this.funcOnDragStart);
-
-    $(document)
-      .bind('mouseup',    this.funcOnDragEnd)
-      .bind('mousemove',  this.funcOnDrag);
   }
 
   private bindConfigViewListeners(): void {
@@ -196,19 +210,6 @@ export default class View {
     const value = checkboxes.includes(key) ? $input.is(':checked') : $input.val();
 
     this.announcer.trigger('change.config', key, value);
-  }
-
-  private moveHandle(position: number): void {
-    const boundLeft   = 0;
-    const boundRight  = this.$input.width() - this.$draggingHandle.width();
-
-    position = position > boundRight  ? boundRight  : position;
-    position = position < boundLeft   ? boundLeft   : position;
-
-    this.$draggingHandle.css({
-      position: 'absolute',
-      left    : position
-    });
   }
 
   private getCursorPositionWithOffset(e: JQueryMouseEventObject): number {
