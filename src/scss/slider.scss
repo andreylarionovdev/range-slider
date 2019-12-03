@@ -1,12 +1,19 @@
 .range-slider {
-  width: 30%;
-  &__input {
-    position: relative;
-    height: 25px;
+  position: relative;
+  $input: #{&}__input;
+  $rail: #{&}__rail;
+  $railWeight: 10px;
+  height: $railWeight;
+  #{$input} {
+    height: $railWeight;
+    width: 100%;
+    position: absolute;
   }
-  &__rail {
+  #{$rail} {
+    height: $railWeight;
+    width: 100%;
     background: greenyellow;
-    height: 10px;
+    bottom: 0;
   }
   &__handle {
     display: block;
@@ -16,5 +23,27 @@
     height: 14px;
     border-radius: 7px;
     background: mediumvioletred;
+  }
+  &--vertical {
+    height: 100%;
+    #{$input} {
+      width: $railWeight;
+      height: 100%;
+    }
+    #{$rail} {
+      width: $railWeight;
+      height: 100%;
+    }
+  }
+
+  &-group {
+    position: relative;
+    height: 150px;
+    width: 250px;
+  }
+  &-config {
+    top: 15px;
+    left: 15px;
+    position: absolute;
   }
 }

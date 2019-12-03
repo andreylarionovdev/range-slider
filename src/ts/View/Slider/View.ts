@@ -9,7 +9,9 @@ export default class View {
   private $handleTo: JQuery;
   private $draggingHandle: JQuery;
   private $configView: JQuery;
+
   private announcer: any = observable(this);
+  private blockName: string = 'range-slider';
 
   // To bind/unbind with class context
   private funcOnDragStart = e => this.dragStart(e);
@@ -73,7 +75,7 @@ export default class View {
 
   destroy(): this {
     if (this.$input && this.$target) {
-      this.$input.remove();
+      this.$input.closest(`.${this.blockName}`).remove();
       this.$target.show().data('range', null);
 
       $(document)
@@ -91,15 +93,24 @@ export default class View {
   }
 
   private initDOM(state: State) {
-    const blockName = 'range-slider';
+    let blockClasses = [this.blockName];
+    if (state.vertical) {
+      blockClasses.push(this.blockName + '--vertical');
+    }
+    let $slider = $('<div/>').addClass(blockClasses);
 
-    this.$input = $('<div/>', {class: `${blockName}__input`});
-    $('<div/>', {class: `${blockName}__rail`}).appendTo (this.$input);
+    // create and add $input to $slider
+    this.$input = $('<div/>', {class: `${this.blockName}__input`});
+    this.$input.appendTo($slider);
 
-    this.$target.after(this.$input).hide();
+    // add axis rail to $input
+    let $axis = $('<div/>').addClass(`${this.blockName}__rail`);
+    $axis.appendTo(this.$input);
+
+    this.$target.after($slider).hide();
     this.$input.bind('mousedown', this.funcOnJump);
 
-    this.$handleFrom = $('<a/>', {class: `${blockName}__handle`}).attr('name', 'from')
+    this.$handleFrom = $('<a/>', {class: `${this.blockName}__handle`}).attr('name', 'from')
       .appendTo(this.$input)
       .bind('mousedown', this.funcOnDragStart);
 
