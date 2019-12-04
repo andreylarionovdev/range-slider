@@ -45,17 +45,15 @@ export default class View {
     }
   }
 
-  renderHandle(state: State): void {
+  moveHandle(state: State): void {
     const {min, max, step} = state;
 
     const boundLeft   = 0;
     const boundRight  = this.$input.width() - this.$draggingHandle.width();
 
-    let value = state.value;
-
-    if (this.$draggingHandle === this.$handleTo) {
-      value = state.value2;
-    }
+    const value = (this.$draggingHandle.attr('name') === 'to')
+      ? state.value2
+      : state.value;
 
     let position = this.valueToPx(min, max, value);
 
@@ -114,21 +112,28 @@ export default class View {
       .appendTo(this.$input)
       .bind('mousedown', this.funcOnDragStart);
 
-    this.$draggingHandle = this.$handleFrom;
-    this.renderHandle(state);
-
     if (state.range) {
       this.$handleTo = this.$handleFrom.clone().attr('name', 'to')
         .appendTo(this.$input).bind('mousedown', this.funcOnDragStart);
-
-      this.$draggingHandle = this.$handleTo;
-      this.renderHandle(state);
     }
-    this.$draggingHandle = null;
 
     $(document)
       .bind('mouseup',    this.funcOnDragEnd)
       .bind('mousemove',  this.funcOnDrag);
+
+    this.updateHandles(state);
+  }
+
+  private updateHandles(state: State) {
+    this.$draggingHandle = this.$handleFrom;
+    this.moveHandle(state);
+
+    if (state.range) {
+      this.$draggingHandle = this.$handleTo;
+      this.moveHandle(state);
+    }
+
+    this.$draggingHandle = null;
   }
 
   // TODO: Create separate View using templating
@@ -177,12 +182,10 @@ export default class View {
   private jump(e): void {
     if (! this.$handleTo) {
       this.$draggingHandle  = this.$handleFrom;
-      const data = {
+      this.announcer.trigger('jump', 'value', null, {
         inputWidth  : this.$input.width() - this.$draggingHandle.width(),
         position    : this.getCursorPositionWithOffset(e)
-      };
-
-      this.announcer.trigger('jump', 'value', null, data);
+      });
     }
   }
 
@@ -196,13 +199,13 @@ export default class View {
   private drag(e): void {
     if (this.$draggingHandle) {
       e.preventDefault();
-      const key   = (this.$draggingHandle === this.$handleTo) ? 'value2' : 'value';
-      const data  = {
+      const key = (this.$draggingHandle.attr('name') === 'to')
+        ? 'value2'
+        : 'value';
+      this.announcer.trigger('drag', key, null, {
         inputWidth  : this.$input.width() - this.$draggingHandle.width(),
         position    : this.getCursorPositionWithOffset(e)
-      };
-
-      this.announcer.trigger('drag', key, null, data);
+      });
     }
   }
 

@@ -13,8 +13,9 @@ export default class Presenter {
     this.view.onDrag((k, v, d) => this.updateState(k, v, d));
     this.view.onJump((k ,v, d) => this.updateState(k ,v, d));
     this.view.onChangeConfig((k, v) => this.updateState(k, v));
+
     this.model.onEmitState(state => this.renderView(state));
-    this.model.onChangeValue(state => this.renderHandle(state));
+    this.model.onChangeValue(state => this.updateHandle(state));
 
     this.model.emitState();
   }
@@ -22,10 +23,10 @@ export default class Presenter {
   updateState(key: string, value: any, data?: Object) {
     this.model.set(key, value, data);
   }
+  updateHandle(state: State) {
+    this.view.moveHandle(state);
+  }
   renderView(state: State) {
     this.view.render(state);
-  }
-  renderHandle(state: State) {
-    this.view.renderHandle(state);
   }
 }
