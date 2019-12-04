@@ -34,8 +34,8 @@ export default class Model {
     switch (key) {
       case 'value':
       case 'value2':
-        const {inputWidth, position} = data;
-        this.state[key] = this.pxToValue(inputWidth, position);
+        const {axLength, position} = data;
+        this.state[key] = this.positionToValue(axLength, position);
         this.announcer.trigger(
           `change.${key}`,
           Object.assign({}, this.state)
@@ -53,11 +53,11 @@ export default class Model {
     }
   }
 
-  private pxToValue(px: number, position: number) {
+  private positionToValue(axLength: number, position: number) {
     const {min, max, step} = this.state;
     const range = max - min;
 
-    let value = position / (px / range) + min;
+    let value = position / (axLength / range) + min;
 
     value = value > max ? max : value;
     value = value < min ? min : value;

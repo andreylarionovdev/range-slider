@@ -41,33 +41,35 @@ export default class View {
 
     if (state.showConfig) {
       this.initConfigView(state);
-      this.bindConfigViewListeners()
     }
   }
 
   moveHandle(state: State): void {
     const {min, max, step} = state;
 
-    const boundLeft   = 0;
-    const boundRight  = this.$input.width() - this.$draggingHandle.width();
+    const axLength = state.vertical
+      ? this.$input.height() - this.$draggingHandle.height()
+      : this.$input.width() - this.$draggingHandle.width();
+
+    const boundStart  = 0;
+    const boundEnd    = axLength;
 
     const value = (this.$draggingHandle.attr('name') === 'to')
       ? state.value2
       : state.value;
 
-    let position = this.valueToPx(min, max, value);
+    let position = this.valueToPosition(axLength, min, max, value);
 
     if (step) {
-      const stepPx = this.valueToPx(min, max, step);
+      const stepPx = this.valueToPosition(axLength, min, max, step);
       position = Math.round(position / stepPx) * stepPx;
     }
 
-    position = position > boundRight  ? boundRight  : position;
-    position = position < boundLeft   ? boundLeft   : position;
+    position = position > boundEnd    ? boundEnd    : position;
+    position = position < boundStart  ? boundStart  : position;
 
     this.$draggingHandle.css({
-      position: 'absolute',
-      left    : position
+      [state.vertical ? 'top' : 'left']: position
     });
   }
 
@@ -92,9 +94,11 @@ export default class View {
 
   private initDOM(state: State) {
     let blockClasses = [this.blockName];
+
     if (state.vertical) {
       blockClasses.push(this.blockName + '--vertical');
     }
+
     let $slider = $('<div/>').addClass(blockClasses);
 
     // create and add $input to $slider
@@ -165,26 +169,24 @@ export default class View {
 
       $input.appendTo($inputGroup);
       $inputGroup.appendTo(this.$configView);
+
+      this.$configView.find('input').each((_, input) => {
+        const eventName = $(input).attr('type') === 'checkbox'
+          ? 'change'
+          : 'blur';
+        $(input).bind(eventName, this.funcOnChangeConfig);
+      });
     }
 
     this.$input.after(this.$configView);
-  }
-
-  private bindConfigViewListeners(): void {
-    this.$configView.find('input').each((_, input) => {
-      const eventName = $(input).attr('type') === 'checkbox'
-        ? 'change'
-        : 'blur';
-      $(input).bind(eventName, this.funcOnChangeConfig);
-    });
   }
 
   private jump(e): void {
     if (! this.$handleTo) {
       this.$draggingHandle  = this.$handleFrom;
       this.announcer.trigger('jump', 'value', null, {
-        inputWidth  : this.$input.width() - this.$draggingHandle.width(),
-        position    : this.getCursorPositionWithOffset(e)
+        axLength  : this.getAxLength(),
+        position  : this.getCursorPositionWithOffset(e)
       });
     }
   }
@@ -203,8 +205,8 @@ export default class View {
         ? 'value2'
         : 'value';
       this.announcer.trigger('drag', key, null, {
-        inputWidth  : this.$input.width() - this.$draggingHandle.width(),
-        position    : this.getCursorPositionWithOffset(e)
+        axLength  : this.getAxLength(),
+        position  : this.getCursorPositionWithOffset(e)
       });
     }
   }
@@ -221,19 +223,36 @@ export default class View {
     const checkboxes = ['vertical', 'range', 'showConfig'];
 
     const key   = $input.attr('name');
-    const value = checkboxes.includes(key) ? $input.is(':checked') : $input.val();
+    const value = checkboxes.includes(key)
+      ? $input.is(':checked')
+      : $input.val();
 
     this.announcer.trigger('change.config', key, value);
   }
 
+  private isVertical(): boolean {
+    return this.$input
+      .closest(`.${this.blockName}`)
+      .hasClass(`${this.blockName}--vertical`);
+  }
+
+  private getAxLength(): number {
+    if (this.isVertical()) {
+      return this.$input.height() - this.$draggingHandle.height();
+    }
+    return this.$input.width() - this.$draggingHandle.width();
+  }
+
   private getCursorPositionWithOffset(e: JQueryMouseEventObject): number {
+    if (this.isVertical()) {
+      return e.pageY - this.$input.offset().top - this.$draggingHandle.height() / 2;
+    }
     return e.pageX - this.$input.offset().left - this.$draggingHandle.width() / 2;
   }
 
-  private valueToPx(min: number, max: number, value: number): number {
-    const width = this.$input.width() - this.$draggingHandle.width();
+  private valueToPosition(axLength: number, min: number, max: number, value: number): number {
     const range = max - min;
 
-    return value * (width / range) - min;
+    return value * (axLength / range) - min;
   }
 }
