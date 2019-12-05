@@ -3,13 +3,13 @@ import $ from 'jquery';
 import observable from '../../../../node_modules/@riotjs/observable/dist/observable';
 
 export default class View {
-  private $target: JQuery;
-  private $input: JQuery;
-  private $handleFrom: JQuery;
-  private $handleTo: JQuery;
-  private $selection: JQuery;
-  private $draggingHandle: JQuery;
-  private $configView: JQuery;
+  private $target         : JQuery;
+  private $input          : JQuery;
+  private $handleFrom     : JQuery;
+  private $handleTo       : JQuery;
+  private $selection      : JQuery;
+  private $draggingHandle : JQuery;
+  private $configView     : JQuery;
 
   private announcer: any = observable(this);
   private blockName: string = 'range-slider';
@@ -74,18 +74,25 @@ export default class View {
   }
 
   private updateSelection(position): void {
+    const {$input, $draggingHandle: $handle} = this;
     let prop;
-    switch (this.$draggingHandle.attr('name')) {
+    switch ($handle.attr('name')) {
       case 'from':
-        prop = this.isVertical() ? 'top' : 'left';
+        if (this.isVertical()) {
+          prop = 'top';
+          position += $handle.height() / 2;
+        } else {
+          prop = 'left';
+          position += $handle.width() / 2;
+        }
         break;
       case 'to':
         if (this.isVertical()) {
           prop = 'bottom';
-          position = this.$input.height() - this.$draggingHandle.height() - position;
+          position = $input.height() - $handle.height() / 2 - position;
         } else {
           prop = 'right';
-          position = this.$input.width()  - this.$draggingHandle.width() - position;
+          position = $input.width()  - $handle.width() / 2 - position;
         }
         break;
     }

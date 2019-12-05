@@ -34,8 +34,12 @@ export default class Model {
     switch (key) {
       case 'value':
       case 'value2':
-        const {axLength, position} = data;
-        this.state[key] = this.positionToValue(axLength, position);
+        if (value === null) {
+          const {axLength, position} = data;
+          value = this.positionToValue(axLength, position);
+          value = this.validateRangeValues(key, value);
+        }
+        this.state[key] = value;
         this.announcer.trigger(
           `change.${key}`,
           Object.assign({}, this.state)
@@ -53,7 +57,22 @@ export default class Model {
     }
   }
 
-  private positionToValue(axLength: number, position: number) {
+  private validateRangeValues(prop: string, v: number): number {
+    const {value, value2, range} = this.state;
+
+    if (! range) {
+      return v;
+    }
+
+    switch (prop) {
+      case 'value':
+        return v > value2 ? value2 : v;
+      case 'value2':
+        return v < value ? value : v;
+    }
+  }
+
+  private positionToValue(axLength: number, position: number): number {
     const {min, max, step} = this.state;
     const range = max - min;
 
