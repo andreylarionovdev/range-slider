@@ -1,7 +1,7 @@
 import Model from '../Model/Model';
 import View from '../View/Slider/View';
-import State from '../Interfaces/State';
 import Presenter from "../Presenter/Presenter";
+import State from '../Interfaces/State';
 
 export default class App {
   constructor(target: JQuery, options: State) {
@@ -9,6 +9,5 @@ export default class App {
       new View(target),
       new Model(options)
     );
-    console.log('__app instance created__');
   }
 }

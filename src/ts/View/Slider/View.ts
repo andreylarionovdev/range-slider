@@ -7,6 +7,7 @@ export default class View {
   private $input: JQuery;
   private $handleFrom: JQuery;
   private $handleTo: JQuery;
+  private $selection: JQuery;
   private $draggingHandle: JQuery;
   private $configView: JQuery;
 
@@ -45,23 +46,19 @@ export default class View {
   }
 
   moveHandle(state: State): void {
-    const {min, max, step} = state;
-
-    const axLength = state.vertical
-      ? this.$input.height() - this.$draggingHandle.height()
-      : this.$input.width() - this.$draggingHandle.width();
+    const {min, max, step, range} = state;
 
     const boundStart  = 0;
-    const boundEnd    = axLength;
+    const boundEnd    = this.getAxLength();
 
     const value = (this.$draggingHandle.attr('name') === 'to')
       ? state.value2
       : state.value;
 
-    let position = this.valueToPosition(axLength, min, max, value);
+    let position = this.valueToPosition(this.getAxLength(), min, max, value);
 
     if (step) {
-      const stepPx = this.valueToPosition(axLength, min, max, step);
+      const stepPx = this.valueToPosition(this.getAxLength(), min, max, step);
       position = Math.round(position / stepPx) * stepPx;
     }
 
@@ -69,7 +66,31 @@ export default class View {
     position = position < boundStart  ? boundStart  : position;
 
     this.$draggingHandle.css({
-      [state.vertical ? 'top' : 'left']: position
+      [this.isVertical() ? 'top' : 'left']: position
+    });
+    if (range) {
+      this.updateSelection(position);
+    }
+  }
+
+  private updateSelection(position): void {
+    let prop;
+    switch (this.$draggingHandle.attr('name')) {
+      case 'from':
+        prop = this.isVertical() ? 'top' : 'left';
+        break;
+      case 'to':
+        if (this.isVertical()) {
+          prop = 'bottom';
+          position = this.$input.height() - this.$draggingHandle.height() - position;
+        } else {
+          prop = 'right';
+          position = this.$input.width()  - this.$draggingHandle.width() - position;
+        }
+        break;
+    }
+    this.$selection.css({
+      [prop]: position
     });
   }
 
@@ -109,14 +130,22 @@ export default class View {
     let $axis = $('<div/>').addClass(`${this.blockName}__rail`);
     $axis.appendTo(this.$input);
 
+    // create and add selection if range
+    if (state.range) {
+      this.$selection = $('<div/>', {class: `${this.blockName}__selection`})
+        .appendTo(this.$input);
+    }
+
     this.$target.after($slider).hide();
     this.$input.bind('mousedown', this.funcOnJump);
 
+    // create first handler, fill attributes, append to $input and bind mousedown
     this.$handleFrom = $('<a/>', {class: `${this.blockName}__handle`}).attr('name', 'from')
       .appendTo(this.$input)
       .bind('mousedown', this.funcOnDragStart);
 
     if (state.range) {
+      // create second handler using `clone`
       this.$handleTo = this.$handleFrom.clone().attr('name', 'to')
         .appendTo(this.$input).bind('mousedown', this.funcOnDragStart);
     }

@@ -3,6 +3,7 @@
   $input: #{&}__input;
   $rail: #{&}__rail;
   $railWeight: 10px;
+  $selection: #{&}__selection;
   height: $railWeight;
   #{$input} {
     height: $railWeight;
@@ -24,15 +25,23 @@
     border-radius: 7px;
     background: mediumvioletred;
   }
+  #{$selection} {
+    height: $railWeight;
+    width: auto;
+    background: mediumvioletred;
+    position: absolute;
+    bottom: 0;
+  }
   &--vertical {
     height: 100%;
-    #{$input} {
-      width: $railWeight;
-      height: 100%;
-    }
+    #{$input},
     #{$rail} {
       width: $railWeight;
       height: 100%;
+    }
+    #{$selection} {
+      width: $railWeight;
+      height: auto;
     }
   }
 
