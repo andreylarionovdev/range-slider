@@ -38,11 +38,22 @@ export default class View {
     this.announcer.on('change.config', callback);
   }
 
-  render(state: State): void {
-    this.destroy().initDOM(state);
+  update(state: State, ): void {
+    this.destroy()
+      .renderMainView(state)
+      .renderConfigView(state);
+  }
 
-    if (state.showConfig) {
-      this.renderConfigView(state);
+  updateValues(state: State): void {
+    const {value, value2, range, showConfig} = state;
+
+    if (range) {
+
+    }
+
+    if (showConfig) {
+      this.$configView.find(`input[name="value"]`).val(value);
+      this.$configView.find(`input[name="value2"]`).val(value2);
     }
   }
 
@@ -121,7 +132,7 @@ export default class View {
     return this;
   }
 
-  private initDOM(state: State) {
+  private renderMainView(state: State) {
     let blockClasses = [this.blockName];
 
     if (state.vertical) {
@@ -163,6 +174,8 @@ export default class View {
       .bind('mousemove',  this.funcOnDrag);
 
     this.updateHandles(state);
+
+    return this;
   }
 
   private updateHandles(state: State) {
@@ -179,6 +192,9 @@ export default class View {
 
   // TODO: Create separate View using templating
   private renderConfigView(state: State) {
+    if (! state.showConfig) {
+      return this;
+    }
     this.$configView = $('<code/>', {
       class: this.confBlockName
     });
@@ -190,9 +206,11 @@ export default class View {
     for (let [key, value] of Object.entries(state)) {
       this.renderConfigInputGroup(this.$configView, key, value);
     }
-
     $('<p/>').html('}').appendTo(this.$configView);
+
     this.$input.after(this.$configView);
+
+    return this;
   }
 
   private renderConfigInputGroup($view: JQuery, key: string, value: boolean | number) {
