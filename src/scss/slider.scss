@@ -2,33 +2,40 @@
   position: relative;
   $input: #{&}__input;
   $rail: #{&}__rail;
-  $railWeight: 10px;
   $selection: #{&}__selection;
-  height: $railWeight;
+  $handle: #{&}__handle;
+  $railWeight: 6px;
+  height: $railWeight + 2px;
   #{$input} {
-    height: $railWeight;
+    height: $railWeight + 2px;
     width: 100%;
     position: absolute;
   }
   #{$rail} {
     height: $railWeight;
     width: 100%;
-    background: greenyellow;
+    background: white;
+    border: 1px solid rgba(31, 32, 65, 0.25);
+    border-radius: 3px;
     bottom: 0;
   }
-  &__handle {
+  #{$handle} {
     display: block;
     position: absolute;
-    top: 0;
+    top: -5px;
     width:14px;
     height: 14px;
-    border-radius: 7px;
-    background: mediumvioletred;
+    border: 2px solid white;
+    border-radius: 10px;
+    background: #6FCF97;
+    &:hover {
+      border-color: #6FCF97;
+    }
   }
   #{$selection} {
-    height: $railWeight;
+    height: $railWeight + 2px;
     width: auto;
-    background: mediumvioletred;
+    background: #6FCF97;
     position: absolute;
     bottom: 0;
   }
@@ -40,19 +47,38 @@
       height: 100%;
     }
     #{$selection} {
-      width: $railWeight;
+      width: $railWeight + 2px;
       height: auto;
+    }
+    #{$handle} {
+      left: -5px;
     }
   }
 
   &-group {
     position: relative;
-    height: 150px;
+    height: 50px;
     width: 250px;
   }
   &-config {
     top: 15px;
-    left: 15px;
+    left: 30px;
+    right: 0;
     position: absolute;
+    &__input-group {
+      margin: 2px 0;
+      margin-left: 10px;
+      &:after {
+        content: '';
+        clear: both;
+        display: table;
+      }
+    }
+    &__label {
+      float: left;
+    }
+    &__input {
+      float: right;
+    }
   }
 }

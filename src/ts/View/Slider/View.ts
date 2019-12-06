@@ -13,6 +13,7 @@ export default class View {
 
   private announcer: any = observable(this);
   private blockName: string = 'range-slider';
+  private confBlockName: string = `${this.blockName}-config`;
 
   // To bind/unbind with class context
   private funcOnDragStart = e => this.dragStart(e);
@@ -41,7 +42,7 @@ export default class View {
     this.destroy().initDOM(state);
 
     if (state.showConfig) {
-      this.initConfigView(state);
+      this.renderConfigView(state);
     }
   }
 
@@ -177,44 +178,52 @@ export default class View {
   }
 
   // TODO: Create separate View using templating
-  private initConfigView(state: State) {
-    const blockName = 'range-slider-config';
+  private renderConfigView(state: State) {
+    this.$configView = $('<code/>', {
+      class: this.confBlockName
+    });
 
-    this.$configView = $('<div/>', {class: blockName});
+    $('<p/>')
+      .html('<b>const</b> options = {')
+      .appendTo(this.$configView);
 
-    $('<p/>').html('Options').appendTo(this.$configView);
-    for (let option of Object.entries(state)) {
-      const key   = option[0];
-      const value = option[1];
-
-      let $inputGroup = $('<div/>', {class: `${blockName}__input-group`});
-
-      $('<label/>').text(`${key}: `).attr('for', key).appendTo($inputGroup);
-      let $input = $('<input>').attr('name', key);
-
-      switch (typeof value) {
-        case 'boolean':
-          $input.attr('type', 'checkbox');
-          if (value === true) {
-            $input.prop('checked', true);
-          }
-          break;
-        default:
-          $input.attr('type', 'text').val(value);
-      }
-
-      $input.appendTo($inputGroup);
-      $inputGroup.appendTo(this.$configView);
-
-      this.$configView.find('input').each((_, input) => {
-        const eventName = $(input).attr('type') === 'checkbox'
-          ? 'change'
-          : 'blur';
-        $(input).bind(eventName, this.funcOnChangeConfig);
-      });
+    for (let [key, value] of Object.entries(state)) {
+      this.renderConfigInputGroup(this.$configView, key, value);
     }
 
+    $('<p/>').html('}').appendTo(this.$configView);
     this.$input.after(this.$configView);
+  }
+
+  private renderConfigInputGroup($view: JQuery, key: string, value: boolean | number) {
+    let $inputGroup = $('<div/>', {
+      class: `${this.confBlockName}__input-group`
+    });
+
+    $('<label/>', {
+      class: `${this.confBlockName}__label`
+    })
+      .html(`${key}:`)
+      .attr('for', key)
+      .appendTo($inputGroup);
+    let $input = $('<input>', {class: `${this.confBlockName}__input`}).attr('name', key);
+
+    switch (typeof value) {
+      case 'boolean':
+        $input.attr('type', 'checkbox');
+        if (value === true) {
+          $input.prop('checked', true);
+        }
+        $input.bind('change', this.funcOnChangeConfig);
+        break;
+      default:
+        $input.attr('type', 'text')
+          .val(value)
+          .bind('blur', this.funcOnChangeConfig);
+    }
+
+    $input.appendTo($inputGroup);
+    $inputGroup.appendTo($view);
   }
 
   private jump(e): void {
