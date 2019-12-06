@@ -38,7 +38,7 @@ export default class Model {
           const {axLength, position} = data;
           value = this.positionToValue(axLength, position);
           value = this.validateValue(key, value);
-          
+
           this.state[key] = value;
           this.announcer.trigger(
             `change.${key}`,
@@ -72,13 +72,15 @@ export default class Model {
     if (range) {
       switch (prop) {
         case 'value':
-          return v > value2 ? value2 : v;
+          v = Number(v) > Number(value2) ? value2 : v;
+          break;
         case 'value2':
-          return v < value ? value : v;
+          v = Number(v) < Number(value) ? value : v;
+          break;
       }
     }
 
-    return v;
+    return Number(v);
   }
 
   private positionToValue(axLength: number, position: number): number {
