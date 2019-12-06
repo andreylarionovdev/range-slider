@@ -37,13 +37,19 @@ export default class Model {
         if (value === null) {
           const {axLength, position} = data;
           value = this.positionToValue(axLength, position);
-          value = this.validateRangeValues(key, value);
+          value = this.validateValue(key, value);
+          
+          this.state[key] = value;
+          this.announcer.trigger(
+            `change.${key}`,
+            Object.assign({}, this.state)
+          );
+        } else {
+          value = this.validateValue(key, value);
+
+          this.state[key] = value;
+          this.emitState();
         }
-        this.state[key] = value;
-        this.announcer.trigger(
-          `change.${key}`,
-          Object.assign({}, this.state)
-        );
         break;
       case 'min':
       case 'max':
@@ -57,19 +63,22 @@ export default class Model {
     }
   }
 
-  private validateRangeValues(prop: string, v: number): number {
-    const {value, value2, range} = this.state;
+  private validateValue(prop: string, v: number): number {
+    const {min, max, value, value2, range} = this.state;
 
-    if (! range) {
-      return v;
+    v = v > max ? max : v;
+    v = v < min ? min : v;
+
+    if (range) {
+      switch (prop) {
+        case 'value':
+          return v > value2 ? value2 : v;
+        case 'value2':
+          return v < value ? value : v;
+      }
     }
 
-    switch (prop) {
-      case 'value':
-        return v > value2 ? value2 : v;
-      case 'value2':
-        return v < value ? value : v;
-    }
+    return v;
   }
 
   private positionToValue(axLength: number, position: number): number {
@@ -77,9 +86,6 @@ export default class Model {
     const range = max - min;
 
     let value = position / (axLength / range) + min;
-
-    value = value > max ? max : value;
-    value = value < min ? min : value;
 
     if (step) {
       return Math.floor(value / step) * step;

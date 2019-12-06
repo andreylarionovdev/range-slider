@@ -38,7 +38,7 @@ export default class View {
     this.announcer.on('change.config', callback);
   }
 
-  update(state: State, ): void {
+  update(state: State): void {
     this.destroy()
       .renderMainView(state)
       .renderConfigView(state);
