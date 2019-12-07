@@ -60,9 +60,6 @@ export default class View {
   moveHandle(state: State): void {
     const {min, max, step, range} = state;
 
-    const boundStart  = 0;
-    const boundEnd    = this.getAxLength();
-
     const value = (this.$draggingHandle.attr('name') === 'to')
       ? state.value2
       : state.value;
@@ -74,8 +71,7 @@ export default class View {
       position = Math.round(position / stepPx) * stepPx;
     }
 
-    position = position > boundEnd    ? boundEnd    : position;
-    position = position < boundStart  ? boundStart  : position;
+    position = this.validatePosition(position);
 
     this.$draggingHandle.css({
       [this.isVertical() ? 'top' : 'left']: position
@@ -83,6 +79,18 @@ export default class View {
     if (range) {
       this.updateSelection(position);
     }
+  }
+
+  private validatePosition(position: number, unit: 'px'|'percent' = 'px'): number {
+    const boundStart = 0;
+    const boundEnd = unit === 'px'
+      ? this.getAxLength()
+      : 100;
+
+    position = position > boundEnd    ? boundEnd    : position;
+    position = position < boundStart  ? boundStart  : position;
+
+    return position;
   }
 
   private updateSelection(position): void {
@@ -132,7 +140,7 @@ export default class View {
     return this;
   }
 
-  private renderMainView(state: State) {
+  private renderMainView(state: State): this {
     let blockClasses = [this.blockName];
 
     if (state.vertical) {
@@ -313,9 +321,12 @@ export default class View {
     return e.pageX - this.$input.offset().left - this.$draggingHandle.width() / 2;
   }
 
-  private valueToPosition(axLength: number, min: number, max: number, value: number): number {
+  private valueToPosition(axLength: number, min: number, max: number, value: number, unit: 'px'|'percent' = 'px'): number {
     const range = max - min;
+    const position = (value - min) * (axLength / range);
 
-    return value * (axLength / range) - min;
+    return unit === 'px'
+      ? position
+      : position / (axLength / 100);
   }
 }
