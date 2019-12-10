@@ -78,18 +78,13 @@ export default class View {
   }
 
   moveHandle(state: State): void {
-    const {min, max, step, range} = state;
+    const {min, max, range} = state;
 
     const value = this.$draggingHandle.hasClass(View.handleTo)
       ? state.value2
       : state.value;
 
-    let position = View.valueToPosition(this.getAxLength(), min, max, value);
-
-    if (step) {
-      const stepPx = View.valueToPosition(this.getAxLength(), min, max, step);
-      position = Math.round(position / stepPx) * stepPx;
-    }
+    let position = View.valueToPosition(min, max, value);
 
     position = View.validatePosition(position);
 
@@ -357,11 +352,11 @@ export default class View {
     return percent;
   }
 
-  private static valueToPosition(axLength: number, min: number, max: number, value: number): number {
+  private static valueToPosition(min: number, max: number, value: number): number {
     const range = max - min;
-    const position = (value - min) * (axLength / range);
+    const position = (value - min) * 100 / range;
 
-    return position / (axLength / 100);
+    return position;
   }
 
   private static validatePosition(position: number): number {

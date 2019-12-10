@@ -13,7 +13,7 @@ declare global {
     const defaults: State = {
       min: 0,
       max: 100,
-      step: 0,
+      step: 1,
       value: 0,
       value2: 0,
       range: false,
