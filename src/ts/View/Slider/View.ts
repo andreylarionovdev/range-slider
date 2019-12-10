@@ -1,19 +1,39 @@
-import State from '../../Interfaces/State';
 import $ from 'jquery';
+import State from '../../Interfaces/State';
+import HandleModifiers from '../../Interfaces/HandleModifiers';
 import observable from '../../../../node_modules/@riotjs/observable/dist/observable';
 
 export default class View {
+
   private $target         : JQuery;
-  private $input          : JQuery;
+  private $slider         : JQuery;
   private $handleFrom     : JQuery;
   private $handleTo       : JQuery;
   private $selection      : JQuery;
   private $draggingHandle : JQuery;
+
   private $configView     : JQuery;
 
+  // Classes
+  private static block      : string = 'range-slider';
+  private static blockVert  : string = `${View.block}--vertical`;
+
+  private static conf       : string = `${View.block}__conf`;
+  private static confLabel  : string = `${View.block}__conf-label`;
+  private static confInput  : string = `${View.block}__conf-input`;
+  private static confInputG : string = `${View.block}__conf-input-group`;
+
+  private static input      : string = `${View.block}__input`;
+  private static hiddenRail : string = `${View.block}__rail`;
+  private static visibleRail: string = `${View.block}__rail--visible`;
+  private static selection  : string = `${View.block}__selection`;
+
+  private static handle     : string = `${View.block}__handle`;
+  private static handleFrom : string = `${View.handle}--from`;
+  private static handleTo   : string = `${View.handle}--to`;
+
+  // thing that dealing with events between MPV layers
   private announcer: any = observable(this);
-  private blockName: string = 'range-slider';
-  private confBlockName: string = `${this.blockName}-config`;
 
   // To bind/unbind with class context
   private funcOnDragStart = e => this.dragStart(e);
@@ -60,70 +80,44 @@ export default class View {
   moveHandle(state: State): void {
     const {min, max, step, range} = state;
 
-    const value = (this.$draggingHandle.attr('name') === 'to')
+    const value = this.$draggingHandle.hasClass(View.handleTo)
       ? state.value2
       : state.value;
 
-    let position = this.valueToPosition(this.getAxLength(), min, max, value);
+    let position = View.valueToPosition(this.getAxLength(), min, max, value);
 
     if (step) {
-      const stepPx = this.valueToPosition(this.getAxLength(), min, max, step);
+      const stepPx = View.valueToPosition(this.getAxLength(), min, max, step);
       position = Math.round(position / stepPx) * stepPx;
     }
 
-    position = this.validatePosition(position);
+    position = View.validatePosition(position);
 
     this.$draggingHandle.css({
-      [this.isVertical() ? 'top' : 'left']: position
+      [this.isVertical() ? 'top' : 'left']: `${position}%`
     });
     if (range) {
       this.updateSelection(position);
     }
   }
 
-  private validatePosition(position: number, unit: 'px'|'percent' = 'px'): number {
-    const boundStart = 0;
-    const boundEnd = unit === 'px'
-      ? this.getAxLength()
-      : 100;
-
-    position = position > boundEnd    ? boundEnd    : position;
-    position = position < boundStart  ? boundStart  : position;
-
-    return position;
-  }
-
   private updateSelection(position): void {
-    const {$input, $draggingHandle: $handle} = this;
+    const $handle = this.$draggingHandle;
     let prop;
-    switch ($handle.attr('name')) {
-      case 'from':
-        if (this.isVertical()) {
-          prop = 'top';
-          position += $handle.height() / 2;
-        } else {
-          prop = 'left';
-          position += $handle.width() / 2;
-        }
-        break;
-      case 'to':
-        if (this.isVertical()) {
-          prop = 'bottom';
-          position = $input.height() - $handle.height() / 2 - position;
-        } else {
-          prop = 'right';
-          position = $input.width()  - $handle.width() / 2 - position;
-        }
-        break;
+    if ($handle.hasClass(View.handleFrom)) {
+      prop = this.isVertical() ? 'top' : 'left';
+    } else {
+      prop = this.isVertical() ? 'bottom' : 'right';
+      position = 100 - position;
     }
     this.$selection.css({
-      [prop]: position
+      [prop]: `${position}%`
     });
   }
 
   destroy(): this {
-    if (this.$input && this.$target) {
-      this.$input.closest(`.${this.blockName}`).remove();
+    if (this.$slider && this.$target) {
+      this.$slider.remove();
       this.$target.show().data('range', null);
 
       $(document)
@@ -141,49 +135,108 @@ export default class View {
   }
 
   private renderMainView(state: State): this {
-    let blockClasses = [this.blockName];
+    this.$slider = this.createSlider(state);
+    this.$target.after(this.$slider).hide();
 
-    if (state.vertical) {
-      blockClasses.push(this.blockName + '--vertical');
-    }
+    let $input = this.createInput()
+      .appendTo(this.$slider);
 
-    let $slider = $('<div/>').addClass(blockClasses);
-
-    // create and add $input to $slider
-    this.$input = $('<div/>', {class: `${this.blockName}__input`});
-    this.$input.appendTo($slider);
-
-    // add axis rail to $input
-    let $axis = $('<div/>').addClass(`${this.blockName}__rail`);
-    $axis.appendTo(this.$input);
-
-    // create and add selection if range
+    let $visibleRail = this.createVisibleRail()
+      .appendTo($input);
+    
+    let $hiddenRail = this.createHiddenRail()
+      .appendTo($input);
+    
     if (state.range) {
-      this.$selection = $('<div/>', {class: `${this.blockName}__selection`})
-        .appendTo(this.$input);
+      this.$selection = this.createSelection()
+        .appendTo($visibleRail);
     }
 
-    this.$target.after($slider).hide();
-    this.$input.bind('mousedown', this.funcOnJump);
-
-    // create first handler, fill attributes, append to $input and bind mousedown
-    this.$handleFrom = $('<a/>', {class: `${this.blockName}__handle`}).attr('name', 'from')
-      .appendTo(this.$input)
-      .bind('mousedown', this.funcOnDragStart);
+    this.$handleFrom = this.createHandle({
+      type: 'from'
+    }).appendTo($hiddenRail);
 
     if (state.range) {
-      // create second handler using `clone`
-      this.$handleTo = this.$handleFrom.clone().attr('name', 'to')
-        .appendTo(this.$input).bind('mousedown', this.funcOnDragStart);
+      this.$handleTo = this.createHandle({
+        type: 'to'
+      }).appendTo($hiddenRail);
     }
 
-    $(document)
-      .bind('mouseup',    this.funcOnDragEnd)
-      .bind('mousemove',  this.funcOnDrag);
-
+    this.bindDocumentEvents();
     this.updateHandles(state);
 
     return this;
+  }
+
+  private renderConfigView(state: State): this {
+    if (! state.showConfig) {
+      return this;
+    }
+
+    this.$configView = $('<code/>').addClass(View.conf);
+    this.$configView.appendTo(this.$slider);
+
+    $('<p/>')
+      .html('<b>const</b> options = {')
+      .appendTo(this.$configView);
+
+    for (let [key, value] of Object.entries(state)) {
+      this.renderConfigInputGroup(key, value)
+        .appendTo(this.$configView);
+    }
+
+    $('<p/>').html('}').appendTo(this.$configView);
+
+    return this;
+  }
+
+  private createInput(): JQuery {
+    return $('<div/>')
+      .addClass(View.input)
+      .bind('mousedown', this.funcOnJump);
+  }
+
+  private createSelection(): JQuery {
+    return $('<div/>').addClass(View.selection);
+  }
+
+  private createVisibleRail(): JQuery {
+    return $('<div/>').addClass(View.visibleRail)
+  }
+  private createHiddenRail(): JQuery {
+    return $('<div/>').addClass(View.hiddenRail);
+  }
+
+  private bindDocumentEvents() {
+    $(document)
+      .bind('mouseup', this.funcOnDragEnd)
+      .bind('mousemove', this.funcOnDrag);
+  }
+
+  private createSlider(state: State): JQuery {
+    let blockClasses = [View.block];
+
+    if (state.vertical) {
+      blockClasses.push(View.blockVert);
+    }
+
+    return $('<div/>').addClass(blockClasses);
+  }
+
+  private createHandle(modifiers: HandleModifiers): JQuery {
+    let $handle = $('<a/>')
+      .addClass(View.handle)
+      .bind('mousedown', this.funcOnDragStart);
+
+    switch (modifiers.type) {
+      case 'from':
+        $handle.addClass(View.handleFrom);
+        break;
+      case 'to':
+        $handle.addClass(View.handleTo);
+    }
+
+    return $handle;
   }
 
   private updateHandles(state: State) {
@@ -198,41 +251,17 @@ export default class View {
     this.$draggingHandle = null;
   }
 
-  // TODO: Create separate View using templating
-  private renderConfigView(state: State) {
-    if (! state.showConfig) {
-      return this;
-    }
-    this.$configView = $('<code/>', {
-      class: this.confBlockName
-    });
+  private renderConfigInputGroup(key: string, value: boolean | number): JQuery {
+    let $inputGroup = $('<div/>').addClass(View.confInputG);
 
-    $('<p/>')
-      .html('<b>const</b> options = {')
-      .appendTo(this.$configView);
-
-    for (let [key, value] of Object.entries(state)) {
-      this.renderConfigInputGroup(this.$configView, key, value);
-    }
-    $('<p/>').html('}').appendTo(this.$configView);
-
-    this.$input.after(this.$configView);
-
-    return this;
-  }
-
-  private renderConfigInputGroup($view: JQuery, key: string, value: boolean | number) {
-    let $inputGroup = $('<div/>', {
-      class: `${this.confBlockName}__input-group`
-    });
-
-    $('<label/>', {
-      class: `${this.confBlockName}__label`
-    })
+    $('<label/>')
+      .addClass(View.confLabel)
       .html(`${key}:`)
       .attr('for', key)
       .appendTo($inputGroup);
-    let $input = $('<input>', {class: `${this.confBlockName}__input`}).attr('name', key);
+    let $input = $('<input>')
+      .addClass(View.confInput)
+      .attr('name', key);
 
     switch (typeof value) {
       case 'boolean':
@@ -249,15 +278,15 @@ export default class View {
     }
 
     $input.appendTo($inputGroup);
-    $inputGroup.appendTo($view);
+
+    return $inputGroup;
   }
 
   private jump(e): void {
     if (! this.$handleTo) {
       this.$draggingHandle  = this.$handleFrom;
       this.announcer.trigger('jump', 'value', null, {
-        axLength  : this.getAxLength(),
-        position  : this.getCursorPositionWithOffset(e)
+        percent : this.getCursorPositionPercent(e)
       });
     }
   }
@@ -272,12 +301,11 @@ export default class View {
   private drag(e): void {
     if (this.$draggingHandle) {
       e.preventDefault();
-      const key = (this.$draggingHandle.attr('name') === 'to')
+      const key = this.$draggingHandle.hasClass(View.handleTo)
         ? 'value2'
         : 'value';
       this.announcer.trigger('drag', key, null, {
-        axLength  : this.getAxLength(),
-        position  : this.getCursorPositionWithOffset(e)
+        percent : this.getCursorPositionPercent(e)
       });
     }
   }
@@ -302,31 +330,47 @@ export default class View {
   }
 
   private isVertical(): boolean {
-    return this.$input
-      .closest(`.${this.blockName}`)
-      .hasClass(`${this.blockName}--vertical`);
+    return this.$slider.hasClass(View.blockVert);
   }
 
   private getAxLength(): number {
     if (this.isVertical()) {
-      return this.$input.height() - this.$draggingHandle.height();
+      return this.$slider.height() - this.$draggingHandle.height();
     }
-    return this.$input.width() - this.$draggingHandle.width();
+    return this.$slider.width() - this.$draggingHandle.width();
   }
 
-  private getCursorPositionWithOffset(e: JQueryMouseEventObject): number {
+  private getCursorPositionPercent(e: JQueryMouseEventObject): number {
+    let position  // cursor position in px relative to slider
+      , percent   // cursor position in percent relative to slider
+    ;
+    const $rail = this.$slider.find(`.${View.hiddenRail}`);
     if (this.isVertical()) {
-      return e.pageY - this.$input.offset().top - this.$draggingHandle.height() / 2;
+      position  = e.pageY - $rail.offset().top - this.$draggingHandle.height() / 2;
+      percent   = position / ($rail.height() / 100);
+
+      return percent;
     }
-    return e.pageX - this.$input.offset().left - this.$draggingHandle.width() / 2;
+    position  = e.pageX - $rail.offset().left - this.$draggingHandle.width() / 2;
+    percent   = position / ($rail.width() / 100);
+
+    return percent;
   }
 
-  private valueToPosition(axLength: number, min: number, max: number, value: number, unit: 'px'|'percent' = 'px'): number {
+  private static valueToPosition(axLength: number, min: number, max: number, value: number): number {
     const range = max - min;
     const position = (value - min) * (axLength / range);
 
-    return unit === 'px'
-      ? position
-      : position / (axLength / 100);
+    return position / (axLength / 100);
+  }
+
+  private static validatePosition(position: number): number {
+    const boundStart = 0;
+    const boundEnd = 100;
+
+    position = position > boundEnd    ? boundEnd    : position;
+    position = position < boundStart  ? boundStart  : position;
+
+    return position;
   }
 }

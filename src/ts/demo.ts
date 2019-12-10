@@ -1,9 +1,12 @@
 import $ from 'jquery';
 
 $(document).ready(function () {
-  $('input#simple').range();
+  $('input#simple').range({
+    showConfig: true
+  });
   $('input#with-step').range({
-    step: 10
+    step: 10,
+    showConfig: true
   });
   $('input#with-config').range({
     range: true,

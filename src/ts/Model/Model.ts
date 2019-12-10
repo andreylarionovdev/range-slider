@@ -35,8 +35,8 @@ export default class Model {
       case 'value':
       case 'value2':
         if (value === null) {
-          const {axLength, position} = data;
-          value = this.positionToValue(axLength, position);
+          const {percent} = data;
+          value = this.positionToValue(percent);
           value = this.validateValue(key, value);
 
           this.state[key] = value;
@@ -83,11 +83,11 @@ export default class Model {
     return Number(v);
   }
 
-  private positionToValue(axLength: number, position: number): number {
+  private positionToValue(percent: number): number {
     const {min, max, step} = this.state;
     const range = max - min;
 
-    let value = position / (axLength / range) + min;
+    let value = percent * (range / 100) + min;
 
     if (step) {
       return Math.floor(value / step) * step;

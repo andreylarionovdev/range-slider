@@ -1,84 +1,123 @@
 .range-slider {
   position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
   $input: #{&}__input;
   $rail: #{&}__rail;
   $selection: #{&}__selection;
-  $handle: #{&}__handle;
-  $railWeight: 6px;
-  height: $railWeight + 2px;
+  &:after {
+    content: '';
+    clear: both;
+    display: table;
+  }
+  &-group {
+    position: relative;
+    width: 33.33%;
+    height: 400px;
+    box-sizing: border-box;
+    padding: 3%;
+    float: left;
+  }
+
   #{$input} {
-    height: $railWeight + 2px;
-    width: 100%;
+    cursor: pointer;
     position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    //background: antiquewhite;
+    width: 100%;
+    height: 20px;
+    &:after {
+      content: '';
+      clear: both;
+      display: table;
+    }
   }
   #{$rail} {
-    height: $railWeight;
-    width: 100%;
-    background: white;
-    border: 1px solid rgba(31, 32, 65, 0.25);
-    border-radius: 3px;
-    bottom: 0;
-  }
-  #{$handle} {
-    display: block;
+    height: 8px;
     position: absolute;
-    top: -5px;
-    width:14px;
-    height: 14px;
-    border: 2px solid white;
-    border-radius: 10px;
-    background: #6FCF97;
-    &:hover {
-      border-color: #6FCF97;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    right: 14px;
+    &--visible {
+      background: white;
+      border: 1px solid rgba(31, 32, 65, 0.25);
+      border-radius: 3px;
+      left: 5px;
+      right: 5px;
+      height: 8px;
+      position: absolute;
     }
   }
   #{$selection} {
-    height: $railWeight + 2px;
+    height: 8px;
     width: auto;
     background: #6FCF97;
     position: absolute;
     bottom: 0;
   }
+  &__handle {
+    display: block;
+    position: absolute;
+    width:14px;
+    height: 14px;
+    border: 2px solid white;
+    border-radius: 10px;
+    background: #6FCF97;
+    cursor: grab;
+    &:hover {
+      border-color: #6FCF97;
+    }
+  }
+  &__conf {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 0;
+    //background: aquamarine;
+    padding: 20px 40px;
+    display: block;
+  }
+  &__conf-input-group {
+    margin: 2px 0;
+    margin-left: 10px;
+    &:after {
+      content: '';
+      clear: both;
+      display: table;
+    }
+  }
+  &__conf-input {
+    float: right;
+  }
   &--vertical {
-    height: 100%;
-    #{$input},
-    #{$rail} {
-      width: $railWeight;
+    #{$input} {
+      width: 20px;
       height: 100%;
     }
-    #{$selection} {
-      width: $railWeight + 2px;
+    #{$rail} {
+      width: 8px;
       height: auto;
-    }
-    #{$handle} {
-      left: -5px;
-    }
-  }
-
-  &-group {
-    position: relative;
-    height: 50px;
-    width: 250px;
-  }
-  &-config {
-    top: 15px;
-    left: 30px;
-    right: 0;
-    position: absolute;
-    &__input-group {
-      margin: 2px 0;
-      margin-left: 10px;
-      &:after {
-        content: '';
-        clear: both;
-        display: table;
+      top: 0;
+      bottom: 14px;
+      left: initial;
+      right: initial;
+      &--visible {
+        width: 8px;
+        height: auto;
+        top: 5px;
+        bottom: 5px;
+        left: initial;
+        right: initial;
       }
     }
-    &__label {
-      float: left;
-    }
-    &__input {
-      float: right;
+    #{$selection} {
+      width: 8px;
+      height: auto;
     }
   }
 }
