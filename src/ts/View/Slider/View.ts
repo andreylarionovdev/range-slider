@@ -66,10 +66,13 @@ export default class View {
   }
 
   updateValues(state: State): void {
-    const {value, value2, range, showConfig} = state;
+    const {value, value2, range, showBubble, showConfig} = state;
 
-    if (range) {
-
+    if (showBubble) {
+      this.$handleFrom.find(`.${View.bubble}`).text(value);
+      if (range) {
+        this.$handleTo.find(`.${View.bubble}`).text(value2);
+      }
     }
 
     if (showConfig) {
