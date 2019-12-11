@@ -84,9 +84,7 @@ export default class View {
       ? state.value2
       : state.value;
 
-    let position = View.valueToPosition(min, max, value);
-
-    position = View.validatePosition(position);
+    const position = View.validatePosition(View.valueToPosition(min, max, value));
 
     this.$draggingHandle.css({
       [this.isVertical() ? 'top' : 'left']: `${position}%`
@@ -326,13 +324,6 @@ export default class View {
 
   private isVertical(): boolean {
     return this.$slider.hasClass(View.blockVert);
-  }
-
-  private getAxLength(): number {
-    if (this.isVertical()) {
-      return this.$slider.height() - this.$draggingHandle.height();
-    }
-    return this.$slider.width() - this.$draggingHandle.width();
   }
 
   private getCursorPositionPercent(e: JQueryMouseEventObject): number {

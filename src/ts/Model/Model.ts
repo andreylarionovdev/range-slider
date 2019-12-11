@@ -14,6 +14,10 @@ export default class Model {
     }
   }
 
+  getState(): State {
+    return this.state;
+  }
+
   onEmitState(callback) {
     this.announcer.on('emit.state', callback);
   }
@@ -28,6 +32,10 @@ export default class Model {
       'emit.state',
       Object.assign({}, this.state)
     );
+  }
+
+  get(key: string): number|boolean {
+    return this.state[key];
   }
 
   set(key: string, value: any, data?: any) {
