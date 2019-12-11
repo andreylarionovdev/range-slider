@@ -18,6 +18,7 @@ declare global {
       value2: 0,
       range: false,
       vertical: false,
+      showBubble: false,
       showConfig: false,
     };
 

@@ -19,6 +19,8 @@ export default class Presenter {
 
     this.model.onChangeValue(state => this.updateHandle(state));
     this.model.onChangeValue(state => this.updateViewValues(state));
+
+    this.model.emitState();
   }
 
   updateState(key: string, value: any, data?: Object) {

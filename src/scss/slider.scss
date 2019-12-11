@@ -6,6 +6,9 @@
   $input: #{&}__input;
   $rail: #{&}__rail;
   $selection: #{&}__selection;
+  $color-green: #6FCF97;
+  $color-dark-25: rgba(31, 32, 65, 0.25);
+  $color-dark-50: rgba(31, 32, 65, 0.5);
   &:after {
     content: '';
     clear: both;
@@ -45,7 +48,7 @@
     right: 14px;
     &--visible {
       background: white;
-      border: 1px solid rgba(31, 32, 65, 0.25);
+      border: 1px solid $color-dark-25;
       border-radius: 3px;
       left: 5px;
       right: 5px;
@@ -61,7 +64,9 @@
     bottom: 0;
   }
   &__handle {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     width:14px;
     height: 14px;
@@ -72,6 +77,19 @@
     &:hover {
       border-color: #6FCF97;
     }
+  }
+  &__bubble {
+    position: absolute;
+    min-width: 14px;
+    padding: 2px;
+    height: 16px;
+    border: 1px solid $color-dark-25;
+    color: $color-dark-50;
+    border-radius: 4px;
+    top: -30px;
+    text-align: center;
+    font-size: 14px;
+    font-family: monospace;
   }
   &__conf {
     position: absolute;

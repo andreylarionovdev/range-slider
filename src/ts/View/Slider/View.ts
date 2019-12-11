@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import State from '../../Interfaces/State';
-import HandleModifiers from '../../Interfaces/HandleModifiers';
 import observable from '../../../../node_modules/@riotjs/observable/dist/observable';
 
 export default class View {
@@ -15,8 +14,9 @@ export default class View {
   private $configView     : JQuery;
 
   // Classes
-  private static block      : string = 'range-slider';
-  private static blockVert  : string = `${View.block}--vertical`;
+  private static block            : string = 'range-slider';
+  private static blockVert        : string = `${View.block}--vertical`;
+  private static blockWithBubble  : string = `${View.block}--with-bubble`;
 
   private static conf       : string = `${View.block}__conf`;
   private static confLabel  : string = `${View.block}__conf-label`;
@@ -29,6 +29,7 @@ export default class View {
   private static selection  : string = `${View.block}__selection`;
 
   private static handle     : string = `${View.block}__handle`;
+  private static bubble     : string = `${View.block}__bubble`;
   private static handleFrom : string = `${View.handle}--from`;
   private static handleTo   : string = `${View.handle}--to`;
 
@@ -36,15 +37,14 @@ export default class View {
   private announcer: any = observable(this);
 
   // To bind/unbind with class context
-  private funcOnDragStart = e => this.dragStart(e);
-  private funcOnDrag      = e => this.drag(e);
-  private funcOnDragEnd   = e => this.dragEnd(e);
-  private funcOnJump      = e => this.jump(e);
-  private funcOnChangeConfig = e => this.changeConfig(e);
+  private funcOnDragStart     = e => this.dragStart(e);
+  private funcOnDrag          = e => this.drag(e);
+  private funcOnDragEnd       = e => this.dragEnd(e);
+  private funcOnJump          = e => this.jump(e);
+  private funcOnChangeConfig  = e => this.changeConfig(e);
 
-  constructor($target: JQuery, state: State) {
+  constructor($target: JQuery) {
     this.$target = $target;
-    this.update(state);
   }
 
   onDrag(callback): void {
@@ -146,14 +146,10 @@ export default class View {
         .appendTo($visibleRail);
     }
 
-    this.$handleFrom = this.createHandle({
-      type: 'from'
-    }).appendTo($hiddenRail);
+    this.$handleFrom = this.createHandle('from', state).appendTo($hiddenRail);
 
     if (state.range) {
-      this.$handleTo = this.createHandle({
-        type: 'to'
-      }).appendTo($hiddenRail);
+      this.$handleTo = this.createHandle('to', state).appendTo($hiddenRail);
     }
 
     this.bindDocumentEvents();
@@ -213,21 +209,32 @@ export default class View {
     if (state.vertical) {
       blockClasses.push(View.blockVert);
     }
+    if (state.showBubble) {
+      blockClasses.push(View.blockWithBubble);
+    }
 
     return $('<div/>').addClass(blockClasses);
   }
 
-  private createHandle(modifiers: HandleModifiers): JQuery {
+  private createHandle(type: string, state: State): JQuery {
     let $handle = $('<a/>')
       .addClass(View.handle)
       .bind('mousedown', this.funcOnDragStart);
 
-    switch (modifiers.type) {
+    switch (type) {
       case 'from':
         $handle.addClass(View.handleFrom);
         break;
       case 'to':
         $handle.addClass(View.handleTo);
+    }
+
+    if (state.showBubble) {
+      const $bubble = $('<div/>').addClass(View.bubble).text(
+        type === 'to' ? state.value2 : state.value
+      );
+
+      $handle.append($bubble);
     }
 
     return $handle;
@@ -313,7 +320,7 @@ export default class View {
 
   private changeConfig(e): void {
     const $input = $(e.currentTarget);
-    const checkboxes = ['vertical', 'range', 'showConfig'];
+    const checkboxes = ['vertical', 'range', 'showConfig', 'showBubble'];
 
     const key   = $input.attr('name');
     const value = checkboxes.includes(key)

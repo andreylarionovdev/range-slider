@@ -6,5 +6,6 @@ export default interface State {
   value2?: number,
   range?: boolean,
   vertical?: boolean,
-  showConfig?: boolean
+  showBubble?: boolean,
+  showConfig?: boolean,
 }
