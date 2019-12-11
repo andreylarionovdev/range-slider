@@ -42,8 +42,9 @@ export default class View {
   private funcOnJump      = e => this.jump(e);
   private funcOnChangeConfig = e => this.changeConfig(e);
 
-  constructor($target: JQuery) {
+  constructor($target: JQuery, state: State) {
     this.$target = $target;
+    this.update(state);
   }
 
   onDrag(callback): void {

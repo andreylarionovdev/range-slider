@@ -1,5 +1,5 @@
 import Model from '../src/ts/Model/Model';
-import State from "../src/ts/Interfaces/State";
+import State from '../src/ts/Interfaces/State';
 
 const options: State = {
   min: 0,
