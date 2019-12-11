@@ -18,8 +18,7 @@ describe('View', () => {
     $('<input/>').attr({type: 'range'}).appendTo($('body'));
   });
   afterEach(() => {
-    $('input[type="range"]').remove();
-    $('.range-slider').remove();
+    $('body').empty();
   });
 
   it('rendered properly with default options', () => {
@@ -30,6 +29,7 @@ describe('View', () => {
     expect($slider.find('.range-slider__handle').length).toEqual(1);
     expect($slider.hasClass('range-slider--vertical')).toBeFalsy();
   });
+
   it ('rendered properly with `vertical` option', () => {
     new App($('input[type="range"]'), Object.assign({}, options, {
       vertical: true
@@ -38,6 +38,7 @@ describe('View', () => {
 
     expect($slider.hasClass('range-slider--vertical')).toBeTruthy();
   });
+
   it('rendered properly with `range` option', () => {
     new App($('input[type="range"]'), Object.assign({}, options, {
       range: true
@@ -48,6 +49,7 @@ describe('View', () => {
     expect($slider.find('.range-slider__handle--from').length).toEqual(1);
     expect($slider.find('.range-slider__handle--to').length).toEqual(1);
   });
+
   it('rendered correct with `showConfig` option', () => {
     new App($('input[type="range"]'), Object.assign({}, options, {
       showConfig: true
@@ -58,4 +60,18 @@ describe('View', () => {
     expect($slider.find('.range-slider__conf-input-group').length)
       .toEqual(Object.entries(options).length);
   });
+
+  it('rendered correct with `showBubble` option', () => {
+    const value = Math.floor(Math.random());
+    new App($('input[type="range"]'), Object.assign({}, options, {
+      value: value,
+      showBubble: true
+    }));
+    const $slider = $('.range-slider');
+
+    expect($slider.hasClass('range-slider--with-bubble')).toBeTruthy();
+    expect($slider.find('.range-slider__bubble').length).toEqual(1);
+    expect($slider.find('.range-slider__bubble').text()).toEqual(value.toString());
+  });
+
 });
