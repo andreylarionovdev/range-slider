@@ -5,6 +5,7 @@
   height: 100%;
   $input: #{&}__input;
   $rail: #{&}__rail;
+  $bubble: #{&}__bubble;
   $selection: #{&}__selection;
   $color-green: #6FCF97;
   $color-dark-25: rgba(31, 32, 65, 0.25);
@@ -78,7 +79,7 @@
       border-color: #6FCF97;
     }
   }
-  &__bubble {
+  #{$bubble} {
     position: absolute;
     min-width: 14px;
     padding: 2px;
@@ -132,6 +133,10 @@
         left: initial;
         right: initial;
       }
+    }
+    #{$bubble} {
+      top: initial;
+      left: 20px;
     }
     #{$selection} {
       width: 8px;
