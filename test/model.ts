@@ -1,15 +1,28 @@
 import Model from '../src/ts/Model/Model';
 import State from '../src/ts/Interfaces/State';
 
+import {
+  DEFAULT_MAX,
+  DEFAULT_MIN,
+  DEFAULT_STEP,
+  DEFAULT_VALUE,
+  DEFAULT_VALUE_2,
+  DEFAULT_RANGE,
+  DEFAULT_VERTICAL,
+  DEFAULT_SHOW_BUBBLE,
+  DEFAULT_SHOW_CONFIG,
+} from '../src/ts/const';
+
 const options: State = {
-  min: 0,
-  max: 100,
-  step: 1,
-  value: 0,
-  value2: 0,
-  range: false,
-  vertical: false,
-  showConfig: false,
+  min       : DEFAULT_MIN,
+  max       : DEFAULT_MAX,
+  step      : DEFAULT_STEP,
+  value     : DEFAULT_VALUE,
+  value2    : DEFAULT_VALUE_2,
+  range     : DEFAULT_RANGE,
+  vertical  : DEFAULT_VERTICAL,
+  showBubble: DEFAULT_SHOW_BUBBLE,
+  showConfig: DEFAULT_SHOW_CONFIG,
 };
 
 describe('State', () => {
@@ -26,14 +39,15 @@ describe('State', () => {
 
   it('has correct values when created with non-default options', () => {
     const options: State = {
-      min: 0,
-      max: 50,
-      step: 1,
-      value: 0,
-      value2: 0,
-      range: false,
-      vertical: false,
-      showConfig: true,
+      min       : DEFAULT_MIN,
+      max       : 50,
+      step      : DEFAULT_STEP,
+      value     : DEFAULT_VALUE,
+      value2    : DEFAULT_VALUE_2,
+      range     : DEFAULT_RANGE,
+      vertical  : DEFAULT_VERTICAL,
+      showBubble: DEFAULT_SHOW_BUBBLE,
+      showConfig: DEFAULT_SHOW_CONFIG,
     };
     const model: Model = new Model(options);
     const state: State = model.getState();
