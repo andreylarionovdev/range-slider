@@ -3,7 +3,7 @@ export default interface State {
   max?: number,
   step?: number,
   value?: number,
-  value2?: number,
+  value2?: null|number,
   range?: boolean,
   vertical?: boolean,
   showBubble?: boolean,

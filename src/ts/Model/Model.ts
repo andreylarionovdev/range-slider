@@ -1,17 +1,13 @@
 import State from '../Interfaces/State';
 import observable from '../../../node_modules/@riotjs/observable/dist/observable';
+import {DEFAULT_STEP} from '../const';
 
 export default class Model {
   private state: State;
   private announcer: any = observable(this);
 
   constructor (state: State) {
-    const {max, value2, range} = state;
-
-    this.state = state;
-    if (range && ! value2) {
-      this.state.value2 = max;
-    }
+    this.update(state);
   }
 
   getState(): State {
@@ -19,7 +15,7 @@ export default class Model {
   }
 
   onEmitState(callback) {
-    this.announcer.on('emit.state', callback);
+    this.announcer.on('change.state', callback);
   }
 
   onChangeValue(callback) {
@@ -29,7 +25,7 @@ export default class Model {
 
   emitState() {
     this.announcer.trigger(
-      'emit.state',
+      'change.state',
       Object.assign({}, this.state)
     );
   }
@@ -38,69 +34,107 @@ export default class Model {
     return this.state[key];
   }
 
+  update(state: State): this {
+    this.state = Model.validateState(state);
+    if (state.range) {
+      console.log(state);
+    }
+    return this;
+  }
+
   set(key: string, value: any, data?: any) {
+    let state = Object.assign({}, this.state);
+    let event = 'change.state';
     switch (key) {
       case 'value':
       case 'value2':
         if (value === null) {
-          const {percent} = data;
-          value = this.positionToValue(percent);
-          value = this.validateValue(key, value);
-
-          this.state[key] = value;
-          this.announcer.trigger(
-            `change.${key}`,
-            Object.assign({}, this.state)
-          );
-        } else {
-          value = this.validateValue(key, value);
-
-          this.state[key] = value;
-          this.emitState();
+          event = `change.${key}`;
+          value = this.positionToValue(data.percent);
         }
+        state[key] = Model.validateValue(key, value, state);
         break;
       case 'min':
       case 'max':
       case 'step':
-        this.state[key] = Number(value);
-        this.emitState();
+        state[key] = Number(value);
         break;
       default:
-        this.state[key] = value;
-        this.emitState();
-    }
-  }
-
-  private validateValue(prop: string, v: number): number {
-    const {min, max, value, value2, range} = this.state;
-
-    v = v > max ? max : v;
-    v = v < min ? min : v;
-
-    if (range) {
-      switch (prop) {
-        case 'value':
-          v = Number(v) > Number(value2) ? value2 : v;
-          break;
-        case 'value2':
-          v = Number(v) < Number(value) ? value : v;
-          break;
-      }
+        state[key] = value;
     }
 
-    return Number(v);
+    this.state = Model.validateState(state);
+
+    this.announcer.trigger(event, Object.assign({}, this.state));
   }
 
   private positionToValue(percent: number): number {
-    const {min, max, step} = this.state;
+    const {min, max} = this.state;
     const range = max - min;
 
     let value = percent * (range / 100) + min;
 
-    if (step) {
-      return Math.floor(value / step) * step;
-     }
-
     return Math.round(value);
+  }
+
+  private static validateState(state: State): State {
+    const { min, max }  = Model.validateMinMax(state);
+    const { step }      = Model.validateStep(state);
+    const { value2 }    = Model.validateValue2(state);
+
+    state.min = min;
+    state.max = max;
+    state.step = step;
+    state.value = Model.validateValue('value', state.value, state);
+    state.value2 = Model.validateValue('value2', value2, state);
+
+    return state;
+  }
+
+  private static validateStep(state: State): State {
+    const { step } = state;
+
+    state.step = Number(step) < DEFAULT_STEP ? DEFAULT_STEP : Math.round(step);
+
+    return state;
+  }
+
+  private static validateMinMax(state: State): State {
+    const { min, max } = state;
+
+    state.min = Number(min) > Number(max) ? Math.round(Math.min(max, min)) : Number(min);
+    state.max = Number(min) > Number(max) ? Math.round(Math.max(max, min)) : Number(max);
+
+    return state;
+  }
+
+  private static validateValue2(state: State): State {
+    const { range, value2, max } = state;
+
+    state.value2 = range && value2 === null
+      ? max
+      : Number(value2);
+
+    return state;
+  }
+
+  private static validateValue(prop: string, v: number, state: State): number {
+    const {min, max, value, value2, range, step} = state;
+
+    v = Number(v) > Number(max) ? Number(max) : Number(v);
+    v = Number(v) < Number(min) ? Number(min) : Number(v);
+
+    if (range) {
+      switch (prop) {
+        case 'value':
+          v = Number(v) > Number(value2) ? Number(value2) : Number(v);
+          break;
+        case 'value2':
+          v = Number(v) < Number(value) ? Number(value) : Number(v);
+          break;
+      }
+    }
+
+    return Math.floor(v / step) * step;
   }
 }

@@ -6,6 +6,7 @@ export default class View {
 
   private $target         : JQuery;
   private $slider         : JQuery;
+  private $input          : JQuery;
   private $handleFrom     : JQuery;
   private $handleTo       : JQuery;
   private $selection      : JQuery;
@@ -60,7 +61,7 @@ export default class View {
   }
 
   update(state: State): void {
-    this.destroy()
+    this
       .renderMainView(state)
       .renderConfigView(state);
   }
@@ -112,38 +113,26 @@ export default class View {
     });
   }
 
-  destroy(): this {
-    if (this.$slider && this.$target) {
-      this.$slider.remove();
-      this.$target.show().data('range', null);
-
-      $(document)
-        .unbind('mouseup',    this.funcOnDragEnd)
-        .unbind('mousedown',  this.funcOnDrag);
-    }
-    if (this.$configView) {
-      this.$configView.find('input').each((_, input) => {
-        $(input).unbind('blur', this.funcOnChangeConfig);
-      });
-      this.$configView.remove();
-    }
-
-    return this;
-  }
-
   private renderMainView(state: State): this {
-    this.$slider = this.createSlider(state);
-    this.$target.after(this.$slider).hide();
+    if (! this.$slider) {
+      this.$slider = $('<div/>').addClass(View.block);
+      this.$target.after(this.$slider).hide();
+    }
 
-    let $input = this.createInput()
-      .appendTo(this.$slider);
+    this.updateSlider(state);
+
+    if (this.$input) {
+      this.destroyInput();
+    }
+
+    this.$input = this.createInput().appendTo(this.$slider);
 
     let $visibleRail = this.createVisibleRail()
-      .appendTo($input);
-    
+      .appendTo(this.$input);
+
     let $hiddenRail = this.createHiddenRail()
-      .appendTo($input);
-    
+      .appendTo(this.$input);
+
     if (state.range) {
       this.$selection = this.createSelection()
         .appendTo($visibleRail);
@@ -162,8 +151,23 @@ export default class View {
   }
 
   private renderConfigView(state: State): this {
+    if (this.$configView) {
+      this.updateConfigView(state);
+    } else {
+      this.createConfigView(state);
+    }
+
+    return this;
+  }
+
+  private updateConfigView(state: State): this {
+    console.log('update config view');
+    return this;
+  }
+
+  private createConfigView(state: State): this {
     if (! state.showConfig) {
-      return this;
+      this.$configView.remove();
     }
 
     this.$configView = $('<code/>').addClass(View.conf);
@@ -179,6 +183,17 @@ export default class View {
     }
 
     $('<p/>').html('}').appendTo(this.$configView);
+
+    return this;
+  }
+
+  private destroyInput(): this {
+    if (this.$input) {
+      this.$input.remove();
+      $(document)
+        .unbind('mouseup',    this.funcOnDragEnd)
+        .unbind('mousedown',  this.funcOnDrag);
+    }
 
     return this;
   }
@@ -206,17 +221,17 @@ export default class View {
       .bind('mousemove', this.funcOnDrag);
   }
 
-  private createSlider(state: State): JQuery {
-    let blockClasses = [View.block];
-
+  private updateSlider(state: State): void {
     if (state.vertical) {
-      blockClasses.push(View.blockVert);
+      this.$slider.addClass(View.blockVert);
+    } else {
+      this.$slider.removeClass(View.blockVert);
     }
     if (state.showBubble) {
-      blockClasses.push(View.blockWithBubble);
+      this.$slider.addClass(View.blockWithBubble);
+    } else {
+      this.$slider.removeClass(View.blockWithBubble);
     }
-
-    return $('<div/>').addClass(blockClasses);
   }
 
   private createHandle(type: string, state: State): JQuery {
@@ -255,7 +270,7 @@ export default class View {
     this.$draggingHandle = null;
   }
 
-  private renderConfigInputGroup(key: string, value: boolean | number): JQuery {
+  private renderConfigInputGroup(key: string, value: boolean | number | null): JQuery {
     let $inputGroup = $('<div/>').addClass(View.confInputG);
 
     $('<label/>')
@@ -275,7 +290,7 @@ export default class View {
         }
         $input.bind('change', this.funcOnChangeConfig);
         break;
-      default:
+      case 'number':
         $input.attr('type', 'text')
           .val(value)
           .bind('blur', this.funcOnChangeConfig);
