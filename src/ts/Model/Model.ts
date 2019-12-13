@@ -7,39 +7,11 @@ export default class Model {
   private announcer: any = observable(this);
 
   constructor (state: State) {
-    this.update(state);
-  }
-
-  getState(): State {
-    return this.state;
-  }
-
-  onEmitState(callback) {
-    this.announcer.on('change.state', callback);
-  }
-
-  onChangeValue(callback) {
-    this.announcer.on('change.value', callback);
-    this.announcer.on('change.value2', callback);
-  }
-
-  emitState() {
-    this.announcer.trigger(
-      'change.state',
-      Object.assign({}, this.state)
-    );
+    this.setState(state);
   }
 
   get(key: string): number|boolean {
     return this.state[key];
-  }
-
-  update(state: State): this {
-    this.state = Model.validateState(state);
-    if (state.range) {
-      console.log(state);
-    }
-    return this;
   }
 
   set(key: string, value: any, data?: any) {
@@ -66,6 +38,32 @@ export default class Model {
     this.state = Model.validateState(state);
 
     this.announcer.trigger(event, Object.assign({}, this.state));
+  }
+
+  getState(): State {
+    return this.state;
+  }
+
+  setState(state: State): this {
+    this.state = Model.validateState(state);
+
+    return this;
+  }
+
+  emitState() {
+    this.announcer.trigger(
+      'change.state',
+      Object.assign({}, this.state)
+    );
+  }
+
+  onEmitState(callback) {
+    this.announcer.on('change.state', callback);
+  }
+
+  onChangeValue(callback) {
+    this.announcer.on('change.value', callback);
+    this.announcer.on('change.value2', callback);
   }
 
   private positionToValue(percent: number): number {

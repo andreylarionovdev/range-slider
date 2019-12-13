@@ -10,8 +10,7 @@ $(document).ready(function () {
   });
   $('input#with-range').range({
     range: true,
-    // value: 20,
-    // value2: 30,
+    showBubble: true,
     showConfig: true
   });
   $('input#vertical').range({

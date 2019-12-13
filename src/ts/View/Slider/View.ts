@@ -4,6 +4,7 @@ import observable from '../../../../node_modules/@riotjs/observable/dist/observa
 
 export default class View {
 
+  // DOM elements
   private $target         : JQuery;
   private $slider         : JQuery;
   private $input          : JQuery;
@@ -34,10 +35,10 @@ export default class View {
   private static handleFrom : string = `${View.handle}--from`;
   private static handleTo   : string = `${View.handle}--to`;
 
-  // thing that dealing with events between MPV layers
+  // Thing that dealing with events between MPV layers
   private announcer: any = observable(this);
 
-  // To bind/unbind with class context
+  // Mouse listeners to bind/unbind with class context
   private funcOnDragStart     = e => this.dragStart(e);
   private funcOnDrag          = e => this.drag(e);
   private funcOnDragEnd       = e => this.dragEnd(e);
@@ -161,15 +162,26 @@ export default class View {
   }
 
   private updateConfigView(state: State): this {
-    console.log('update config view');
+    if (! state.showConfig) {
+      this.$configView.remove();
+
+      return this;
+    }
+    for (let [key, value] of Object.entries(state)) {
+      let $input = this.$configView.find(`input[name="${key}"]`);
+      if ($input) {
+        if (typeof value === 'boolean') {
+          $input.prop('checked', value);
+        } else {
+          $input.val(value);
+        }
+      }
+    }
+
     return this;
   }
 
   private createConfigView(state: State): this {
-    if (! state.showConfig) {
-      this.$configView.remove();
-    }
-
     this.$configView = $('<code/>').addClass(View.conf);
     this.$configView.appendTo(this.$slider);
 
