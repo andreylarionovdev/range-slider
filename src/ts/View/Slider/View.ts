@@ -139,10 +139,12 @@ export default class View {
         .appendTo($visibleRail);
     }
 
-    this.$handleFrom = this.createHandle('from', state).appendTo($hiddenRail);
+    this.$handleFrom = this.createHandle('from', state)
+      .appendTo($hiddenRail);
 
     if (state.range) {
-      this.$handleTo = this.createHandle('to', state).appendTo($hiddenRail);
+      this.$handleTo = this.createHandle('to', state)
+        .appendTo($hiddenRail);
     }
 
     this.bindDocumentEvents();
@@ -190,7 +192,7 @@ export default class View {
       .appendTo(this.$configView);
 
     for (let [key, value] of Object.entries(state)) {
-      this.renderConfigInputGroup(key, value)
+      this.createConfigInputGroup(key, value)
         .appendTo(this.$configView);
     }
 
@@ -282,7 +284,7 @@ export default class View {
     this.$draggingHandle = null;
   }
 
-  private renderConfigInputGroup(key: string, value: boolean | number | null): JQuery {
+  private createConfigInputGroup(key: string, value: boolean | number | null): JQuery {
     let $inputGroup = $('<div/>').addClass(View.confInputG);
 
     $('<label/>')
@@ -306,6 +308,12 @@ export default class View {
         $input.attr('type', 'text')
           .val(value)
           .bind('blur', this.funcOnChangeConfig);
+        break;
+      default:
+        $input.attr({
+          type: 'text',
+          placeholder: 'null'
+        }).bind('blur', this.funcOnChangeConfig);
     }
 
     $input.appendTo($inputGroup);

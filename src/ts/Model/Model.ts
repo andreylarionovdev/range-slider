@@ -100,8 +100,8 @@ export default class Model {
   private static validateMinMax(state: State): State {
     const { min, max } = state;
 
-    state.min = Number(min) > Number(max) ? Math.round(Math.min(max, min)) : Number(min);
-    state.max = Number(min) > Number(max) ? Math.round(Math.max(max, min)) : Number(max);
+    state.min = min > max ? Math.round(Math.min(max, min)) : min;
+    state.max = min > max ? Math.round(Math.max(max, min)) : max;
 
     return state;
   }
@@ -109,9 +109,7 @@ export default class Model {
   private static validateValue2(state: State): State {
     const { range, value2, max } = state;
 
-    state.value2 = range && value2 === null
-      ? max
-      : Number(value2);
+    state.value2 = (range && value2 === null) ? max : value2;
 
     return state;
   }
@@ -119,16 +117,18 @@ export default class Model {
   private static validateValue(prop: string, v: number, state: State): number {
     const {min, max, value, value2, range, step} = state;
 
-    v = Number(v) > Number(max) ? Number(max) : Number(v);
-    v = Number(v) < Number(min) ? Number(min) : Number(v);
+    if (v === null) return null;
+
+    v = Number(v) > max ? max : Number(v);
+    v = Number(v) < min ? min : Number(v);
 
     if (range) {
       switch (prop) {
         case 'value':
-          v = Number(v) > Number(value2) ? Number(value2) : Number(v);
+          v = v > Number(value2) ? Number(value2) : v;
           break;
         case 'value2':
-          v = Number(v) < Number(value) ? Number(value) : Number(v);
+          v = v < Number(value) ? Number(value) : v;
           break;
       }
     }
