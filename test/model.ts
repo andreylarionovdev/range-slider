@@ -68,4 +68,15 @@ describe('State', () => {
 
     expect(model.get(key)).toEqual(value)
   });
+
+  it('has correct value2 after setting `range` true', () => {
+    const model = new Model(options);
+    const key = 'value2';
+
+    expect(model.get(key)).toEqual(null);
+
+    model.set('range', true);
+
+    expect(model.get(key)).toEqual(DEFAULT_MAX);
+  });
 });

@@ -74,7 +74,7 @@ describe('View', () => {
     expect($slider.find('.range-slider__handle--to').length).toEqual(1);
   });
 
-  it('rendered correct with `showConfig` option', () => {
+  it('rendered properly with `showConfig` option', () => {
     const view    = new View($('input[type="range"]'));
     const options = Object.assign({}, defaultOptions, {
       showConfig: true
@@ -89,7 +89,7 @@ describe('View', () => {
       .toEqual(Object.entries(defaultOptions).length);
   });
 
-  it('rendered correct with `showBubble` option', () => {
+  it('rendered properly with `showBubble` option', () => {
     const value   = Math.floor(Math.random());
     const view    = new View($('input[type="range"]'));
     const options = Object.assign({}, defaultOptions, {
