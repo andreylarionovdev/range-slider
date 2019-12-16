@@ -7,3 +7,6 @@ export const DEFAULT_RANGE = false;
 export const DEFAULT_VERTICAL = false;
 export const DEFAULT_SHOW_BUBBLE = false;
 export const DEFAULT_SHOW_CONFIG = false;
+
+// Handle radius in px
+export const HANDLE_RADIUS = 7;

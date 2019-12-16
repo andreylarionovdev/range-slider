@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import State from '../../Interfaces/State';
 import observable from '../../../../node_modules/@riotjs/observable/dist/observable';
+import { HANDLE_RADIUS} from "../../const";
 
 export default class View {
 
@@ -106,12 +107,27 @@ export default class View {
   }
 
   private jump(e): void {
-    if (! this.$handleTo) {
-      this.$draggingHandle  = this.$handleFrom;
-      this.announcer.trigger('jump', 'value', null, {
-        percent : this.getCursorPositionPercent(e)
-      });
+    let cursorPositionPercent = this.getCursorPositionPercent(e);
+    let key = 'value';
+
+    this.$draggingHandle  = this.$handleFrom;
+
+    // If second handle exists,
+    // determine handle that closest to cursor to move it
+    if (this.$handleTo) {
+      const fromHandlePercent = this.getHandlePositionPercent(this.$handleFrom);
+      const toHandlePercent = this.getHandlePositionPercent(this.$handleTo);
+
+      const distFrom = Math.abs(cursorPositionPercent - fromHandlePercent);
+      const distTo = Math.abs(cursorPositionPercent - toHandlePercent);
+
+      if (distFrom > distTo) {
+        this.$draggingHandle = this.$handleTo;
+        key = 'value2';
+      }
     }
+
+    this.announcer.trigger('jump', key, null, {percent: cursorPositionPercent});
   }
 
   onChangeConfig(callback): void {
@@ -394,15 +410,21 @@ export default class View {
     ;
     const $rail = this.$slider.find(`.${View.hiddenRail}`);
     if (this.isVertical()) {
-      position  = e.pageY - $rail.offset().top - this.$draggingHandle.height() / 2;
+      position  = e.pageY - $rail.offset().top - HANDLE_RADIUS;
       percent   = position / ($rail.height() / 100);
 
       return percent;
     }
-    position  = e.pageX - $rail.offset().left - this.$draggingHandle.width() / 2;
+    position  = e.pageX - $rail.offset().left - HANDLE_RADIUS;
     percent   = position / ($rail.width() / 100);
 
     return percent;
+  }
+
+  private getHandlePositionPercent($handle: JQuery): number {
+    const prop = this.isVertical() ? 'top' : 'left';
+
+    return parseInt($handle.prop('style')[prop]);
   }
 
   private static valueToPosition(min: number, max: number, value: number): number {
