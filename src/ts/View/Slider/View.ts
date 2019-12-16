@@ -49,18 +49,6 @@ export default class View {
     this.$target = $target;
   }
 
-  onDrag(callback): void {
-    this.announcer.on('drag', callback);
-  }
-
-  onJump(callback): void {
-    this.announcer.on('jump', callback);
-  }
-
-  onChangeConfig(callback): void {
-    this.announcer.on('change.config', callback);
-  }
-
   update(state: State): void {
     this
       .renderMainView(state)
@@ -83,6 +71,65 @@ export default class View {
     }
   }
 
+  onDrag(callback): void {
+    this.announcer.on('drag', callback);
+  }
+
+  private drag(e): void {
+    if (this.$draggingHandle) {
+      e.preventDefault();
+      const key = this.$draggingHandle.hasClass(View.handleTo)
+        ? 'value2'
+        : 'value';
+      this.announcer.trigger('drag', key, null, {
+        percent : this.getCursorPositionPercent(e)
+      });
+    }
+  }
+
+  private dragStart(e): void {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.$draggingHandle = $(e.currentTarget);
+  }
+
+  private dragEnd(e): void {
+    e.preventDefault();
+    if (this.$draggingHandle) {
+      this.$draggingHandle = null;
+    }
+  }
+
+  onJump(callback): void {
+    this.announcer.on('jump', callback);
+  }
+
+  private jump(e): void {
+    if (! this.$handleTo) {
+      this.$draggingHandle  = this.$handleFrom;
+      this.announcer.trigger('jump', 'value', null, {
+        percent : this.getCursorPositionPercent(e)
+      });
+    }
+  }
+
+  onChangeConfig(callback): void {
+    this.announcer.on('change.config', callback);
+  }
+
+  private changeConfig(e): void {
+    const $input = $(e.currentTarget);
+    const checkboxes = ['vertical', 'range', 'showConfig', 'showBubble'];
+
+    const key   = $input.attr('name');
+    const value = checkboxes.includes(key)
+      ? $input.is(':checked')
+      : $input.val();
+
+    this.announcer.trigger('change.config', key, value);
+  }
+
   moveHandle(state: State): void {
     const {min, max, range} = state;
 
@@ -100,50 +147,40 @@ export default class View {
     }
   }
 
-  private updateSelection(position): void {
-    const $handle = this.$draggingHandle;
-    let prop;
-    if ($handle.hasClass(View.handleFrom)) {
-      prop = this.isVertical() ? 'top' : 'left';
-    } else {
-      prop = this.isVertical() ? 'bottom' : 'right';
-      position = 100 - position;
-    }
-    this.$selection.css({
-      [prop]: `${position}%`
-    });
-  }
-
   private renderMainView(state: State): this {
     if (! this.$slider) {
-      this.$slider = $('<div/>').addClass(View.block);
+      this.$slider = View.createSlider();
       this.$target.after(this.$slider).hide();
     }
 
-    this.updateSlider(state);
+    View.updateSlider(this.$slider, state);
 
     if (this.$input) {
       this.destroyInput();
     }
 
-    this.$input = this.createInput().appendTo(this.$slider);
+    this.$input = View.createInput()
+      .bind('mousedown', this.funcOnJump)
+      .appendTo(this.$slider);
 
-    let $visibleRail = this.createVisibleRail()
+    let $visibleRail = View.createVisibleRail()
       .appendTo(this.$input);
 
-    let $hiddenRail = this.createHiddenRail()
+    let $hiddenRail = View.createHiddenRail()
       .appendTo(this.$input);
 
     if (state.range) {
-      this.$selection = this.createSelection()
+      this.$selection = View.createSelection()
         .appendTo($visibleRail);
     }
 
-    this.$handleFrom = this.createHandle('from', state)
+    this.$handleFrom = View.createHandle('from', state)
+      .bind('mousedown', this.funcOnDragStart)
       .appendTo($hiddenRail);
 
     if (state.range) {
-      this.$handleTo = this.createHandle('to', state)
+      this.$handleTo = View.createHandle('to', state)
+        .bind('mousedown', this.funcOnDragStart)
         .appendTo($hiddenRail);
     }
 
@@ -158,26 +195,6 @@ export default class View {
       this.updateConfigView(state);
     } else {
       this.createConfigView(state);
-    }
-
-    return this;
-  }
-
-  private updateConfigView(state: State): this {
-    if (! state.showConfig) {
-      this.$configView.remove();
-
-      return this;
-    }
-    for (let [key, value] of Object.entries(state)) {
-      let $input = this.$configView.find(`input[name="${key}"]`);
-      if ($input) {
-        if (typeof value === 'boolean') {
-          $input.prop('checked', value);
-        } else {
-          $input.val(value);
-        }
-      }
     }
 
     return this;
@@ -201,90 +218,31 @@ export default class View {
     return this;
   }
 
-  private destroyInput(): this {
-    if (this.$input) {
-      this.$input.remove();
-      $(document)
-        .unbind('mouseup',    this.funcOnDragEnd)
-        .unbind('mousedown',  this.funcOnDrag);
+  private updateConfigView(state: State): this {
+    if (! state.showConfig) {
+      this.$configView.remove();
+
+      return this;
+    }
+    for (let [key, value] of Object.entries(state)) {
+      this.updateConfigInputGroup(key ,value);
     }
 
     return this;
   }
 
-  private createInput(): JQuery {
-    return $('<div/>')
-      .addClass(View.input)
-      .bind('mousedown', this.funcOnJump);
-  }
-
-  private createSelection(): JQuery {
-    return $('<div/>').addClass(View.selection);
-  }
-
-  private createVisibleRail(): JQuery {
-    return $('<div/>').addClass(View.visibleRail)
-  }
-  private createHiddenRail(): JQuery {
-    return $('<div/>').addClass(View.hiddenRail);
-  }
-
-  private bindDocumentEvents() {
-    $(document)
-      .bind('mouseup', this.funcOnDragEnd)
-      .bind('mousemove', this.funcOnDrag);
-  }
-
-  private updateSlider(state: State): void {
-    if (state.vertical) {
-      this.$slider.addClass(View.blockVert);
-    } else {
-      this.$slider.removeClass(View.blockVert);
-    }
-    if (state.showBubble) {
-      this.$slider.addClass(View.blockWithBubble);
-    } else {
-      this.$slider.removeClass(View.blockWithBubble);
+  private updateConfigInputGroup(key: string, value: boolean|number|null): void {
+    let $input = this.$configView.find(`input[name="${key}"]`);
+    if ($input) {
+      if (typeof value === 'boolean') {
+        $input.prop('checked', value);
+      } else {
+        $input.val(value);
+      }
     }
   }
 
-  private createHandle(type: string, state: State): JQuery {
-    let $handle = $('<a/>')
-      .addClass(View.handle)
-      .bind('mousedown', this.funcOnDragStart);
-
-    switch (type) {
-      case 'from':
-        $handle.addClass(View.handleFrom);
-        break;
-      case 'to':
-        $handle.addClass(View.handleTo);
-    }
-
-    if (state.showBubble) {
-      const $bubble = $('<div/>').addClass(View.bubble).text(
-        type === 'to' ? state.value2 : state.value
-      );
-
-      $handle.append($bubble);
-    }
-
-    return $handle;
-  }
-
-  private updateHandles(state: State) {
-    this.$draggingHandle = this.$handleFrom;
-    this.moveHandle(state);
-
-    if (state.range) {
-      this.$draggingHandle = this.$handleTo;
-      this.moveHandle(state);
-    }
-
-    this.$draggingHandle = null;
-  }
-
-  private createConfigInputGroup(key: string, value: boolean | number | null): JQuery {
+  private createConfigInputGroup(key: string, value: boolean|number|null): JQuery {
     let $inputGroup = $('<div/>').addClass(View.confInputG);
 
     $('<label/>')
@@ -321,51 +279,109 @@ export default class View {
     return $inputGroup;
   }
 
-  private jump(e): void {
-    if (! this.$handleTo) {
-      this.$draggingHandle  = this.$handleFrom;
-      this.announcer.trigger('jump', 'value', null, {
-        percent : this.getCursorPositionPercent(e)
-      });
+  private destroyInput(): this {
+    if (this.$input) {
+      this.$handleFrom
+        .unbind('mousedown', this.funcOnDragStart);
+      if (this.$handleTo) {
+        this.$handleTo
+          .unbind('mousedown', this.funcOnDragStart)
+      }
+      this.$input
+        .unbind('mousedown', this.funcOnJump)
+        .remove();
+      $(document)
+        .unbind('mouseup', this.funcOnDragEnd)
+        .unbind('mousedown', this.funcOnDrag);
+    }
+
+    return this;
+  }
+
+  private static createSlider(): JQuery {
+    return $('<div/>').addClass(View.block);
+  }
+
+  private static updateSlider($slider: JQuery, state: State): void {
+    if (state.vertical) {
+      $slider.addClass(View.blockVert);
+    } else {
+      $slider.removeClass(View.blockVert);
+    }
+    if (state.showBubble) {
+      $slider.addClass(View.blockWithBubble);
+    } else {
+      $slider.removeClass(View.blockWithBubble);
     }
   }
 
-  private dragStart(e): void {
-    e.stopPropagation();
-    e.preventDefault();
-
-    this.$draggingHandle = $(e.currentTarget);
+  private static createInput(): JQuery {
+    return $('<div/>').addClass(View.input);
   }
 
-  private drag(e): void {
-    if (this.$draggingHandle) {
-      e.preventDefault();
-      const key = this.$draggingHandle.hasClass(View.handleTo)
-        ? 'value2'
-        : 'value';
-      this.announcer.trigger('drag', key, null, {
-        percent : this.getCursorPositionPercent(e)
-      });
+  private static createSelection(): JQuery {
+    return $('<div/>').addClass(View.selection);
+  }
+
+  private updateSelection(position): void {
+    const $handle = this.$draggingHandle;
+    let prop;
+    if ($handle.hasClass(View.handleFrom)) {
+      prop = this.isVertical() ? 'top' : 'left';
+    } else {
+      prop = this.isVertical() ? 'bottom' : 'right';
+      position = 100 - position;
     }
+    this.$selection.css({
+      [prop]: `${position}%`
+    });
   }
 
-  private dragEnd(e): void {
-    e.preventDefault();
-    if (this.$draggingHandle) {
-      this.$draggingHandle = null;
+  private static createVisibleRail(): JQuery {
+    return $('<div/>').addClass(View.visibleRail)
+  }
+  private static createHiddenRail(): JQuery {
+    return $('<div/>').addClass(View.hiddenRail);
+  }
+
+  private static createHandle(type: string, state: State): JQuery {
+    let $handle = $('<a/>').addClass(View.handle);
+
+    switch (type) {
+      case 'from':
+        $handle.addClass(View.handleFrom);
+        break;
+      case 'to':
+        $handle.addClass(View.handleTo);
     }
+
+    if (state.showBubble) {
+      const $bubble = $('<div/>').addClass(View.bubble).text(
+        type === 'to' ? state.value2 : state.value
+      );
+
+      $handle.append($bubble);
+    }
+
+    return $handle;
   }
 
-  private changeConfig(e): void {
-    const $input = $(e.currentTarget);
-    const checkboxes = ['vertical', 'range', 'showConfig', 'showBubble'];
+  private updateHandles(state: State) {
+    this.$draggingHandle = this.$handleFrom;
+    this.moveHandle(state);
 
-    const key   = $input.attr('name');
-    const value = checkboxes.includes(key)
-      ? $input.is(':checked')
-      : $input.val();
+    if (state.range) {
+      this.$draggingHandle = this.$handleTo;
+      this.moveHandle(state);
+    }
 
-    this.announcer.trigger('change.config', key, value);
+    this.$draggingHandle = null;
+  }
+
+  private bindDocumentEvents() {
+    $(document)
+      .bind('mouseup', this.funcOnDragEnd)
+      .bind('mousemove', this.funcOnDrag);
   }
 
   private isVertical(): boolean {
