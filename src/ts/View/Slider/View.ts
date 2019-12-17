@@ -1,50 +1,70 @@
 import $ from 'jquery';
 import State from '../../Interfaces/State';
 import observable from '../../../../node_modules/@riotjs/observable/dist/observable';
-import { HANDLE_RADIUS} from "../../const";
+import { HANDLE_RADIUS } from '../../const';
 
 export default class View {
-
   // DOM elements
-  private $target         : JQuery;
-  private $slider         : JQuery;
-  private $input          : JQuery;
-  private $handleFrom     : JQuery;
-  private $handleTo       : JQuery;
-  private $selection      : JQuery;
-  private $draggingHandle : JQuery;
+  private $target: JQuery;
 
-  private $configView     : JQuery;
+  private $slider: JQuery;
+
+  private $input: JQuery;
+
+  private $handleFrom: JQuery;
+
+  private $handleTo: JQuery;
+
+  private $selection: JQuery;
+
+  private $draggingHandle: JQuery;
+
+  private $configView: JQuery;
 
   // Classes
-  private static block            : string = 'range-slider';
-  private static blockVert        : string = `${View.block}--vertical`;
-  private static blockWithBubble  : string = `${View.block}--with-bubble`;
+  private static block = 'range-slider';
 
-  private static conf       : string = `${View.block}__conf`;
-  private static confLabel  : string = `${View.block}__conf-label`;
-  private static confInput  : string = `${View.block}__conf-input`;
-  private static confInputG : string = `${View.block}__conf-input-group`;
+  private static blockVert = `${View.block}--vertical`;
 
-  private static input      : string = `${View.block}__input`;
-  private static hiddenRail : string = `${View.block}__rail`;
-  private static visibleRail: string = `${View.block}__rail--visible`;
-  private static selection  : string = `${View.block}__selection`;
+  private static blockWithBubble = `${View.block}--with-bubble`;
 
-  private static handle     : string = `${View.block}__handle`;
-  private static bubble     : string = `${View.block}__bubble`;
-  private static handleFrom : string = `${View.handle}--from`;
-  private static handleTo   : string = `${View.handle}--to`;
+  private static conf = `${View.block}__conf`;
+
+  private static confLabel = `${View.block}__conf-label`;
+
+  private static confInput = `${View.block}__conf-input`;
+
+  private static confInputG = `${View.block}__conf-input-group`;
+
+  private static input = `${View.block}__input`;
+
+  private static hiddenRail = `${View.block}__rail`;
+
+  private static visibleRail = `${View.block}__rail--visible`;
+
+  private static selection = `${View.block}__selection`;
+
+  private static handle = `${View.block}__handle`;
+
+  private static bubble = `${View.block}__bubble`;
+
+  private static handleFrom = `${View.handle}--from`;
+
+  private static handleTo = `${View.handle}--to`;
 
   // Thing that dealing with events between MPV layers
   private announcer: any = observable(this);
 
   // Mouse listeners to bind/unbind with class context
-  private funcOnDragStart     = e => this.dragStart(e);
-  private funcOnDrag          = e => this.drag(e);
-  private funcOnDragEnd       = e => this.dragEnd(e);
-  private funcOnJump          = e => this.jump(e);
-  private funcOnChangeConfig  = e => this.changeConfig(e);
+  private funcOnDragStart = (e) => this.dragStart(e);
+
+  private funcOnDrag = (e) => this.drag(e);
+
+  private funcOnDragEnd = (e) => this.dragEnd(e);
+
+  private funcOnJump = (e) => this.jump(e);
+
+  private funcOnChangeConfig = (e) => this.changeConfig(e);
 
   constructor($target: JQuery) {
     this.$target = $target;
@@ -57,7 +77,9 @@ export default class View {
   }
 
   updateValues(state: State): void {
-    const {value, value2, range, showBubble, showConfig} = state;
+    const {
+      value, value2, range, showBubble, showConfig,
+    } = state;
 
     if (showBubble) {
       this.$handleFrom.find(`.${View.bubble}`).text(value);
@@ -67,8 +89,8 @@ export default class View {
     }
 
     if (showConfig) {
-      this.$configView.find(`input[name="value"]`).val(value);
-      this.$configView.find(`input[name="value2"]`).val(value2);
+      this.$configView.find('input[name="value"]').val(value);
+      this.$configView.find('input[name="value2"]').val(value2);
     }
   }
 
@@ -83,7 +105,7 @@ export default class View {
         ? 'value2'
         : 'value';
       this.announcer.trigger('drag', key, null, {
-        percent : this.getCursorPositionPercent(e)
+        percent: this.getCursorPositionPercent(e),
       });
     }
   }
@@ -107,10 +129,10 @@ export default class View {
   }
 
   private jump(e): void {
-    let cursorPositionPercent = this.getCursorPositionPercent(e);
+    const cursorPositionPercent = this.getCursorPositionPercent(e);
     let key = 'value';
 
-    this.$draggingHandle  = this.$handleFrom;
+    this.$draggingHandle = this.$handleFrom;
 
     // If second handle exists,
     // determine handle that closest to cursor to move it
@@ -127,7 +149,7 @@ export default class View {
       }
     }
 
-    this.announcer.trigger('jump', key, null, {percent: cursorPositionPercent});
+    this.announcer.trigger('jump', key, null, { percent: cursorPositionPercent });
   }
 
   onChangeConfig(callback): void {
@@ -138,7 +160,7 @@ export default class View {
     const $input = $(e.currentTarget);
     const checkboxes = ['vertical', 'range', 'showConfig', 'showBubble'];
 
-    const key   = $input.attr('name');
+    const key = $input.attr('name');
     const value = checkboxes.includes(key)
       ? $input.is(':checked')
       : $input.val();
@@ -147,7 +169,7 @@ export default class View {
   }
 
   moveHandle(state: State): void {
-    const {min, max, range} = state;
+    const { min, max, range } = state;
 
     const value = this.$draggingHandle.hasClass(View.handleTo)
       ? state.value2
@@ -156,7 +178,7 @@ export default class View {
     const position = View.validatePosition(View.valueToPosition(min, max, value));
 
     this.$draggingHandle.css({
-      [this.isVertical() ? 'top' : 'left']: `${position}%`
+      [this.isVertical() ? 'top' : 'left']: `${position}%`,
     });
     if (range) {
       this.updateSelection(position);
@@ -164,7 +186,7 @@ export default class View {
   }
 
   private renderMainView(state: State): this {
-    if (! this.$slider) {
+    if (!this.$slider) {
       this.$slider = View.createSlider();
       this.$target.after(this.$slider).hide();
     }
@@ -179,10 +201,10 @@ export default class View {
       .bind('mousedown', this.funcOnJump)
       .appendTo(this.$slider);
 
-    let $visibleRail = View.createVisibleRail()
+    const $visibleRail = View.createVisibleRail()
       .appendTo(this.$input);
 
-    let $hiddenRail = View.createHiddenRail()
+    const $hiddenRail = View.createHiddenRail()
       .appendTo(this.$input);
 
     if (state.range) {
@@ -224,7 +246,7 @@ export default class View {
       .html('<b>const</b> options = {')
       .appendTo(this.$configView);
 
-    for (let [key, value] of Object.entries(state)) {
+    for (const [key, value] of Object.entries(state)) {
       this.createConfigInputGroup(key, value)
         .appendTo(this.$configView);
     }
@@ -235,20 +257,20 @@ export default class View {
   }
 
   private updateConfigView(state: State): this {
-    if (! state.showConfig) {
+    if (!state.showConfig) {
       this.$configView.remove();
 
       return this;
     }
-    for (let [key, value] of Object.entries(state)) {
-      this.updateConfigInputGroup(key ,value);
+    for (const [key, value] of Object.entries(state)) {
+      this.updateConfigInputGroup(key, value);
     }
 
     return this;
   }
 
   private updateConfigInputGroup(key: string, value: boolean|number|null): void {
-    let $input = this.$configView.find(`input[name="${key}"]`);
+    const $input = this.$configView.find(`input[name="${key}"]`);
     if ($input) {
       if (typeof value === 'boolean') {
         $input.prop('checked', value);
@@ -259,14 +281,14 @@ export default class View {
   }
 
   private createConfigInputGroup(key: string, value: boolean|number|null): JQuery {
-    let $inputGroup = $('<div/>').addClass(View.confInputG);
+    const $inputGroup = $('<div/>').addClass(View.confInputG);
 
     $('<label/>')
       .addClass(View.confLabel)
       .html(`${key}:`)
       .attr('for', key)
       .appendTo($inputGroup);
-    let $input = $('<input>')
+    const $input = $('<input>')
       .addClass(View.confInput)
       .attr('name', key);
 
@@ -286,7 +308,7 @@ export default class View {
       default:
         $input.attr({
           type: 'text',
-          placeholder: 'null'
+          placeholder: 'null',
         }).bind('blur', this.funcOnChangeConfig);
     }
 
@@ -301,7 +323,7 @@ export default class View {
         .unbind('mousedown', this.funcOnDragStart);
       if (this.$handleTo) {
         this.$handleTo
-          .unbind('mousedown', this.funcOnDragStart)
+          .unbind('mousedown', this.funcOnDragStart);
       }
       this.$input
         .unbind('mousedown', this.funcOnJump)
@@ -341,39 +363,38 @@ export default class View {
 
   private updateSelection(position): void {
     const $handle = this.$draggingHandle;
+    let updatedPosition = position;
     let prop;
     if ($handle.hasClass(View.handleFrom)) {
       prop = this.isVertical() ? 'top' : 'left';
     } else {
       prop = this.isVertical() ? 'bottom' : 'right';
-      position = 100 - position;
+      updatedPosition = 100 - position;
     }
     this.$selection.css({
-      [prop]: `${position}%`
+      [prop]: `${updatedPosition}%`,
     });
   }
 
   private static createVisibleRail(): JQuery {
-    return $('<div/>').addClass(View.visibleRail)
+    return $('<div/>').addClass(View.visibleRail);
   }
+
   private static createHiddenRail(): JQuery {
     return $('<div/>').addClass(View.hiddenRail);
   }
 
   private static createHandle(type: string, state: State): JQuery {
-    let $handle = $('<a/>').addClass(View.handle);
-
-    switch (type) {
-      case 'from':
-        $handle.addClass(View.handleFrom);
-        break;
-      case 'to':
-        $handle.addClass(View.handleTo);
+    const $handle = $('<a/>').addClass(View.handle);
+    let handleClass = View.handleFrom;
+    if (type === 'to') {
+      handleClass = View.handleTo;
     }
+    $handle.addClass(handleClass);
 
     if (state.showBubble) {
       const $bubble = $('<div/>').addClass(View.bubble).text(
-        type === 'to' ? state.value2 : state.value
+        type === 'to' ? state.value2 : state.value,
       );
 
       $handle.append($bubble);
@@ -405,18 +426,17 @@ export default class View {
   }
 
   private getCursorPositionPercent(e: JQueryMouseEventObject): number {
-    let position  // cursor position in px relative to slider
-      , percent   // cursor position in percent relative to slider
-    ;
+    let position; // cursor position in px relative to slider
+    let percent; // cursor position in percent relative to slider
     const $rail = this.$slider.find(`.${View.hiddenRail}`);
     if (this.isVertical()) {
-      position  = e.pageY - $rail.offset().top - HANDLE_RADIUS;
-      percent   = position / ($rail.height() / 100);
+      position = e.pageY - $rail.offset().top - HANDLE_RADIUS;
+      percent = position / ($rail.height() / 100);
 
       return percent;
     }
-    position  = e.pageX - $rail.offset().left - HANDLE_RADIUS;
-    percent   = position / ($rail.width() / 100);
+    position = e.pageX - $rail.offset().left - HANDLE_RADIUS;
+    percent = position / ($rail.width() / 100);
 
     return percent;
   }
@@ -424,23 +444,28 @@ export default class View {
   private getHandlePositionPercent($handle: JQuery): number {
     const prop = this.isVertical() ? 'top' : 'left';
 
-    return parseInt($handle.prop('style')[prop]);
+    return parseInt($handle.prop('style')[prop], 10);
   }
 
   private static valueToPosition(min: number, max: number, value: number): number {
     const range = max - min;
-    const position = (value - min) * 100 / range;
 
-    return position;
+    return ((value - min) * 100) / range;
   }
 
   private static validatePosition(position: number): number {
     const boundStart = 0;
     const boundEnd = 100;
 
-    position = position > boundEnd    ? boundEnd    : position;
-    position = position < boundStart  ? boundStart  : position;
+    let updatedPosition = position;
 
-    return position;
+    if (position > boundEnd) {
+      updatedPosition = boundEnd;
+    }
+    if (position < boundStart) {
+      updatedPosition = boundStart;
+    }
+
+    return updatedPosition;
   }
 }
