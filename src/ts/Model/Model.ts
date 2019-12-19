@@ -1,43 +1,46 @@
 import State from '../Interfaces/State';
+import ExtraDataFromView from '../Interfaces/ExtraDataFromView';
 import observable from '../../../node_modules/@riotjs/observable/dist/observable';
-import {DEFAULT_STEP} from '../const';
+import { DEFAULT_STEP } from '../const';
 
 export default class Model {
   private state: State;
+
   private announcer: any = observable(this);
 
-  constructor (state: State) {
+  constructor(state: State) {
     this.setState(state);
   }
 
-  get(key: string): number|boolean {
+  get(key: string): null|number|boolean {
     return this.state[key];
   }
 
-  set(key: string, value: any, data?: any) {
-    let state = Object.assign({}, this.state);
+  set(key: string, value: null|number|boolean, extra?: ExtraDataFromView) {
+    const state = { ...this.state };
     let event = 'change.state';
+    let newValue = value;
     switch (key) {
       case 'value':
       case 'value2':
-        if (value === null) {
+        if (newValue === null) {
           event = `change.${key}`;
-          value = this.positionToValue(data.percent);
+          newValue = this.positionToValue(extra.percent);
         }
-        state[key] = Model.validateValue(key, value, state);
+        state[key] = Model.validateValue(key, Number(newValue), state);
         break;
       case 'min':
       case 'max':
       case 'step':
-        state[key] = Number(value);
+        state[key] = Number(newValue);
         break;
       default:
-        state[key] = value;
+        state[key] = newValue;
     }
 
     this.state = Model.validateState(state);
 
-    this.announcer.trigger(event, Object.assign({}, this.state));
+    this.announcer.trigger(event, { ...this.state });
   }
 
   getState(): State {
@@ -50,14 +53,14 @@ export default class Model {
     return this;
   }
 
-  emitState() {
+  emitState(): void {
     this.announcer.trigger(
       'change.state',
-      Object.assign({}, this.state)
+      { ...this.state },
     );
   }
 
-  onEmitState(callback) {
+  onChangeState(callback): void {
     this.announcer.on('change.state', callback);
   }
 
@@ -67,18 +70,18 @@ export default class Model {
   }
 
   private positionToValue(percent: number): number {
-    const {min, max} = this.state;
+    const { min, max } = this.state;
     const range = max - min;
 
-    let value = percent * (range / 100) + min;
+    const value = percent * (range / 100) + min;
 
     return Math.round(value);
   }
 
   private static validateState(state: State): State {
-    const { min, max }  = Model.validateMinMax(state);
-    const { step }      = Model.validateStep(state);
-    const { value2 }    = Model.validateValue2(state);
+    const { min, max } = Model.validateMinMax(state);
+    const { step } = Model.validateStep(state);
+    const { value2 } = Model.validateValue2(state);
 
     state.min = min;
     state.max = max;
@@ -100,10 +103,10 @@ export default class Model {
   private static validateMinMax(state: State): State {
     const { min, max } = state;
 
-    state.min = min > max ? Math.round(Math.min(max, min)) : min;
-    state.max = min > max ? Math.round(Math.max(max, min)) : max;
-
-    return state;
+    return {
+      min: min > max ? Math.round(Math.min(max, min)) : min,
+      max: min > max ? Math.round(Math.max(max, min)) : max,
+    };
   }
 
   private static validateValue2(state: State): State {
@@ -114,25 +117,31 @@ export default class Model {
     return state;
   }
 
-  private static validateValue(prop: string, v: number, state: State): number {
-    const {min, max, value, value2, range, step} = state;
+  private static validateValue(prop: string, inValue: number, state: State): number {
+    const {
+      min, max, value, value2, range, step,
+    } = state;
 
-    if (v === null) return null;
+    if (inValue === null) return null;
 
-    v = Number(v) > max ? max : Number(v);
-    v = Number(v) < min ? min : Number(v);
+    let outValue = Number(inValue);
+
+    if (outValue > max) {
+      outValue = max;
+    }
+    if (outValue < min) {
+      outValue = min;
+    }
 
     if (range) {
-      switch (prop) {
-        case 'value':
-          v = v > Number(value2) ? Number(value2) : v;
-          break;
-        case 'value2':
-          v = v < Number(value) ? Number(value) : v;
-          break;
+      if (prop === 'value' && outValue > value2) {
+        outValue = value2;
+      }
+      if (prop === 'value2' && outValue < value) {
+        outValue = value;
       }
     }
 
-    return Math.floor(v / step) * step;
+    return Math.floor(outValue / step) * step;
   }
 }

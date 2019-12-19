@@ -232,41 +232,38 @@ export default class View {
     if (this.$configView) {
       this.updateConfigView(state);
     } else {
-      this.createConfigView(state);
+      this.$configView = this.createConfigView(state);
+      this.$slider.append(this.$configView);
     }
 
     return this;
   }
 
-  private createConfigView(state: State): this {
-    this.$configView = $('<code/>').addClass(View.conf);
-    this.$configView.appendTo(this.$slider);
+  private createConfigView(state: State): JQuery {
+    const $configView = $('<code/>').addClass(View.conf);
 
-    $('<p/>')
-      .html('<b>const</b> options = {')
-      .appendTo(this.$configView);
+    $configView
+      .append(
+        $('<p/>').html('<b>const</b> options = {'),
+      );
 
-    for (const [key, value] of Object.entries(state)) {
-      this.createConfigInputGroup(key, value)
-        .appendTo(this.$configView);
-    }
+    const $inputGroups: Array<JQuery> = Object.keys(state).map(
+      (key) => this.createConfigInputGroup(key, state[key]),
+    );
 
-    $('<p/>').html('}').appendTo(this.$configView);
+    $configView
+      .append($inputGroups)
+      .append($('<p/>').html('}'));
 
-    return this;
+    return $configView;
   }
 
-  private updateConfigView(state: State): this {
-    if (!state.showConfig) {
+  private updateConfigView(state: State): void {
+    if (state.showConfig) {
+      Object.keys(state).map((key) => this.updateConfigInputGroup(key, state[key]));
+    } else {
       this.$configView.remove();
-
-      return this;
     }
-    for (const [key, value] of Object.entries(state)) {
-      this.updateConfigInputGroup(key, value);
-    }
-
-    return this;
   }
 
   private updateConfigInputGroup(key: string, value: boolean|number|null): void {
