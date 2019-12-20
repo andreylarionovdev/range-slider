@@ -2,8 +2,9 @@ import $ from 'jquery';
 import State from '../Interfaces/State';
 import Observable from '../Observer/Observable';
 import { HANDLE_RADIUS } from '../const';
+import SliderView from '../Interfaces/SliderView';
 
-export default class View {
+export default class View implements SliderView {
   // DOM elements
   private $target: JQuery;
 
@@ -94,38 +95,45 @@ export default class View {
     }
   }
 
+  moveHandle(state: State): void {
+    const { min, max, range } = state;
+
+    const value = this.$draggingHandle.hasClass(View.handleTo)
+      ? state.value2
+      : state.value;
+
+    const position = View.validatePosition(View.valueToPosition(min, max, value));
+
+    this.$draggingHandle.css({
+      [this.isVertical() ? 'top' : 'left']: `${position}%`,
+    });
+    if (range) {
+      this.updateSelection(position);
+    }
+  }
+
   onDrag(callback): void {
     this.announcer.on('drag', callback);
   }
 
-  private drag(e): void {
-    if (this.$draggingHandle) {
-      e.preventDefault();
-      const key = this.$draggingHandle.hasClass(View.handleTo)
-        ? 'value2'
-        : 'value';
-      this.announcer.trigger('drag', key, null, {
-        percent: this.getCursorPositionPercent(e),
-      });
-    }
-  }
-
-  private dragStart(e): void {
-    e.stopPropagation();
-    e.preventDefault();
-
-    this.$draggingHandle = $(e.currentTarget);
-  }
-
-  private dragEnd(e): void {
-    e.preventDefault();
-    if (this.$draggingHandle) {
-      this.$draggingHandle = null;
-    }
-  }
-
   onJump(callback): void {
     this.announcer.on('jump', callback);
+  }
+
+  onChangeConfig(callback): void {
+    this.announcer.on('change.config', callback);
+  }
+
+  private changeConfig(e): void {
+    const $input = $(e.currentTarget);
+    const checkboxes = ['vertical', 'range', 'showConfig', 'showBubble'];
+
+    const key = $input.attr('name');
+    const value = checkboxes.includes(key)
+      ? $input.is(':checked')
+      : $input.val();
+
+    this.announcer.trigger('change.config', key, value);
   }
 
   private jump(e): void {
@@ -152,36 +160,29 @@ export default class View {
     this.announcer.trigger('jump', key, null, { percent: cursorPositionPercent });
   }
 
-  onChangeConfig(callback): void {
-    this.announcer.on('change.config', callback);
+  private drag(e): void {
+    if (this.$draggingHandle) {
+      e.preventDefault();
+      const key = this.$draggingHandle.hasClass(View.handleTo)
+        ? 'value2'
+        : 'value';
+      this.announcer.trigger('drag', key, null, {
+        percent: this.getCursorPositionPercent(e),
+      });
+    }
   }
 
-  private changeConfig(e): void {
-    const $input = $(e.currentTarget);
-    const checkboxes = ['vertical', 'range', 'showConfig', 'showBubble'];
+  private dragStart(e): void {
+    e.stopPropagation();
+    e.preventDefault();
 
-    const key = $input.attr('name');
-    const value = checkboxes.includes(key)
-      ? $input.is(':checked')
-      : $input.val();
-
-    this.announcer.trigger('change.config', key, value);
+    this.$draggingHandle = $(e.currentTarget);
   }
 
-  moveHandle(state: State): void {
-    const { min, max, range } = state;
-
-    const value = this.$draggingHandle.hasClass(View.handleTo)
-      ? state.value2
-      : state.value;
-
-    const position = View.validatePosition(View.valueToPosition(min, max, value));
-
-    this.$draggingHandle.css({
-      [this.isVertical() ? 'top' : 'left']: `${position}%`,
-    });
-    if (range) {
-      this.updateSelection(position);
+  private dragEnd(e): void {
+    e.preventDefault();
+    if (this.$draggingHandle) {
+      this.$draggingHandle = null;
     }
   }
 

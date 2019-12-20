@@ -1,6 +1,7 @@
 import View from '../View/View';
 import Model from '../Model/Model';
 import State from '../Interfaces/State';
+import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
 
 export default class Presenter {
   private view: View;
@@ -21,11 +22,11 @@ export default class Presenter {
     this.model.onChangeValue((state) => this.updateHandle(state));
     this.model.onChangeValue((state) => this.updateViewValues(state));
 
-    this.model.emitState();
+    this.model.emitChangeState();
   }
 
-  updateState(key: string, value: any, data?: Record<string, any>) {
-    this.model.update(key, value, data);
+  updateState(key: string, value: null|number|boolean, extra?: SliderViewExtraData) {
+    this.model.updateState(key, value, extra);
   }
 
   updateHandle(state: State) {

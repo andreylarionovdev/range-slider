@@ -64,7 +64,7 @@ describe('State', () => {
     const value = Math.floor(Math.random() * 100);
     const key = 'value';
 
-    model.update(key, value);
+    model.updateState(key, value);
 
     expect(model.get(key)).toEqual(value)
   });
@@ -75,7 +75,7 @@ describe('State', () => {
 
     expect(model.get(key)).toEqual(null);
 
-    model.update('range', true);
+    model.updateState('range', true);
 
     expect(model.get(key)).toEqual(DEFAULT_MAX);
   });

@@ -1,9 +1,10 @@
 import State from '../Interfaces/State';
-import ExtraDataFromView from '../Interfaces/ExtraDataFromView';
+import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
 import Observable from '../Observer/Observable';
 import { DEFAULT_STEP } from '../const';
+import SliderModelWithState from '../Interfaces/SliderModelWithState';
 
-export default class Model {
+export default class Model implements SliderModelWithState {
   private state: State;
 
   private announcer: Observable = new Observable();
@@ -16,7 +17,17 @@ export default class Model {
     return this.state[key];
   }
 
-  update(key: string, value: null|number|boolean, extra?: ExtraDataFromView) {
+  getState(): State {
+    return this.state;
+  }
+
+  setState(state: State): this {
+    this.state = Model.validateState(state);
+
+    return this;
+  }
+
+  updateState(key: string, value: null|number|boolean, extra?: SliderViewExtraData): this {
     const state = { ...this.state };
     let event = 'change.state';
     let newValue = value;
@@ -41,19 +52,11 @@ export default class Model {
     this.state = Model.validateState(state);
 
     this.announcer.trigger(event, { ...this.state });
-  }
-
-  getState(): State {
-    return this.state;
-  }
-
-  setState(state: State): this {
-    this.state = Model.validateState(state);
 
     return this;
   }
 
-  emitState(): void {
+  emitChangeState(): void {
     this.announcer.trigger(
       'change.state',
       { ...this.state },
@@ -64,7 +67,7 @@ export default class Model {
     this.announcer.on('change.state', callback);
   }
 
-  onChangeValue(callback) {
+  onChangeValue(callback): void {
     this.announcer.on('change.value', callback);
     this.announcer.on('change.value2', callback);
   }
