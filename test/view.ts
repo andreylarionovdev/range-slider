@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import State from '../src/ts/Interfaces/State';
-import View from '../src/ts/View/Slider/View'
+import View from '../src/ts/View/View'
 import {
   DEFAULT_MAX,
   DEFAULT_MIN,

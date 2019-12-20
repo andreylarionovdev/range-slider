@@ -1,5 +1,5 @@
 import Model from '../Model/Model';
-import View from '../View/Slider/View';
+import View from '../View/View';
 import Presenter from '../Presenter/Presenter';
 import State from '../Interfaces/State';
 

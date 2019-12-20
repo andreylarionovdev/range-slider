@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import State from '../../Interfaces/State';
-import observable from '../../../../node_modules/@riotjs/observable/dist/observable';
-import { HANDLE_RADIUS } from '../../const';
+import State from '../Interfaces/State';
+import Observable from '../Observer/Observable';
+import { HANDLE_RADIUS } from '../const';
 
 export default class View {
   // DOM elements
@@ -53,7 +53,7 @@ export default class View {
   private static handleTo = `${View.handle}--to`;
 
   // Thing that dealing with events between MPV layers
-  private announcer: any = observable(this);
+  private announcer: Observable = new Observable();
 
   // Mouse listeners to bind/unbind with class context
   private funcOnDragStart = (e) => this.dragStart(e);

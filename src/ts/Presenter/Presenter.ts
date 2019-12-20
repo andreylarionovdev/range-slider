@@ -1,4 +1,4 @@
-import View from '../View/Slider/View';
+import View from '../View/View';
 import Model from '../Model/Model';
 import State from '../Interfaces/State';
 
@@ -25,7 +25,7 @@ export default class Presenter {
   }
 
   updateState(key: string, value: any, data?: Record<string, any>) {
-    this.model.set(key, value, data);
+    this.model.update(key, value, data);
   }
 
   updateHandle(state: State) {

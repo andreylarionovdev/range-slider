@@ -1,12 +1,12 @@
 import State from '../Interfaces/State';
 import ExtraDataFromView from '../Interfaces/ExtraDataFromView';
-import observable from '../../../node_modules/@riotjs/observable/dist/observable';
+import Observable from '../Observer/Observable';
 import { DEFAULT_STEP } from '../const';
 
 export default class Model {
   private state: State;
 
-  private announcer: any = observable(this);
+  private announcer: Observable = new Observable();
 
   constructor(state: State) {
     this.setState(state);
@@ -16,7 +16,7 @@ export default class Model {
     return this.state[key];
   }
 
-  set(key: string, value: null|number|boolean, extra?: ExtraDataFromView) {
+  update(key: string, value: null|number|boolean, extra?: ExtraDataFromView) {
     const state = { ...this.state };
     let event = 'change.state';
     let newValue = value;
