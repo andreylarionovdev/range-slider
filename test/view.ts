@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import State from '../src/ts/Interfaces/State';
-import View from '../src/ts/View/View'
+import View from '../src/ts/View/View';
 import {
   DEFAULT_MAX,
   DEFAULT_MIN,
@@ -15,20 +15,20 @@ import {
 
 
 const defaultOptions: State = {
-  min       : DEFAULT_MIN,
-  max       : DEFAULT_MAX,
-  step      : DEFAULT_STEP,
-  value     : DEFAULT_VALUE,
-  value2    : DEFAULT_VALUE_2,
-  range     : DEFAULT_RANGE,
-  vertical  : DEFAULT_VERTICAL,
+  min: DEFAULT_MIN,
+  max: DEFAULT_MAX,
+  step: DEFAULT_STEP,
+  value: DEFAULT_VALUE,
+  value2: DEFAULT_VALUE_2,
+  range: DEFAULT_RANGE,
+  vertical: DEFAULT_VERTICAL,
   showBubble: DEFAULT_SHOW_BUBBLE,
   showConfig: DEFAULT_SHOW_CONFIG,
 };
 
 describe('View', () => {
   beforeEach(() => {
-    $('<input/>').attr({type: 'range'}).appendTo($('body'));
+    $('<input/>').attr({ type: 'range' }).appendTo($('body'));
   });
   afterEach(() => {
     $('body').empty();
@@ -46,11 +46,9 @@ describe('View', () => {
     expect($slider.hasClass('range-slider--vertical')).toBeFalsy();
   });
 
-  it ('rendered properly with `vertical` option', () => {
-    const view    = new View($('input[type="range"]'));
-    const options = Object.assign({}, defaultOptions, {
-      vertical: true
-    });
+  it('rendered properly with `vertical` option', () => {
+    const view = new View($('input[type="range"]'));
+    const options = { ...defaultOptions, vertical: true };
 
     view.update(options);
 
@@ -60,10 +58,8 @@ describe('View', () => {
   });
 
   it('rendered properly with `range` option', () => {
-    const view    = new View($('input[type="range"]'));
-    const options = Object.assign({}, defaultOptions, {
-      range: true
-    });
+    const view = new View($('input[type="range"]'));
+    const options = { ...defaultOptions, range: true };
 
     view.update(options);
 
@@ -75,10 +71,8 @@ describe('View', () => {
   });
 
   it('rendered properly with `showConfig` option', () => {
-    const view    = new View($('input[type="range"]'));
-    const options = Object.assign({}, defaultOptions, {
-      showConfig: true
-    });
+    const view = new View($('input[type="range"]'));
+    const options = { ...defaultOptions, showConfig: true };
 
     view.update(options);
 
@@ -90,12 +84,13 @@ describe('View', () => {
   });
 
   it('rendered properly with `showBubble` option', () => {
-    const value   = Math.floor(Math.random());
-    const view    = new View($('input[type="range"]'));
-    const options = Object.assign({}, defaultOptions, {
-      value     : value,
-      showBubble: true
-    });
+    const value = Math.floor(Math.random());
+    const view = new View($('input[type="range"]'));
+    const options = {
+      ...defaultOptions,
+      value,
+      showBubble: true,
+    };
 
     view.update(options);
 
@@ -105,5 +100,4 @@ describe('View', () => {
     expect($slider.find('.range-slider__bubble').length).toEqual(1);
     expect($slider.find('.range-slider__bubble').text()).toEqual(value.toString());
   });
-
 });

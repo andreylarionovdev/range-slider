@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-$(document).ready(function () {
+$(document).ready(() => {
   $('input#simple').range({
     showConfig: true
   });

@@ -14,13 +14,13 @@ import {
 } from '../src/ts/const';
 
 const options: State = {
-  min       : DEFAULT_MIN,
-  max       : DEFAULT_MAX,
-  step      : DEFAULT_STEP,
-  value     : DEFAULT_VALUE,
-  value2    : DEFAULT_VALUE_2,
-  range     : DEFAULT_RANGE,
-  vertical  : DEFAULT_VERTICAL,
+  min: DEFAULT_MIN,
+  max: DEFAULT_MAX,
+  step: DEFAULT_STEP,
+  value: DEFAULT_VALUE,
+  value2: DEFAULT_VALUE_2,
+  range: DEFAULT_RANGE,
+  vertical: DEFAULT_VERTICAL,
   showBubble: DEFAULT_SHOW_BUBBLE,
   showConfig: DEFAULT_SHOW_CONFIG,
 };
@@ -39,13 +39,13 @@ describe('State', () => {
 
   it('has correct values when created with non-default options', () => {
     const options: State = {
-      min       : DEFAULT_MIN,
-      max       : 50,
-      step      : DEFAULT_STEP,
-      value     : DEFAULT_VALUE,
-      value2    : DEFAULT_VALUE_2,
-      range     : DEFAULT_RANGE,
-      vertical  : DEFAULT_VERTICAL,
+      min: DEFAULT_MIN,
+      max: 50,
+      step: DEFAULT_STEP,
+      value: DEFAULT_VALUE,
+      value2: DEFAULT_VALUE_2,
+      range: DEFAULT_RANGE,
+      vertical: DEFAULT_VERTICAL,
       showBubble: DEFAULT_SHOW_BUBBLE,
       showConfig: DEFAULT_SHOW_CONFIG,
     };
@@ -66,7 +66,7 @@ describe('State', () => {
 
     model.updateState(key, value);
 
-    expect(model.get(key)).toEqual(value)
+    expect(model.get(key)).toEqual(value);
   });
 
   it('has correct value2 after setting `range` true', () => {
