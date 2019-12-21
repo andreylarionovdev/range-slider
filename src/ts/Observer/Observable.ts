@@ -11,11 +11,9 @@ export default class Observable {
   }
 
   trigger(name: string, ...any) {
-    const args = Observable.slice.call(arguments, 1);
+    const args = Observable.slice.call([name, ...any], 1);
     const fns = this.callbacks[name] || [];
 
-    for (let i = 0; i < fns.length; i++) {
-      fns[i].apply(this, args);
-    }
+    fns.map((fn) => fn.apply(this, args));
   }
 }
