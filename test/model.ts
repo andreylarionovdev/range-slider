@@ -25,7 +25,7 @@ const defaultOptions: State = {
   showConfig: DEFAULT_SHOW_CONFIG,
 };
 
-describe('State', () => {
+describe('Model', () => {
   it('has correct values when created with default options', () => {
     const model: Model = new Model(defaultOptions);
     const state: State = model.getState();
@@ -88,7 +88,7 @@ describe('State', () => {
     expect(model.get('value2')).toEqual(40);
   });
 
-  it('can not contain value > value2', () => {
+  it('can not contain `value` greater than `value2`', () => {
     const options = {
       ...defaultOptions, range: true, value: 50, value2: 25,
     };
@@ -105,5 +105,54 @@ describe('State', () => {
     model.updateState('value', 25);
 
     expect(model.get('value')).toEqual(21);
+  });
+
+  it('can not contain `max` greater than `min`', () => {
+    const options = { ...defaultOptions, max: 200, min: 100 };
+    const model = new Model(options);
+
+    expect(model.get('min')).toEqual(100);
+    expect(model.get('max')).toEqual(200);
+  });
+
+  it('can not contain values greater than `max`', () => {
+    const options = { ...defaultOptions, max: 1234, value: 12345 };
+    const model = new Model(options);
+
+    expect(model.get('value')).toEqual(1234);
+
+    model.updateState('value2', 12345);
+
+    expect(model.get('value2')).toEqual(1234);
+  });
+
+  it('can not contain values less than `min`', () => {
+    const options = { ...defaultOptions, min: -1234, value: -12345 };
+    const model = new Model(options);
+
+    expect(model.get('value')).toEqual(-1234);
+
+    model.updateState('value2', -12345);
+
+    expect(model.get('value2')).toEqual(-1234);
+  });
+
+  it('convert percent to values correct', () => {
+    const options = { ...defaultOptions, min: 1000, max: 2000 };
+    const model = new Model(options);
+
+    model.updateState('value', null, { percent: 50 });
+
+    expect(model.get('value')).toEqual(1500);
+
+    model.updateState('value', null, { percent: 25 });
+    model.updateState('value2', null, { percent: 75 });
+
+    expect(model.get('value')).toEqual(1250);
+    expect(model.get('value2')).toEqual(1750);
+
+    model.updateState('value', null, { percent: 85 });
+
+    expect(model.get('value2')).toEqual(1750);
   });
 });
