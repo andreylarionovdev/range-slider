@@ -1,15 +1,19 @@
+import Observer from '../Observer/Observer';
+import { DEFAULT_STEP } from '../const';
+
 import State from '../Interfaces/State';
 import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
-import Observable from '../Observer/Observable';
-import { DEFAULT_STEP } from '../const';
-import SliderModelWithState from '../Interfaces/SliderModelWithState';
+import Observable from '../Interfaces/Observable';
+import SliderModel from '../Interfaces/SliderModel';
+import SliderModelObservable from '../Interfaces/SliderModelObservable';
 
-export default class Model implements SliderModelWithState {
+export default class Model implements SliderModel, SliderModelObservable {
+  announcer: Observable;
+
   private state: State;
 
-  private announcer: Observable = new Observable();
-
   constructor(state: State) {
+    this.announcer = new Observer();
     this.setState(state);
   }
 

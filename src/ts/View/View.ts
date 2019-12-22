@@ -1,10 +1,16 @@
 import $ from 'jquery';
-import State from '../Interfaces/State';
-import Observable from '../Observer/Observable';
-import { HANDLE_RADIUS } from '../const';
-import SliderView from '../Interfaces/SliderView';
 
-export default class View implements SliderView {
+import Observer from '../Observer/Observer';
+import { HANDLE_RADIUS } from '../const';
+
+import State from '../Interfaces/State';
+import SliderView from '../Interfaces/SliderView';
+import SliderViewObservable from '../Interfaces/SliderViewObservable';
+import Observable from '../Interfaces/Observable';
+
+export default class View implements SliderView, SliderViewObservable {
+  announcer: Observable;
+
   // DOM elements
   private $target: JQuery;
 
@@ -53,9 +59,6 @@ export default class View implements SliderView {
 
   private static handleTo = `${View.handle}--to`;
 
-  // Thing that dealing with events between MPV layers
-  private announcer: Observable = new Observable();
-
   // Mouse listeners to bind/unbind with class context
   private funcOnDragStart = (e) => this.dragStart(e);
 
@@ -68,6 +71,7 @@ export default class View implements SliderView {
   private funcOnChangeConfig = (e) => this.changeConfig(e);
 
   constructor($target: JQuery) {
+    this.announcer = new Observer();
     this.$target = $target;
   }
 
