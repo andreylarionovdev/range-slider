@@ -26,7 +26,7 @@ export default class Model implements SliderModel, SliderModelObservable {
   }
 
   setState(state: State): this {
-    this.state = Model.validateState(state);
+    this.state = Model.validateState({ ...this.state, ...state });
 
     return this;
   }
