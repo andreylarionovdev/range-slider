@@ -107,7 +107,7 @@ describe('Model', () => {
     expect(model.get('value')).toEqual(21);
   });
 
-  it('can not contain `max` greater than `min`', () => {
+  it('can not contain `min` greater than `max`', () => {
     const options = { ...defaultOptions, max: 200, min: 100 };
     const model = new Model(options);
 
