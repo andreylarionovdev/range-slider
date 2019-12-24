@@ -9,10 +9,10 @@ module.exports = {
   entry: [
     './src/ts/plugin.ts',
     './src/ts/demo.ts',
-    './src/scss/index.scss'
+    './src/scss/range-slider.scss',
   ],
   output: {
-    filename: 'app.js',
+    filename: 'range-slider.js',
     path: path.resolve(__dirname, './dist'),
   },
   module: {
@@ -27,11 +27,11 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: process.env.NODE_ENV === 'development'
+              hmr: process.env.NODE_ENV === 'development',
             },
           },
           'css-loader',
-          'sass-loader'
+          'sass-loader',
         ],
       },
     ],
@@ -47,11 +47,11 @@ module.exports = {
   plugins: [
     new htmlWebpackPlugin({
       inject: true,
-      template: './src/index.html'
+      template: './src/index.html',
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].css'
-    })
-  ]
+      filename: 'range-slider.css',
+    }),
+  ],
 
 };

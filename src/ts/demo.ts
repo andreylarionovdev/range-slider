@@ -6,20 +6,20 @@ $(document).ready(() => {
   });
   $('input#with-step').range({
     step: 10,
-    showConfig: true
+    showConfig: true,
   });
   $('input#with-range').range({
     range: true,
     showBubble: true,
-    showConfig: true
+    showConfig: true,
   });
   $('input#vertical').range({
     showConfig: true,
-    vertical: true
+    vertical: true,
   });
   $('input#with-bubble').range({
     value: 20,
     showBubble: true,
-    showConfig: true
+    showConfig: true,
   });
 });
