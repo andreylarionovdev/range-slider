@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.com/andreylarionovdev/range-slider.svg?branch=master)](https://travis-ci.com/andreylarionovdev/range-slider)
-
+[![Build Status](https://travis-ci.com/andreylarionovdev/range-slider.svg?token=JufgzWYbxsHCtadMMzsW&branch=master)](https://travis-ci.com/andreylarionovdev/range-slider)
 # jQuery range slider plugin
 This repository contains a simple range slider app that implements MVP architecture, written in TypeScript and can be used as jQuery plugin.
 
