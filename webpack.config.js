@@ -9,10 +9,10 @@ module.exports = {
   entry: [
     './src/ts/plugin.ts',
     './src/ts/demo.ts',
-    './src/scss/range-slider.scss',
+    './src/scss/jquery.range.scss',
   ],
   output: {
-    filename: 'range-slider.js',
+    filename: 'jquery.range.js',
     path: path.resolve(__dirname, './dist'),
   },
   module: {
@@ -50,7 +50,7 @@ module.exports = {
       template: './src/index.html',
     }),
     new MiniCssExtractPlugin({
-      filename: 'range-slider.css',
+      filename: 'jquery.range.css',
     }),
   ],
 

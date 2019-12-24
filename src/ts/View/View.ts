@@ -235,8 +235,12 @@ export default class View implements SliderView, SliderViewObservable {
 
   private renderConfigView(state: State): this {
     if (this.$configView) {
-      this.updateConfigView(state);
-    } else {
+      if (state.showConfig) {
+        this.updateConfigView(state);
+      } else {
+        this.$configView.remove();
+      }
+    } else if (state.showConfig) {
       this.$configView = this.createConfigView(state);
       this.$slider.append(this.$configView);
     }
@@ -264,11 +268,7 @@ export default class View implements SliderView, SliderViewObservable {
   }
 
   private updateConfigView(state: State): void {
-    if (state.showConfig) {
-      Object.keys(state).map((key) => this.updateConfigInputGroup(key, state[key]));
-    } else {
-      this.$configView.remove();
-    }
+    Object.keys(state).map((key) => this.updateConfigInputGroup(key, state[key]));
   }
 
   private updateConfigInputGroup(key: string, value: boolean|number|null): void {

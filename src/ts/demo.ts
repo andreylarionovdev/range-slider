@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 $(document).ready(() => {
   $('input#simple').range({
-    showConfig: true
+    showConfig: true,
   });
   $('input#with-step').range({
     step: 10,
@@ -10,7 +10,6 @@ $(document).ready(() => {
   });
   $('input#with-range').range({
     range: true,
-    showBubble: true,
     showConfig: true,
   });
   $('input#vertical').range({
@@ -22,4 +21,5 @@ $(document).ready(() => {
     showBubble: true,
     showConfig: true,
   });
+  $('input#empty-params').range();
 });
