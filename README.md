@@ -59,6 +59,7 @@ To build project:
 ```$xslt
 npm run build
 ```
+### Tests
 To run tests:
 ```$xslt
 npm test
@@ -77,10 +78,10 @@ npm test
 Тут модель и представление связываются, ждут друг от друга сообщений и реагируют на них вызовом соответствующего метода.
 
 ### UML diagrams
-Class Notation Diagram:
+####Class Notation Diagram:
 ![screen](https://drive.google.com/uc?id=1IBYowPFFcmUmvKadqpgOk_ZLLbegmfdl)
 
-Layers Interaction  Diagram:
+#### Layers Interaction  Diagram:
 ![screen](https://drive.google.com/uc?id=1MIIittc54ZfspE7Tyk4Bz08xMnFbzEuD)
 
 ## Built With
