@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
     <title>Range slider jQuery plugin, written in TypeScript.</title>
     <style>
         h1, h3 {
@@ -18,6 +19,19 @@
             box-sizing: border-box;
             padding: 3%;
             float: left;
+        }
+        /*768px ... 991px*/
+        @media (max-width: 991px) {
+            .range-slider-group {
+                width: 50%;
+            }
+        }
+        @media (max-width: 767px) {
+            .range-slider-group {
+                width: 100%;
+                height: 500px;
+                padding: 0 1% 20%;
+            }
         }
     </style>
 </head>
