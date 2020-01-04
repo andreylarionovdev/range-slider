@@ -13,7 +13,7 @@ module.exports = {
   ],
   output: {
     filename: 'jquery.range.js',
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, './docs'),
   },
   module: {
     rules: [
@@ -40,7 +40,7 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
   devServer: {
-    contentBase: path.join(__dirname, './dist'),
+    contentBase: path.join(__dirname, './docs'),
     compress: true,
     hot: true,
   },

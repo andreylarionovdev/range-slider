@@ -3,7 +3,7 @@
 This repository contains a simple range slider app that implements MVP architecture, written in TypeScript and can be used as jQuery plugin.
 
 ## Getting Started
-Compiled .js and .css files contains in `dist` folder. Make sure, you include these files in your html page to make plugin working on page. Something like bellow:
+Compiled .js and .css files contains in `docs` folder. Make sure, you include these files in your html page to make plugin working on page. Something like bellow:
 ```$xslt
 <html>
     <head>
