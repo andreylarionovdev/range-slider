@@ -1,12 +1,23 @@
-export const DEFAULT_MIN = 0;
-export const DEFAULT_MAX = 100;
-export const DEFAULT_STEP = 1;
-export const DEFAULT_VALUE = 0;
-export const DEFAULT_VALUE_2 = null;
-export const DEFAULT_RANGE = false;
-export const DEFAULT_VERTICAL = false;
-export const DEFAULT_SHOW_BUBBLE = false;
-export const DEFAULT_SHOW_CONFIG = false;
+const DEFAULT_MIN = 0;
+const DEFAULT_MAX = 100;
+const DEFAULT_STEP = 1;
+const DEFAULT_VALUE = 0;
+const DEFAULT_VALUE_2 = null;
+const DEFAULT_RANGE = false;
+const DEFAULT_VERTICAL = false;
+const DEFAULT_SHOW_BUBBLE = false;
+const DEFAULT_SHOW_CONFIG = false;
+const HANDLE_RADIUS = 7;
 
-// Handle radius in px
-export const HANDLE_RADIUS = 7;
+export {
+  DEFAULT_MIN,
+  DEFAULT_MAX,
+  DEFAULT_STEP,
+  DEFAULT_VALUE,
+  DEFAULT_VALUE_2,
+  DEFAULT_RANGE,
+  DEFAULT_VERTICAL,
+  DEFAULT_SHOW_BUBBLE,
+  DEFAULT_SHOW_CONFIG,
+  HANDLE_RADIUS,
+};

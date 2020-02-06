@@ -3,7 +3,7 @@ import Model from '../Model/Model';
 import State from '../Interfaces/State';
 import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
 
-export default class Presenter {
+class Presenter {
   private view: View;
 
   private model: Model;
@@ -41,3 +41,5 @@ export default class Presenter {
     this.view.updateValues(state);
   }
 }
+
+export default Presenter;

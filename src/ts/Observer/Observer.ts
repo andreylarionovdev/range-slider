@@ -1,6 +1,6 @@
 import Observable from '../Interfaces/Observable';
 
-export default class Observer implements Observable{
+class Observer implements Observable{
   callbacks: { [name: string]: Function[] } = {};
 
   static slice = [].slice;
@@ -20,3 +20,5 @@ export default class Observer implements Observable{
     fns.map((fn) => fn.apply(this, args));
   }
 }
+
+export default Observer;

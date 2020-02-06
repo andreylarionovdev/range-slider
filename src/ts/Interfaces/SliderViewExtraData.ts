@@ -1,3 +1,5 @@
-export default interface SliderViewExtraData {
+interface SliderViewExtraData {
   percent?: number;
 }
+
+export default SliderViewExtraData;

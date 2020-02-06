@@ -4,7 +4,7 @@
   "description": "Range slider jQuery plugin, written in TypeScript.",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "start": "webpack-dev-server --config webpack.config.js",
+    "watch": "webpack-dev-server --config webpack.config.js",
     "test": "./node_modules/karma/bin/karma start karma.conf.js"
   },
   "author": "Andrey Larionov",

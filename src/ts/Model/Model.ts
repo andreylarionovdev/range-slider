@@ -7,7 +7,7 @@ import Observable from '../Interfaces/Observable';
 import SliderModel from '../Interfaces/SliderModel';
 import SliderModelObservable from '../Interfaces/SliderModelObservable';
 
-export default class Model implements SliderModel, SliderModelObservable {
+class Model implements SliderModel, SliderModelObservable {
   announcer: Observable;
 
   private state: State;
@@ -152,3 +152,5 @@ export default class Model implements SliderModel, SliderModelObservable {
     return Math.floor(outValue / step) * step;
   }
 }
+
+export default Model;

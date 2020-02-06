@@ -8,7 +8,7 @@ import SliderView from '../Interfaces/SliderView';
 import SliderViewObservable from '../Interfaces/SliderViewObservable';
 import Observable from '../Interfaces/Observable';
 
-export default class View implements SliderView, SliderViewObservable {
+class View implements SliderView, SliderViewObservable {
   announcer: Observable;
 
   // DOM elements
@@ -471,3 +471,5 @@ export default class View implements SliderView, SliderViewObservable {
     return updatedPosition;
   }
 }
+
+export default View;

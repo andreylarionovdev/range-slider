@@ -1,4 +1,4 @@
-export default interface State {
+interface State {
   min?: number;
   max?: number;
   step?: number;
@@ -9,3 +9,5 @@ export default interface State {
   showBubble?: boolean;
   showConfig?: boolean;
 }
+
+export default State;

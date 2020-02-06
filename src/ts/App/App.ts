@@ -3,7 +3,7 @@ import View from '../View/View';
 import Presenter from '../Presenter/Presenter';
 import State from '../Interfaces/State';
 
-export default class App {
+class App {
   private presenter: Presenter;
 
   constructor(target: JQuery, options: State) {
@@ -13,3 +13,5 @@ export default class App {
     );
   }
 }
+
+export default App;
