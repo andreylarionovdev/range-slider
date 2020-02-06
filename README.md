@@ -79,10 +79,10 @@ npm test
 
 ### UML diagrams
 #### Class Notation Diagram:
-![screen](https://drive.google.com/uc?id=1IBYowPFFcmUmvKadqpgOk_ZLLbegmfdl)
+![screen](images/slider-class-notation.svg)
 
 #### Layers Interaction  Diagram:
-![screen](https://drive.google.com/uc?id=1MIIittc54ZfspE7Tyk4Bz08xMnFbzEuD)
+![screen](images/mvp-interaction.svg)
 
 ## Built With
 
