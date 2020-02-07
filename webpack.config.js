@@ -1,16 +1,13 @@
 const path = require('path');
-const htmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   watch: true,
   devtool: 'inline-source-map',
   mode: 'development',
-  entry: [
-    './src/ts/plugin.ts',
-    './src/ts/demo.ts',
-    './src/scss/jquery.range.scss',
-  ],
+  entry: './src/ts/jquery.range.ts',
   output: {
     filename: 'jquery.range.js',
     path: path.resolve(__dirname, './docs'),
@@ -45,9 +42,13 @@ module.exports = {
     hot: true,
   },
   plugins: [
-    new htmlWebpackPlugin({
+    new CopyWebpackPlugin([{
+      from: './src/demo/style.css',
+      to: './style.css',
+    }]),
+    new HtmlWebpackPlugin({
       inject: true,
-      template: './src/index.html',
+      template: './src/demo/index.html',
     }),
     new MiniCssExtractPlugin({
       filename: 'jquery.range.css',

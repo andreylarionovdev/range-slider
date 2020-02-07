@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 import App from './App/App';
 import State from './Interfaces/State';
 import {
@@ -13,6 +11,7 @@ import {
   DEFAULT_SHOW_BUBBLE,
   DEFAULT_SHOW_CONFIG,
 } from './const';
+import '../scss/jquery.range.scss';
 
 declare global {
   interface JQuery {
@@ -20,7 +19,7 @@ declare global {
   }
 }
 
-(function ($: JQueryStatic): void {
+(function (w, $): void {
   $.fn.range = function (this: JQuery, options?: State): JQuery {
     const defaults: State = {
       min: DEFAULT_MIN,
@@ -35,7 +34,7 @@ declare global {
     };
 
     return this.each(function () {
-      $.data(this, 'range', new App($(this), ({ ...defaults, ...options })));
+      new App($(this), { ...defaults, ...options });
     });
   };
-}($));
+})(window, jQuery);

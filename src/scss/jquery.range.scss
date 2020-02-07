@@ -1,55 +1,44 @@
+$color-green: #6FCF97;
+$color-dark-25: rgba(31, 32, 65, 0.25);
+$color-dark-50: rgba(31, 32, 65, 0.5);
+$color-dark-75: rgba(31, 32, 65, 0.75);
+$color-dark-100: rgba(31, 32, 65, 1);
+$handleDiam: 0.875rem;
+$railWeight: 0.5rem;
 .range-slider {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  $input: #{&}__input;
-  $rail: #{&}__rail;
-  $bubble: #{&}__bubble;
-  $selection: #{&}__selection;
-  $color-green: #6FCF97;
-  $color-dark-25: rgba(31, 32, 65, 0.25);
-  $color-dark-50: rgba(31, 32, 65, 0.5);
-  &:after {
-    content: '';
-    clear: both;
-    display: table;
-  }
-  #{$input} {
+  display: grid;
+  min-width: 10rem;
+  grid-template-rows: 1.25rem auto;
+  grid-template-areas:
+      'main'
+      'config';
+
+  &__input {
+    grid-area: main;
     cursor: pointer;
-    position: absolute;
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
-    //background: antiquewhite;
     width: 100%;
-    height: 20px;
-    &:after {
-      content: '';
-      clear: both;
-      display: table;
-    }
   }
-  #{$rail} {
-    height: 8px;
+  &__rail {
+    height: $railWeight;
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
     left: 0;
-    right: 14px;
+    right: $handleDiam;
     &--visible {
       background: white;
       border: 1px solid $color-dark-25;
-      border-radius: 3px;
-      left: 5px;
-      right: 5px;
-      height: 8px;
-      position: absolute;
+      border-radius: 0.25rem;
+      left: $handleDiam / 2;
+      right: $handleDiam / 2 - 0.125rem;
     }
   }
-  #{$selection} {
-    height: 8px;
+  &__selection {
+    height: $railWeight;
     width: auto;
     background: #6FCF97;
     position: absolute;
@@ -60,78 +49,78 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    width:14px;
-    height: 14px;
+    width: $handleDiam;
+    height: $handleDiam;
     border: 2px solid white;
-    border-radius: 10px;
+    border-radius: 50%;
     background: #6FCF97;
-    cursor: grab;
     &:hover {
       border-color: #6FCF97;
     }
   }
-  #{$bubble} {
+  &__bubble {
     position: absolute;
-    min-width: 14px;
-    padding: 2px;
-    height: 16px;
+    min-width: $handleDiam;
+    padding: 0.125rem;
+    height: 1rem;
     border: 1px solid $color-dark-25;
     color: $color-dark-50;
     background: white;
-    border-radius: 4px;
-    top: -30px;
+    border-radius: 0.25rem;
+    top: -2rem;
     text-align: center;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-family: monospace;
   }
   &__conf {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 0;
-    //background: aquamarine;
-    padding: 20px 35px;
-    display: block;
+    grid-area: config;
+    color: $color-dark-100;
+    padding: $handleDiam / 2 - 0.0625rem;
   }
   &__conf-input-group {
-    margin: 2px 0;
-    margin-left: 10px;
-    &:after {
-      content: '';
-      clear: both;
-      display: table;
-    }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.125rem;
+    padding-left: 1.25rem;
   }
   &__conf-input {
-    float: right;
+    color: $color-dark-75;
+    font-size: 1rem;
+    font-family: monospace, sans-serif;
+    border-radius: 0.25rem;
   }
   &--vertical {
-    #{$input} {
-      width: 20px;
+    min-width: auto;
+    min-height: 10rem;
+    grid-template-columns: 1.25rem auto;
+    grid-template-rows: auto;
+    grid-template-areas:
+        'main config';
+    .range-slider__input {
       height: 100%;
+      justify-content: center;
     }
-    #{$rail} {
-      width: 8px;
+    .range-slider__rail {
+      width: $railWeight;
       height: auto;
       top: 0;
-      bottom: 14px;
+      bottom: $handleDiam;
       left: initial;
       right: initial;
       &--visible {
-        width: 8px;
-        height: auto;
-        top: 5px;
-        bottom: 5px;
+        top: $handleDiam / 2;
+        bottom: $handleDiam / 2 - 0.125rem;
         left: initial;
         right: initial;
       }
     }
-    #{$bubble} {
+    .range-slider__bubble {
       top: initial;
-      left: 20px;
+      right: 1.25rem;
     }
-    #{$selection} {
-      width: 8px;
+    .range-slider__selection {
+      width: 0.5rem;
       height: auto;
     }
   }

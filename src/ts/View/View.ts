@@ -45,7 +45,7 @@ class View implements SliderView, SliderViewObservable {
 
   private static input = `${View.block}__input`;
 
-  private static hiddenRail = `${View.block}__rail`;
+  private static rail = `${View.block}__rail`;
 
   private static visibleRail = `${View.block}__rail--visible`;
 
@@ -206,10 +206,10 @@ class View implements SliderView, SliderViewObservable {
       .bind('mousedown', this.funcOnJump)
       .appendTo(this.$slider);
 
-    const $visibleRail = View.createVisibleRail()
+    const $visibleRail = View.createRail([View.visibleRail, View.rail])
       .appendTo(this.$input);
 
-    const $hiddenRail = View.createHiddenRail()
+    const $rail = View.createRail()
       .appendTo(this.$input);
 
     if (state.range) {
@@ -219,12 +219,12 @@ class View implements SliderView, SliderViewObservable {
 
     this.$handleFrom = View.createHandle('from', state)
       .bind('mousedown', this.funcOnDragStart)
-      .appendTo($hiddenRail);
+      .appendTo($rail);
 
     if (state.range) {
       this.$handleTo = View.createHandle('to', state)
         .bind('mousedown', this.funcOnDragStart)
-        .appendTo($hiddenRail);
+        .appendTo($rail);
     }
 
     this.bindDocumentEvents();
@@ -378,12 +378,8 @@ class View implements SliderView, SliderViewObservable {
     });
   }
 
-  private static createVisibleRail(): JQuery {
-    return $('<div/>').addClass(View.visibleRail);
-  }
-
-  private static createHiddenRail(): JQuery {
-    return $('<div/>').addClass(View.hiddenRail);
+  private static createRail(classes: Array<string> = [View.rail]): JQuery {
+    return $('<div/>').addClass(classes);
   }
 
   private static createHandle(type: string, state: State): JQuery {
@@ -430,7 +426,7 @@ class View implements SliderView, SliderViewObservable {
   private getCursorPositionPercent(e: JQueryMouseEventObject): number {
     let position; // cursor position in px relative to slider
     let percent; // cursor position in percent relative to slider
-    const $rail = this.$slider.find(`.${View.hiddenRail}`);
+    const $rail = this.$slider.find(`.${View.rail}`);
     if (this.isVertical()) {
       position = e.pageY - $rail.offset().top - HANDLE_RADIUS;
       percent = position / ($rail.height() / 100);
