@@ -42,10 +42,10 @@ module.exports = {
     hot: true,
   },
   plugins: [
-    new CopyWebpackPlugin([{
-      from: './src/demo/style.css',
-      to: './style.css',
-    }]),
+    new CopyWebpackPlugin([
+      { from: './src/demo/style.css', to: './style.css' },
+      { from: './node_modules/jquery/dist/jquery.min.js', to: './jquery.min.js' },
+    ]),
     new HtmlWebpackPlugin({
       inject: true,
       template: './src/demo/index.html',
