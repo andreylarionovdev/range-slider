@@ -2,12 +2,21 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   watch: true,
   devtool: 'inline-source-map',
   mode: 'development',
   entry: './src/ts/jquery.range.ts',
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        sourceMap: false,
+        // exclude: path.resolve(__dirname, 'node_modules'),
+      }),
+    ],
+  },
   output: {
     filename: 'jquery.range.js',
     path: path.resolve(__dirname, './docs'),

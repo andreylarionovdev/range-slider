@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "Range slider jQuery plugin, written in TypeScript.",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
     "watch": "webpack-dev-server --config webpack.config.js",
+    "prod": "webpack --mode production",
     "test": "./node_modules/karma/bin/karma start karma.conf.js"
   },
   "author": "Andrey Larionov",
@@ -14,6 +14,7 @@
     "@types/jquery": "^3.3.31",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
     "@typescript-eslint/parser": "^2.12.0",
+    "autoprefixer": "^9.7.4",
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.2.0",
     "eslint": "^6.7.2",
@@ -29,6 +30,7 @@
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.13.0",
     "sass-loader": "^8.0.0",
+    "terser-webpack-plugin": "^2.3.4",
     "ts-loader": "^5.4.5",
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
@@ -37,5 +39,9 @@
   },
   "dependencies": {
     "jquery": "^3.4.1"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 3 version"
+  ]
 }
