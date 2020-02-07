@@ -60,15 +60,15 @@ class View implements SliderView, SliderViewObservable {
   private static handleTo = `${View.handle}--to`;
 
   // Mouse listeners to bind/unbind with class context
-  private funcOnDragStart = (e) => this.dragStart(e);
+  private funcOnDragStart = (e): void => this.dragStart(e);
 
-  private funcOnDrag = (e) => this.drag(e);
+  private funcOnDrag = (e): void => this.drag(e);
 
-  private funcOnDragEnd = (e) => this.dragEnd(e);
+  private funcOnDragEnd = (e): void => this.dragEnd(e);
 
-  private funcOnJump = (e) => this.jump(e);
+  private funcOnJump = (e): void => this.jump(e);
 
-  private funcOnChangeConfig = (e) => this.changeConfig(e);
+  private funcOnChangeConfig = (e): void => this.changeConfig(e);
 
   constructor($target: JQuery) {
     this.announcer = new Observer();
@@ -203,7 +203,7 @@ class View implements SliderView, SliderViewObservable {
     }
 
     this.$input = View.createInput()
-      .bind('mousedown', this.funcOnJump)
+      .on('mousedown', this.funcOnJump)
       .appendTo(this.$slider);
 
     const $visibleRail = View.createRail([View.visibleRail, View.rail])
@@ -218,12 +218,12 @@ class View implements SliderView, SliderViewObservable {
     }
 
     this.$handleFrom = View.createHandle('from', state)
-      .bind('mousedown', this.funcOnDragStart)
+      .on('mousedown', this.funcOnDragStart)
       .appendTo($rail);
 
     if (state.range) {
       this.$handleTo = View.createHandle('to', state)
-        .bind('mousedown', this.funcOnDragStart)
+        .on('mousedown', this.funcOnDragStart)
         .appendTo($rail);
     }
 
@@ -300,18 +300,18 @@ class View implements SliderView, SliderViewObservable {
         if (value === true) {
           $input.prop('checked', true);
         }
-        $input.bind('change', this.funcOnChangeConfig);
+        $input.on('change', this.funcOnChangeConfig);
         break;
       case 'number':
         $input.attr('type', 'text')
           .val(value)
-          .bind('blur', this.funcOnChangeConfig);
+          .on('blur', this.funcOnChangeConfig);
         break;
       default:
         $input.attr({
           type: 'text',
           placeholder: 'null',
-        }).bind('blur', this.funcOnChangeConfig);
+        }).on('blur', this.funcOnChangeConfig);
     }
 
     $input.appendTo($inputGroup);
@@ -321,18 +321,11 @@ class View implements SliderView, SliderViewObservable {
 
   private destroyInput(): this {
     if (this.$input) {
-      this.$handleFrom
-        .unbind('mousedown', this.funcOnDragStart);
+      this.$handleFrom.off('mousedown', this.funcOnDragStart);
       if (this.$handleTo) {
-        this.$handleTo
-          .unbind('mousedown', this.funcOnDragStart);
+        this.$handleTo.off('mousedown', this.funcOnDragStart);
       }
-      this.$input
-        .unbind('mousedown', this.funcOnJump)
-        .remove();
-      $(document)
-        .unbind('mouseup', this.funcOnDragEnd)
-        .unbind('mousedown', this.funcOnDrag);
+      this.$input.off('mousedown', this.funcOnJump).remove();
     }
 
     return this;
@@ -401,7 +394,7 @@ class View implements SliderView, SliderViewObservable {
     return $handle;
   }
 
-  private updateHandles(state: State) {
+  private updateHandles(state: State): void {
     this.$draggingHandle = this.$handleFrom;
     this.moveHandle(state);
 
@@ -413,17 +406,19 @@ class View implements SliderView, SliderViewObservable {
     this.$draggingHandle = null;
   }
 
-  private bindDocumentEvents() {
+  private bindDocumentEvents(): void {
     $(document)
-      .bind('mouseup', this.funcOnDragEnd)
-      .bind('mousemove', this.funcOnDrag);
+      .off('mouseup', this.funcOnDragEnd)
+      .on('mouseup', this.funcOnDragEnd)
+      .off('mousemove', this.funcOnDrag)
+      .on('mousemove', this.funcOnDrag);
   }
 
   private isVertical(): boolean {
     return this.$slider.hasClass(View.blockVert);
   }
 
-  private getCursorPositionPercent(e: JQueryMouseEventObject): number {
+  private getCursorPositionPercent(e: MouseEvent): number {
     let position; // cursor position in px relative to slider
     let percent; // cursor position in percent relative to slider
     const $rail = this.$slider.find(`.${View.rail}`);
