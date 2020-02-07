@@ -37,4 +37,4 @@ declare global {
       new App($(this), { ...defaults, ...options });
     });
   };
-})(window, jQuery);
+}(window, jQuery));

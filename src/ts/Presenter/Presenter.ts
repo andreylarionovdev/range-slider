@@ -25,19 +25,19 @@ class Presenter {
     this.model.emitChangeState();
   }
 
-  updateState(key: string, value: null|number|boolean, extra?: SliderViewExtraData) {
+  updateState(key: string, value: null|number|boolean, extra?: SliderViewExtraData): void {
     this.model.updateState(key, value, extra);
   }
 
-  updateHandle(state: State) {
+  updateHandle(state: State): void {
     this.view.moveHandle(state);
   }
 
-  updateView(state: State) {
+  updateView(state: State): void {
     this.view.update(state);
   }
 
-  updateViewValues(state: State) {
+  updateViewValues(state: State): void {
     this.view.updateValues(state);
   }
 }
