@@ -93,6 +93,7 @@ class Model implements SliderModel, SliderModelObservable {
     state.min = min;
     state.max = max;
     state.step = step;
+
     state.value = Model.validateValue('value', state.value, state);
     state.value2 = Model.validateValue('value2', value2, state);
 

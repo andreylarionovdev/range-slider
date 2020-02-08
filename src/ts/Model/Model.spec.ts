@@ -1,5 +1,5 @@
-import Model from '../src/ts/Model/Model';
-import State from '../src/ts/Interfaces/State';
+import Model from './Model';
+import State from '../Interfaces/State';
 
 import {
   DEFAULT_MAX,
@@ -11,7 +11,7 @@ import {
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
   DEFAULT_SHOW_CONFIG,
-} from '../src/ts/const';
+} from '../const';
 
 const defaultOptions: State = {
   min: DEFAULT_MIN,

@@ -1,4 +1,4 @@
-import Observer from '../src/ts/Observer/Observer';
+import Observer from './Observer';
 
 describe('Observer', () => {
   it('implements event subscribing and notifying', () => {

@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import State from '../src/ts/Interfaces/State';
-import View from '../src/ts/View/View';
+import State from '../Interfaces/State';
+import View from './View';
 import {
   DEFAULT_MAX,
   DEFAULT_MIN,
@@ -11,7 +11,7 @@ import {
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
   DEFAULT_SHOW_CONFIG,
-} from '../src/ts/const';
+} from '../const';
 
 
 const defaultOptions: State = {

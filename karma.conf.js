@@ -3,7 +3,7 @@
 
 const webpackConfig = require('./webpack.config');
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -13,7 +13,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
-    files: ['test/*.ts', 'test/*.js'],
+    files: ['src/**/*.spec.ts', 'src/**/*.spec.js'],
 
     // list of files / patterns to exclude
     exclude: [],
@@ -21,8 +21,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.ts': ['webpack'],
-      'test/**/*.js': ['webpack'],
+      'src/**/*.spec.ts': ['webpack'],
+      'src/**/*.spec.js': ['webpack'],
     },
     webpack: {
       module: webpackConfig.module,
