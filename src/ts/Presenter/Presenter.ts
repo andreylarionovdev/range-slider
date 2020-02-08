@@ -26,7 +26,7 @@ class Presenter {
   }
 
   updateState(key: string, value: null|number|boolean, extra?: SliderViewExtraData): void {
-    this.model.updateState(key, value, extra);
+    this.model.updateStateProp(key, value, extra);
   }
 
   updateHandle(state: State): void {

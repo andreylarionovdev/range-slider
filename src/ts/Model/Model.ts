@@ -31,26 +31,26 @@ class Model implements SliderModel, SliderModelObservable {
     return this;
   }
 
-  updateState(key: string, value: null|number|boolean, extra?: SliderViewExtraData): this {
+  updateStateProp(prop: string, value: null|number|boolean, extra?: SliderViewExtraData): this {
     const state = { ...this.state };
     let event = 'change.state';
     let newValue = value;
-    switch (key) {
+    switch (prop) {
       case 'value':
       case 'value2':
         if (newValue === null) {
-          event = `change.${key}`;
+          event = `change.${prop}`;
           newValue = this.positionToValue(extra.percent);
         }
-        state[key] = Model.validateValue(key, Number(newValue), state);
+        state[prop] = Model.validateValue(prop, Number(newValue), state);
         break;
       case 'min':
       case 'max':
       case 'step':
-        state[key] = Number(newValue);
+        state[prop] = Number(newValue);
         break;
       default:
-        state[key] = newValue;
+        state[prop] = newValue;
     }
 
     this.state = Model.validateState(state);
@@ -87,25 +87,18 @@ class Model implements SliderModel, SliderModelObservable {
 
   private static validateState(state: State): State {
     const { min, max } = Model.validateMinMax(state);
-    const { step } = Model.validateStep(state);
-    const { value2 } = Model.validateValue2(state);
+    const step = Model.validateStep(state);
+    const { value, value2 } = Model.validateValues(state);
 
-    state.min = min;
-    state.max = max;
-    state.step = step;
-
-    state.value = Model.validateValue('value', state.value, state);
-    state.value2 = Model.validateValue('value2', value2, state);
-
-    return state;
+    return {
+      ...state, min, max, step, value, value2,
+    };
   }
 
-  private static validateStep(state: State): State {
+  private static validateStep(state: State): number {
     const { step } = state;
 
-    state.step = Number(step) < DEFAULT_STEP ? DEFAULT_STEP : Math.round(step);
-
-    return state;
+    return Number(step) < DEFAULT_STEP ? DEFAULT_STEP : Math.round(step);
   }
 
   private static validateMinMax(state: State): State {
@@ -117,29 +110,43 @@ class Model implements SliderModel, SliderModelObservable {
     };
   }
 
-  private static validateValue2(state: State): State {
-    const { range, value2, max } = state;
+  private static validateValues(state: State): State {
+    const {
+      value, value2, max, range,
+    } = state;
 
-    state.value2 = (range && value2 === null) ? max : value2;
+    let outValue = this.validateValue('value', value, state);
+    let outValue2 = this.validateValue('value2', value2, state);
 
-    return state;
+    if (range) {
+      if (outValue2 === null) {
+        outValue2 = max;
+      }
+      outValue = outValue > outValue2
+        ? Math.round(Math.min(outValue2, outValue))
+        : outValue;
+      outValue2 = outValue > outValue2
+        ? Math.round(Math.max(outValue2, outValue))
+        : outValue2;
+    }
+
+    return {
+      value: outValue,
+      value2: outValue2,
+    };
   }
 
-  private static validateValue(prop: string, inValue: number, state: State): number {
+  private static validateValue(prop: string, valueToValidate: number, state: State): number {
     const {
       min, max, value, value2, range, step,
     } = state;
 
-    if (inValue === null) return null;
+    if (valueToValidate === null) return null;
 
-    let outValue = Number(inValue);
+    let outValue = Number(valueToValidate);
 
-    if (outValue > max) {
-      outValue = max;
-    }
-    if (outValue < min) {
-      outValue = min;
-    }
+    outValue = outValue > max ? max : outValue;
+    outValue = outValue < min ? min : outValue;
 
     if (range) {
       if (prop === 'value' && outValue > value2) {

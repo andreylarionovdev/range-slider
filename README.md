@@ -3,16 +3,17 @@
 This repository contains a simple range slider app that implements MVP architecture, written in TypeScript and can be used as jQuery plugin.
 
 ## Getting Started
-Compiled .js and .css files contains in `docs` folder. Make sure, you include these files in your html page to make plugin working on page. Something like bellow:
+Compiled .js and .css files contains in `docs` folder. Make sure, you include `jQuery` and compiled files in your html page to make plugin working on page. Something like bellow:
 ```$xslt
 <html>
     <head>
         ...
-        <link href="range-slider.css" rel="stylesheet"></head>
+        <link href="jquery.range.css" rel="stylesheet"></head>
     </head>
     <body>
         ...
-        <script type="text/javascript" src="range-slider.js"></script>
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" src="jquery.range.js"></script>
     </body>
 </html>
 ```
@@ -57,7 +58,11 @@ npm install
 ```
 To build project: 
 ```$xslt
-npm run build
+npm run prod
+```
+To run dev server with hot reloading: 
+```$xslt
+npm run watch
 ```
 ### Tests
 To run tests:

@@ -56,7 +56,7 @@ describe('Model', () => {
     const value = Math.floor(Math.random() * 100);
     const key = 'value';
 
-    model.updateState(key, value);
+    model.updateStateProp(key, value);
 
     expect(model.get(key)).toEqual(value);
   });
@@ -67,7 +67,7 @@ describe('Model', () => {
 
     expect(model.get(key)).toEqual(null);
 
-    model.updateState('range', true);
+    model.updateStateProp('range', true);
 
     expect(model.get(key)).toEqual(DEFAULT_MAX);
   });
@@ -78,33 +78,52 @@ describe('Model', () => {
 
     expect(model.get('value')).toEqual(20);
 
-    model.updateState('value2', 46);
+    model.updateStateProp('value2', 46);
 
     expect(model.get('value2')).toEqual(45);
 
-    model.updateState('step', 10);
+    model.updateStateProp('step', 10);
 
     expect(model.get('value')).toEqual(20);
     expect(model.get('value2')).toEqual(40);
   });
 
-  it('can not contain `value` greater than `value2`', () => {
+  it('switch `value` and `value2` if `value` > `value2` when init', () => {
     const options = {
       ...defaultOptions, range: true, value: 50, value2: 25,
     };
     const model = new Model(options);
 
     expect(model.get('value')).toEqual(25);
-    expect(model.get('value2')).toEqual(25);
+    expect(model.get('value2')).toEqual(50);
+  });
 
-    model.setState({ value: 12, value2: 21 });
+  it('bound `value` to `value2` if `value` > `value2` when updated single `value`', () => {
+    const options = {
+      ...defaultOptions, range: true, value: 12, value2: 21,
+    };
+    const model = new Model(options);
 
     expect(model.get('value')).toEqual(12);
     expect(model.get('value2')).toEqual(21);
 
-    model.updateState('value', 25);
+    model.updateStateProp('value', 25);
 
     expect(model.get('value')).toEqual(21);
+  });
+
+  it('bound `value2` to `value` if `value2` < `value` when updated single `value2`', () => {
+    const options = {
+      ...defaultOptions, range: true, value: 24, value2: 42,
+    };
+    const model = new Model(options);
+
+    expect(model.get('value')).toEqual(24);
+    expect(model.get('value2')).toEqual(42);
+
+    model.updateStateProp('value2', 20);
+
+    expect(model.get('value2')).toEqual(24);
   });
 
   it('can not contain `min` greater than `max`', () => {
@@ -121,7 +140,7 @@ describe('Model', () => {
 
     expect(model.get('value')).toEqual(1234);
 
-    model.updateState('value2', 12345);
+    model.updateStateProp('value2', 12345);
 
     expect(model.get('value2')).toEqual(1234);
   });
@@ -132,7 +151,7 @@ describe('Model', () => {
 
     expect(model.get('value')).toEqual(-1234);
 
-    model.updateState('value2', -12345);
+    model.updateStateProp('value2', -12345);
 
     expect(model.get('value2')).toEqual(-1234);
   });
@@ -141,17 +160,17 @@ describe('Model', () => {
     const options = { ...defaultOptions, min: 1000, max: 2000 };
     const model = new Model(options);
 
-    model.updateState('value', null, { percent: 50 });
+    model.updateStateProp('value', null, { percent: 50 });
 
     expect(model.get('value')).toEqual(1500);
 
-    model.updateState('value', null, { percent: 25 });
-    model.updateState('value2', null, { percent: 75 });
+    model.updateStateProp('value', null, { percent: 25 });
+    model.updateStateProp('value2', null, { percent: 75 });
 
     expect(model.get('value')).toEqual(1250);
     expect(model.get('value2')).toEqual(1750);
 
-    model.updateState('value', null, { percent: 85 });
+    model.updateStateProp('value', null, { percent: 85 });
 
     expect(model.get('value2')).toEqual(1750);
   });
