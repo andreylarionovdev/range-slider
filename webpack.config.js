@@ -52,8 +52,9 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: './src/demo/style.css', to: './style.css' },
       { from: './node_modules/jquery/dist/jquery.min.js', to: './jquery.min.js' },
+      { from: './src/demo/style.css', to: './style.css' },
+      { from: './src/demo/favicons', to: './favicons' },
     ]),
     new HtmlWebpackPlugin({
       inject: true,
