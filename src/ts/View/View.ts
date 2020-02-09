@@ -59,16 +59,15 @@ class View implements SliderView, SliderViewObservable {
 
   private static handleTo = `${View.handle}--to`;
 
-  // Mouse listeners to bind/unbind with class context
-  private funcOnDragStart = (e): void => this.dragStart(e);
+  private handleDragStart = (e): void => this.dragStart(e);
 
-  private funcOnDrag = (e): void => this.drag(e);
+  private handleDrag = (e): void => this.drag(e);
 
-  private funcOnDragEnd = (e): void => this.dragEnd(e);
+  private handleDragEnd = (e): void => this.dragEnd(e);
 
-  private funcOnJump = (e): void => this.jump(e);
+  private handleJump = (e): void => this.jump(e);
 
-  private funcOnChangeConfig = (e): void => this.changeConfig(e);
+  private handleChangeConfig = (e): void => this.changeConfig(e);
 
   constructor($target: JQuery) {
     this.announcer = new Observer();
@@ -203,7 +202,7 @@ class View implements SliderView, SliderViewObservable {
     }
 
     this.$input = View.createInput()
-      .on('mousedown', this.funcOnJump)
+      .on('mousedown', this.handleJump)
       .appendTo(this.$slider);
 
     const $visibleRail = View.createRail([View.visibleRail, View.rail])
@@ -218,12 +217,12 @@ class View implements SliderView, SliderViewObservable {
     }
 
     this.$handleFrom = View.createHandle('from', state)
-      .on('mousedown', this.funcOnDragStart)
+      .on('mousedown', this.handleDragStart)
       .appendTo($rail);
 
     if (state.range) {
       this.$handleTo = View.createHandle('to', state)
-        .on('mousedown', this.funcOnDragStart)
+        .on('mousedown', this.handleDragStart)
         .appendTo($rail);
     }
 
@@ -300,18 +299,18 @@ class View implements SliderView, SliderViewObservable {
         if (value === true) {
           $input.prop('checked', true);
         }
-        $input.on('change', this.funcOnChangeConfig);
+        $input.on('change', this.handleChangeConfig);
         break;
       case 'number':
         $input.attr('type', 'text')
           .val(value)
-          .on('blur', this.funcOnChangeConfig);
+          .on('blur', this.handleChangeConfig);
         break;
       default:
         $input.attr({
           type: 'text',
           placeholder: 'null',
-        }).on('blur', this.funcOnChangeConfig);
+        }).on('blur', this.handleChangeConfig);
     }
 
     $input.appendTo($inputGroup);
@@ -321,11 +320,11 @@ class View implements SliderView, SliderViewObservable {
 
   private destroyInput(): this {
     if (this.$input) {
-      this.$handleFrom.off('mousedown', this.funcOnDragStart);
+      this.$handleFrom.off('mousedown', this.handleDragStart);
       if (this.$handleTo) {
-        this.$handleTo.off('mousedown', this.funcOnDragStart);
+        this.$handleTo.off('mousedown', this.handleDragStart);
       }
-      this.$input.off('mousedown', this.funcOnJump).remove();
+      this.$input.off('mousedown', this.handleJump).remove();
     }
 
     return this;
@@ -408,10 +407,10 @@ class View implements SliderView, SliderViewObservable {
 
   private bindDocumentEvents(): void {
     $(document)
-      .off('mouseup', this.funcOnDragEnd)
-      .on('mouseup', this.funcOnDragEnd)
-      .off('mousemove', this.funcOnDrag)
-      .on('mousemove', this.funcOnDrag);
+      .off('mouseup', this.handleDragEnd)
+      .on('mouseup', this.handleDragEnd)
+      .off('mousemove', this.handleDrag)
+      .on('mousemove', this.handleDrag);
   }
 
   private isVertical(): boolean {
