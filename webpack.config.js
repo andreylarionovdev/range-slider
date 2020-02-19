@@ -2,24 +2,19 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
-  watch: true,
-  devtool: 'inline-source-map',
-  mode: 'development',
-  entry: './src/ts/jquery.range.ts',
-  optimization: {
-    minimizer: [
-      new TerserPlugin({
-        sourceMap: false,
-        // exclude: path.resolve(__dirname, 'node_modules'),
-      }),
-    ],
+const devMode = process.env.NODE_ENV !== 'production';
+
+const config = {
+  entry: {
+    'jquery.range': './src/ts/jquery.range.ts',
   },
   output: {
-    filename: 'jquery.range.js',
+    filename: devMode ? '[name].js' : '[name].[hash].js',
     path: path.resolve(__dirname, './docs'),
+  },
+  devServer: {
+    open: true,
   },
   module: {
     rules: [
@@ -33,7 +28,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: process.env.NODE_ENV === 'development',
+              hmr: devMode,
             },
           },
           'css-loader',
@@ -44,11 +39,6 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
-  },
-  devServer: {
-    contentBase: path.join(__dirname, './docs'),
-    compress: true,
-    hot: true,
   },
   plugins: [
     new CopyWebpackPlugin([
@@ -61,8 +51,9 @@ module.exports = {
       template: './src/demo/index.html',
     }),
     new MiniCssExtractPlugin({
-      filename: 'jquery.range.css',
+      filename: devMode ? '[name].css' : '[name].[hash].css',
     }),
   ],
-
 };
+
+module.exports = config;

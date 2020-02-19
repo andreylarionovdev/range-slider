@@ -3,13 +3,20 @@
   "version": "0.1.0",
   "description": "Range slider jQuery plugin, written in TypeScript.",
   "scripts": {
-    "watch": "webpack-dev-server --config webpack.config.js",
-    "prod": "webpack --mode production",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js"
+    "build": "rm -rf ./docs && webpack -p",
+    "watch": "webpack-dev-server",
+    "test": "./node_modules/karma/bin/karma start karma.conf.js",
+    "lint": "eslint -c .eslintrc src/ --ext .js --ext .ts"
   },
   "author": "Andrey Larionov",
   "license": "Apache-2.0",
   "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.19.1"
+  },
+  "dependencies": {
+    "jquery": "^3.4.1",
     "@types/jasmine": "^3.4.6",
     "@types/jquery": "^3.3.31",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
@@ -17,9 +24,6 @@
     "autoprefixer": "^9.7.4",
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.2.0",
-    "eslint": "^6.7.2",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.19.1",
     "html-webpack-plugin": "^3.2.0",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
@@ -30,15 +34,11 @@
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.13.0",
     "sass-loader": "^8.0.0",
-    "terser-webpack-plugin": "^2.3.4",
     "ts-loader": "^5.4.5",
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
-  },
-  "dependencies": {
-    "jquery": "^3.4.1"
   },
   "browserslist": [
     "> 1%",
