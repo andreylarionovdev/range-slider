@@ -1,0 +1,37 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    meta(name='description' content='jQuery Range Slider' )
+    meta(name='keywords' content='jQuery range slider plugin' )
+    link(rel='apple-touch-icon' sizes='180x180' href='favicons/apple-touch-icon.png')
+    link(rel='icon' type='image/png' sizes='32x32' href='favicons/favicon-32x32.png')
+    link(rel='icon' type='image/png' sizes='16x16' href='favicons/favicon-16x16.png')
+    link(rel='manifest' href='favicons/site.webmanifest')
+    link(rel='mask-icon' href='favicons/safari-pinned-tab.svg' color='#5bbad5')
+    meta(name='msapplication-TileColor' content='#da532c')
+    meta(name='theme-color' content='#ffffff')
+    title= 'Range slider jQuery plugin, written in TypeScript.'
+  body
+    h1= 'Range slider demo.'
+    div.container
+      div.range-slider-group
+        h3= 'Simple'
+        input(id="simple" type="range")
+      div.range-slider-group
+        h3= 'With step'
+        input(id="with-step" type="range")
+      div.range-slider-group
+        h3= 'With range'
+        input(id="with-range" type="range")
+      div.range-slider-group
+        h3= 'Vertical'
+        input(id="vertical" type="range")
+      div.range-slider-group
+        h3= 'With bubble'
+        input(id="with-bubble" type="range")
+      div.range-slider-group
+        h3= 'With empty params'
+        input(id="empty-params" type="range")
+    script(src='./jquery.min.js')

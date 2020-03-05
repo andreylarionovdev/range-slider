@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="jQuery Range Slider">
+    <meta name="keywords" content="jQuery range slider plugin">
     <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
@@ -11,8 +13,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <title>Range slider jQuery plugin, written in TypeScript.</title>
-    <link rel="stylesheet" href="style.css">
-  <link href="jquery.range.159bdc2f97658f7cb520.css" rel="stylesheet"></head>
+  <link href="demo.d9b165610c192876f8bc.css" rel="stylesheet"></head>
   <body>
     <h1>Range slider demo.</h1>
     <div class="container">
@@ -41,32 +42,6 @@
         <input id="empty-params" type="range">
       </div>
     </div>
-
-    <script src="jquery.min.js"></script>
-    <script>
-      $(document).ready(() => {
-        $('input#simple').range({
-          showConfig: true,
-        });
-        $('input#with-step').range({
-          step: 10,
-          showConfig: true,
-        });
-        $('input#with-range').range({
-          range: true,
-          showConfig: true,
-        });
-        $('input#vertical').range({
-          showConfig: true,
-          vertical: true,
-        });
-        $('input#with-bubble').range({
-          value: 20,
-          showBubble: true,
-          showConfig: true,
-        });
-        $('input#empty-params').range();
-      });
-    </script>
-  <script type="text/javascript" src="jquery.range.159bdc2f97658f7cb520.js"></script></body>
+    <script src="./jquery.min.js"></script>
+  <script type="text/javascript" src="demo.d9b165610c192876f8bc.js"></script></body>
 </html>

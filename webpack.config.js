@@ -7,7 +7,8 @@ const devMode = process.env.NODE_ENV !== 'production';
 
 const config = {
   entry: {
-    'jquery.range': './src/ts/jquery.range.ts',
+    'jquery.range': './src/app/ts/jquery.range.ts',
+    demo: './src/demo/demo.ts',
   },
   output: {
     filename: devMode ? '[name].js' : '[name].[hash].js',
@@ -21,6 +22,13 @@ const config = {
       {
         test: /\.ts$/,
         use: 'ts-loader',
+      },
+      {
+        test: /\.pug$/,
+        loader: 'pug-loader',
+        options: {
+          pretty: true,
+        },
       },
       {
         test: /\.(sa|sc|c)ss$/,
@@ -43,17 +51,21 @@ const config = {
   plugins: [
     new CopyWebpackPlugin([
       { from: './node_modules/jquery/dist/jquery.min.js', to: './jquery.min.js' },
-      { from: './src/demo/style.css', to: './style.css' },
       { from: './src/demo/favicons', to: './favicons' },
+      // { from: './src/demo/style.css', to: './style.css' },
     ]),
     new HtmlWebpackPlugin({
-      inject: true,
-      template: './src/demo/index.html',
+      template: './src/demo/index.pug',
+      chunks: ['demo'],
     }),
     new MiniCssExtractPlugin({
       filename: devMode ? '[name].css' : '[name].[hash].css',
+      chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
     }),
   ],
+  node: {
+    fs: 'empty',
+  },
 };
 
 module.exports = config;
