@@ -4,13 +4,14 @@
   "description": "Range slider jQuery plugin, written in TypeScript.",
   "scripts": {
     "build": "rm -rf ./docs && webpack -p",
-    "watch": "webpack-dev-server",
+    "watch": "cross-env NODE_ENV=development webpack-dev-server",
     "test": "./node_modules/karma/bin/karma start karma.conf.js",
     "lint": "eslint -c .eslintrc src/ --ext .js --ext .ts"
   },
   "author": "Andrey Larionov",
   "license": "Apache-2.0",
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "eslint": "^6.7.2",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.19.1"

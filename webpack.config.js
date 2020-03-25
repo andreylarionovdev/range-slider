@@ -3,12 +3,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const devMode = process.env.NODE_ENV !== 'production';
+const devMode = process.env.NODE_ENV === 'development';
 
 const config = {
   entry: {
     'jquery.range': './src/app/ts/jquery.range.ts',
-    demo: './src/demo/demo.ts',
+    demo: './src/demo/ts/demo.ts',
   },
   output: {
     filename: devMode ? '[name].js' : '[name].[hash].js',
@@ -52,7 +52,6 @@ const config = {
     new CopyWebpackPlugin([
       { from: './node_modules/jquery/dist/jquery.min.js', to: './jquery.min.js' },
       { from: './src/demo/favicons', to: './favicons' },
-      // { from: './src/demo/style.css', to: './style.css' },
     ]),
     new HtmlWebpackPlugin({
       template: './src/demo/index.pug',

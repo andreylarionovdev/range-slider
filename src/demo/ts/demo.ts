@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import './style.css';
-import '../app/ts/jquery.range';
+import '../styles/style.css';
+import '../../app/ts/jquery.range';
 
 $(document).ready(() => {
   $('input#simple').range({
