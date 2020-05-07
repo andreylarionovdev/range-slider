@@ -62,9 +62,6 @@ const config = {
       chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
     }),
   ],
-  node: {
-    fs: 'empty',
-  },
 };
 
 module.exports = config;
