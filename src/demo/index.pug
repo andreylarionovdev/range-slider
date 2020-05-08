@@ -1,3 +1,5 @@
+include ./components/slider-group/slider-group
+
 doctype html
 html(lang='en')
   head
@@ -15,23 +17,28 @@ html(lang='en')
     title= 'Range slider jQuery plugin, written in TypeScript.'
   body
     h1= 'Range slider demo.'
-    div.container
-      div.range-slider-group
-        h3= 'Simple'
-        input(id="simple" type="range")
-      div.range-slider-group
-        h3= 'With step'
-        input(id="with-step" type="range")
-      div.range-slider-group
-        h3= 'With range'
-        input(id="with-range" type="range")
-      div.range-slider-group
-        h3= 'Vertical'
-        input(id="vertical" type="range")
-      div.range-slider-group
-        h3= 'With bubble'
-        input(id="with-bubble" type="range")
-      div.range-slider-group
-        h3= 'With empty params'
-        input(id="empty-params" type="range")
+    .container
+      +slider-group({
+        title: 'Simple',
+      })
+      +slider-group({
+        title: 'With step',
+        attr: { step: 10 },
+      })
+      +slider-group({
+        title: 'With range',
+        attr: { range: true },
+      })
+      +slider-group({
+        title: 'Vertical',
+        attr: { vertical: true },
+      })
+      +slider-group({
+        title: 'With bubble',
+        attr: { value: 20, 'show-bubble': true },
+      })
+      +slider-group({
+        title: 'Without config',
+        showConfig: false,
+      })
     script(src='./jquery.min.js')

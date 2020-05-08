@@ -20,6 +20,12 @@ declare global {
   }
 }
 
+const fetchOptionsFromDataAttr = (attr: State): State => Object.assign(
+  {}, ...Object.keys(attr).map((key) => (
+    { [key]: attr[key] === '' ? true : attr[key] }
+  )),
+);
+
 $.fn.range = function (this: JQuery, options?: State): JQuery {
   const defaults: State = {
     min: DEFAULT_MIN,
@@ -33,8 +39,10 @@ $.fn.range = function (this: JQuery, options?: State): JQuery {
     showConfig: DEFAULT_SHOW_CONFIG,
   };
 
+  const dataAttrOptions: State = fetchOptionsFromDataAttr(this.data());
+
   return this.each(function () {
-    new App($(this), { ...defaults, ...options });
+    new App($(this), { ...defaults, ...options, ...dataAttrOptions });
   });
 };
 

@@ -1,3 +1,5 @@
+@import '../components/slider-group/slider-group';
+
 html {
   color: rgba(31, 32, 65, 1);
   font-family: Monospaced, sans-serif;
@@ -12,8 +14,4 @@ html {
   grid-template-rows: 26rem;
   grid-gap: 3rem;
   color: rgba(31, 32, 65, 1);
-}
-
-h3 {
-  margin: 0 auto 2.5rem auto;
 }
