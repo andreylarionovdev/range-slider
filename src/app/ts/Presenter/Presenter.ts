@@ -12,20 +12,17 @@ class Presenter {
     this.view = view;
     this.model = model;
 
-    this.view.onDrag((k, v, d) => this.updateState(k, v, d));
-    this.view.onJump((k, v, d) => this.updateState(k, v, d));
-
-    this.view.onChangeConfig((k, v) => this.updateState(k, v));
+    this.view.onChange((state, extra) => this.updateState(state, extra));
 
     this.model.onChangeState((state) => this.updateView(state));
-
     this.model.onChangeValue((state) => this.updateHandle(state));
     this.model.onChangeValue((state) => this.updateViewValues(state));
 
     this.model.emitChangeState();
   }
 
-  updateState(key: string, value: null|number|boolean, extra?: SliderViewExtraData): void {
+  updateState(state: State, extra?: SliderViewExtraData): void {
+    const [key, value] = Object.entries(state)[0];
     this.model.updateStateProp(key, value, extra);
   }
 

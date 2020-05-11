@@ -1,12 +1,14 @@
 import $ from 'jquery';
 
 import Observer from '../Observer/Observer';
-import { HANDLE_RADIUS } from '../const';
 
 import State from '../Interfaces/State';
 import SliderView from '../Interfaces/SliderView';
 import SliderViewObservable from '../Interfaces/SliderViewObservable';
 import Observable from '../Interfaces/Observable';
+import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
+
+const template = require('./View.pug');
 
 class View implements SliderView, SliderViewObservable {
   announcer: Observable;
@@ -16,7 +18,7 @@ class View implements SliderView, SliderViewObservable {
 
   private $slider: JQuery;
 
-  private $input: JQuery;
+  private $track: JQuery;
 
   private $handleFrom: JQuery;
 
@@ -26,38 +28,7 @@ class View implements SliderView, SliderViewObservable {
 
   private $draggingHandle: JQuery;
 
-  private $configView: JQuery;
-
-  // Classes
-  private static block = 'range-slider';
-
-  private static blockVert = `${View.block}--vertical`;
-
-  private static blockWithBubble = `${View.block}--with-bubble`;
-
-  private static conf = `${View.block}__conf`;
-
-  private static confLabel = `${View.block}__conf-label`;
-
-  private static confInput = `${View.block}__conf-input`;
-
-  private static confInputG = `${View.block}__conf-input-group`;
-
-  private static input = `${View.block}__input`;
-
-  private static rail = `${View.block}__rail`;
-
-  private static visibleRail = `${View.block}__rail--visible`;
-
-  private static selection = `${View.block}__selection`;
-
-  private static handle = `${View.block}__handle`;
-
-  private static bubble = `${View.block}__bubble`;
-
-  private static handleFrom = `${View.handle}--from`;
-
-  private static handleTo = `${View.handle}--to`;
+  private $config: JQuery;
 
   private handleDragStart = (e): void => this.dragStart(e);
 
@@ -69,39 +40,39 @@ class View implements SliderView, SliderViewObservable {
 
   private handleChangeConfig = (e): void => this.changeConfig(e);
 
-  constructor($target: JQuery) {
+  constructor($target: JQuery, state: State) {
     this.announcer = new Observer();
     this.$target = $target;
+    this.render(state);
   }
 
-  update(state: State): void {
-    this
-      .renderMainView(state)
-      .renderConfigView(state);
+  render(state: State): void {
+    this.$slider = $(template({ state }));
+    this.$target.after(this.$slider).hide();
+
+    this.$track = this.$slider.find('.js-range-slider__track');
+    this.$handleFrom = this.$slider.find('.js-range-slider__handle_type_from');
+    this.$handleTo = this.$slider.find('.js-range-slider__handle_type_to');
+    this.$selection = this.$slider.find('.js-range-slider__selection');
+
+    this.$config = this.$slider.find('.js-range-slider__config');
+
+    this.bindDocumentEvents();
   }
 
-  updateValues(state: State): void {
-    const {
-      value, value2, range, showBubble, showConfig,
-    } = state;
-
-    if (showBubble) {
-      this.$handleFrom.find(`.${View.bubble}`).text(value);
-      if (range) {
-        this.$handleTo.find(`.${View.bubble}`).text(value2);
-      }
+  update(state: State, redraw?: boolean): this {
+    if (redraw === true) {
+      this.render(state);
     }
+    this.updateHandles(state);
 
-    if (showConfig) {
-      this.$configView.find('input[name="value"]').val(value);
-      this.$configView.find('input[name="value2"]').val(value2);
-    }
+    return this;
   }
 
   moveHandle(state: State): void {
     const { min, max, range } = state;
 
-    const value = this.$draggingHandle.hasClass(View.handleTo)
+    const value = this.$draggingHandle.hasClass('js-range-slider__handle_type_to')
       ? state.value2
       : state.value;
 
@@ -115,15 +86,27 @@ class View implements SliderView, SliderViewObservable {
     }
   }
 
-  onDrag(callback): void {
+  updateValues(state: State): void {
+    const {
+      value, value2, range, showBubble, showConfig,
+    } = state;
+
+    if (showBubble) {
+      this.$handleFrom.find('.js-range-slider__bubble').text(value);
+      if (range) {
+        this.$handleTo.find('.js-range-slider__bubble').text(value2);
+      }
+    }
+
+    if (showConfig) {
+      this.$config.find('input[name="value"]').val(value);
+      this.$config.find('input[name="value2"]').val(value2);
+    }
+  }
+
+  onChange(callback): void {
     this.announcer.on('drag', callback);
-  }
-
-  onJump(callback): void {
     this.announcer.on('jump', callback);
-  }
-
-  onChangeConfig(callback): void {
     this.announcer.on('change.config', callback);
   }
 
@@ -136,7 +119,9 @@ class View implements SliderView, SliderViewObservable {
       ? $input.is(':checked')
       : $input.val();
 
-    this.announcer.trigger('change.config', key, value);
+    const state: State = { [key]: value };
+
+    this.announcer.trigger('change.config', state);
   }
 
   private jump(e): void {
@@ -145,9 +130,10 @@ class View implements SliderView, SliderViewObservable {
 
     this.$draggingHandle = this.$handleFrom;
 
-    // If second handle exists,
-    // determine handle that closest to cursor to move it
-    if (this.$handleTo) {
+    /**
+     * If second handle exists, determine handle that closest to cursor to move it
+     */
+    if (this.$handleTo.length === 1) {
       const fromHandlePercent = this.getHandlePositionPercent(this.$handleFrom);
       const toHandlePercent = this.getHandlePositionPercent(this.$handleTo);
 
@@ -160,18 +146,23 @@ class View implements SliderView, SliderViewObservable {
       }
     }
 
-    this.announcer.trigger('jump', key, null, { percent: cursorPositionPercent });
+    const state: State = { [key]: null };
+    const extra: SliderViewExtraData = { percent: cursorPositionPercent };
+
+    this.announcer.trigger('jump', state, extra);
   }
 
   private drag(e): void {
     if (this.$draggingHandle) {
       e.preventDefault();
-      const key = this.$draggingHandle.hasClass(View.handleTo)
+      const key = this.$draggingHandle.hasClass('js-range-slider__handle_type_to')
         ? 'value2'
         : 'value';
-      this.announcer.trigger('drag', key, null, {
-        percent: this.getCursorPositionPercent(e),
-      });
+
+      const state: State = { [key]: null };
+      const extra: SliderViewExtraData = { percent: this.getCursorPositionPercent(e) };
+
+      this.announcer.trigger('drag', state, extra);
     }
   }
 
@@ -189,177 +180,22 @@ class View implements SliderView, SliderViewObservable {
     }
   }
 
-  private renderMainView(state: State): this {
-    if (!this.$slider) {
-      this.$slider = View.createSlider();
-      this.$target.after(this.$slider).hide();
-    }
-
-    View.updateSlider(this.$slider, state);
-
-    if (this.$input) {
-      this.destroyInput();
-    }
-
-    this.$input = View.createInput()
-      .on('mousedown', this.handleJump)
-      .appendTo(this.$slider);
-
-    const $visibleRail = View.createRail([View.visibleRail, View.rail])
-      .appendTo(this.$input);
-
-    const $rail = View.createRail()
-      .appendTo(this.$input);
-
+  private updateHandles(state: State): void {
+    this.$draggingHandle = this.$handleFrom;
+    this.moveHandle(state);
     if (state.range) {
-      this.$selection = View.createSelection()
-        .appendTo($visibleRail);
+      this.$draggingHandle = this.$handleTo;
+      this.moveHandle(state);
     }
 
-    this.$handleFrom = View.createHandle('from', state)
-      .on('mousedown', this.handleDragStart)
-      .appendTo($rail);
-
-    if (state.range) {
-      this.$handleTo = View.createHandle('to', state)
-        .on('mousedown', this.handleDragStart)
-        .appendTo($rail);
-    }
-
-    this.bindDocumentEvents();
-    this.updateHandles(state);
-
-    return this;
-  }
-
-  private renderConfigView(state: State): this {
-    if (this.$configView) {
-      if (state.showConfig) {
-        this.updateConfigView(state);
-      } else {
-        this.$configView.remove();
-      }
-    } else if (state.showConfig) {
-      this.$configView = this.createConfigView(state);
-      this.$slider.append(this.$configView);
-    }
-
-    return this;
-  }
-
-  private createConfigView(state: State): JQuery {
-    const $configView = $('<code/>').addClass(View.conf);
-
-    $configView
-      .append(
-        $('<p/>').html('<b>const</b> options = {'),
-      );
-
-    const $inputGroups: Array<JQuery> = Object.keys(state).map(
-      (key) => this.createConfigInputGroup(key, state[key]),
-    );
-
-    $configView
-      .append($inputGroups)
-      .append($('<p/>').html('}'));
-
-    return $configView;
-  }
-
-  private updateConfigView(state: State): void {
-    Object.keys(state).map((key) => this.updateConfigInputGroup(key, state[key]));
-  }
-
-  private updateConfigInputGroup(key: string, value: boolean|number|null): void {
-    const $input = this.$configView.find(`input[name="${key}"]`);
-    if ($input) {
-      if (typeof value === 'boolean') {
-        $input.prop('checked', value);
-      } else {
-        $input.val(value);
-      }
-    }
-  }
-
-  private createConfigInputGroup(key: string, value: boolean|number|null): JQuery {
-    const $inputGroup = $('<div/>').addClass(View.confInputG);
-
-    $('<label/>')
-      .addClass(View.confLabel)
-      .html(`${key}:`)
-      .attr('for', key)
-      .appendTo($inputGroup);
-    const $input = $('<input>')
-      .addClass(View.confInput)
-      .attr('name', key);
-
-    switch (typeof value) {
-      case 'boolean':
-        $input.attr('type', 'checkbox');
-        if (value === true) {
-          $input.prop('checked', true);
-        }
-        $input.on('change', this.handleChangeConfig);
-        break;
-      case 'number':
-        $input.attr('type', 'text')
-          .val(value)
-          .on('blur', this.handleChangeConfig);
-        break;
-      default:
-        $input.attr({
-          type: 'text',
-          placeholder: 'null',
-        }).on('blur', this.handleChangeConfig);
-    }
-
-    $input.appendTo($inputGroup);
-
-    return $inputGroup;
-  }
-
-  private destroyInput(): this {
-    if (this.$input) {
-      this.$handleFrom.off('mousedown', this.handleDragStart);
-      if (this.$handleTo) {
-        this.$handleTo.off('mousedown', this.handleDragStart);
-      }
-      this.$input.off('mousedown', this.handleJump).remove();
-    }
-
-    return this;
-  }
-
-  private static createSlider(): JQuery {
-    return $('<div/>').addClass(View.block);
-  }
-
-  private static updateSlider($slider: JQuery, state: State): void {
-    if (state.vertical) {
-      $slider.addClass(View.blockVert);
-    } else {
-      $slider.removeClass(View.blockVert);
-    }
-    if (state.showBubble) {
-      $slider.addClass(View.blockWithBubble);
-    } else {
-      $slider.removeClass(View.blockWithBubble);
-    }
-  }
-
-  private static createInput(): JQuery {
-    return $('<div/>').addClass(View.input);
-  }
-
-  private static createSelection(): JQuery {
-    return $('<div/>').addClass(View.selection);
+    this.$draggingHandle = null;
   }
 
   private updateSelection(position): void {
     const $handle = this.$draggingHandle;
     let updatedPosition = position;
     let prop;
-    if ($handle.hasClass(View.handleFrom)) {
+    if ($handle.hasClass('js-range-slider__handle_type_from')) {
       prop = this.isVertical() ? 'top' : 'left';
     } else {
       prop = this.isVertical() ? 'bottom' : 'right';
@@ -370,42 +206,13 @@ class View implements SliderView, SliderViewObservable {
     });
   }
 
-  private static createRail(classes: Array<string> = [View.rail]): JQuery {
-    return $('<div/>').addClass(classes);
-  }
-
-  private static createHandle(type: string, state: State): JQuery {
-    const $handle = $('<a/>').addClass(View.handle);
-    let handleClass = View.handleFrom;
-    if (type === 'to') {
-      handleClass = View.handleTo;
-    }
-    $handle.addClass(handleClass);
-
-    if (state.showBubble) {
-      const $bubble = $('<div/>').addClass(View.bubble).text(
-        type === 'to' ? state.value2 : state.value,
-      );
-
-      $handle.append($bubble);
-    }
-
-    return $handle;
-  }
-
-  private updateHandles(state: State): void {
-    this.$draggingHandle = this.$handleFrom;
-    this.moveHandle(state);
-
-    if (state.range) {
-      this.$draggingHandle = this.$handleTo;
-      this.moveHandle(state);
-    }
-
-    this.$draggingHandle = null;
-  }
-
   private bindDocumentEvents(): void {
+    this.$track.on('mousedown', this.handleJump);
+    this.$handleFrom.on('mousedown', this.handleDragStart);
+    this.$handleTo.on('mousedown', this.handleDragStart);
+    this.$config.find('.js-range-slider__config-input_type_text').on('blur', this.handleChangeConfig);
+    this.$config.find('.js-range-slider__config-input_type_checkbox').on('change', this.handleChangeConfig);
+
     $(document)
       .off('mouseup', this.handleDragEnd)
       .on('mouseup', this.handleDragEnd)
@@ -414,21 +221,21 @@ class View implements SliderView, SliderViewObservable {
   }
 
   private isVertical(): boolean {
-    return this.$slider.hasClass(View.blockVert);
+    return this.$slider.hasClass('js-range-slider_orientation_vertical');
   }
 
   private getCursorPositionPercent(e: MouseEvent): number {
     let position; // cursor position in px relative to slider
     let percent; // cursor position in percent relative to slider
-    const $rail = this.$slider.find(`.${View.rail}`);
+    const $track = this.$slider.find('.range-slider__track');
     if (this.isVertical()) {
-      position = e.pageY - $rail.offset().top - HANDLE_RADIUS;
-      percent = position / ($rail.height() / 100);
+      position = e.pageY - $track.offset().top;
+      percent = position / ($track.height() / 100);
 
       return percent;
     }
-    position = e.pageX - $rail.offset().left - HANDLE_RADIUS;
-    percent = position / ($rail.width() / 100);
+    position = e.pageX - $track.offset().left;
+    percent = position / ($track.width() / 100);
 
     return percent;
   }

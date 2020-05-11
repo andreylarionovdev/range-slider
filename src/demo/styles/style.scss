@@ -11,7 +11,7 @@ html {
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-  grid-template-rows: 26rem;
+  grid-template-rows: 25rem 25rem;
   grid-gap: 3rem;
   color: rgba(31, 32, 65, 1);
 }

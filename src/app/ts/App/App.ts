@@ -8,7 +8,7 @@ class App {
 
   constructor(target: JQuery, options: State) {
     this.presenter = new Presenter(
-      new View(target),
+      new View(target, options),
       new Model(options),
     );
   }

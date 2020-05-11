@@ -35,69 +35,58 @@ describe('View', () => {
   });
 
   it('rendered properly with default options', () => {
-    const view = new View($('input[type="range"]'));
+    const view = new View($('input[type="range"]'), defaultOptions);
 
-    view.update(defaultOptions);
-
-    const $slider = $('.range-slider');
+    const $slider = $('.js-range-slider');
 
     expect($slider.length).toEqual(1);
-    expect($slider.find('.range-slider__handle').length).toEqual(1);
-    expect($slider.hasClass('range-slider--vertical')).toBeFalsy();
+    expect($slider.find('.js-range-slider__handle').length).toEqual(1);
+    expect($slider.hasClass('js-range-slider_orientation_vertical')).toBeFalsy();
   });
 
   it('rendered properly with `vertical` option', () => {
-    const view = new View($('input[type="range"]'));
     const options = { ...defaultOptions, vertical: true };
+    const view = new View($('input[type="range"]'), options);
 
-    view.update(options);
+    const $slider = $('.js-range-slider');
 
-    const $slider = $('.range-slider');
-
-    expect($slider.hasClass('range-slider--vertical')).toBeTruthy();
+    expect($slider.hasClass('js-range-slider_orientation_vertical')).toBeTruthy();
   });
 
   it('rendered properly with `range` option', () => {
-    const view = new View($('input[type="range"]'));
     const options = { ...defaultOptions, range: true };
+    const view = new View($('input[type="range"]'), options);
 
-    view.update(options);
+    const $slider = $('.js-range-slider');
 
-    const $slider = $('.range-slider');
-
-    expect($slider.find('.range-slider__handle').length).toEqual(2);
-    expect($slider.find('.range-slider__handle--from').length).toEqual(1);
-    expect($slider.find('.range-slider__handle--to').length).toEqual(1);
+    expect($slider.find('.js-range-slider__handle').length).toEqual(2);
+    expect($slider.find('.js-range-slider__handle_type_from').length).toEqual(1);
+    expect($slider.find('.js-range-slider__handle_type_to').length).toEqual(1);
   });
 
   it('rendered properly with `showConfig` option', () => {
-    const view = new View($('input[type="range"]'));
     const options = { ...defaultOptions, showConfig: true };
+    const view = new View($('input[type="range"]'), options);
 
-    view.update(options);
+    const $slider = $('.js-range-slider');
 
-    const $slider = $('.range-slider');
-
-    expect($slider.find('.range-slider__conf').length).toEqual(1);
-    expect($slider.find('.range-slider__conf-input-group').length)
-      .toEqual(Object.entries(defaultOptions).length);
+    expect($slider.find('.js-range-slider__config').length).toEqual(1);
+    expect($slider.find('.js-range-slider__config-input-group').length)
+      .toEqual(Object.entries(defaultOptions).length - 1);
   });
 
   it('rendered properly with `showBubble` option', () => {
     const value = Math.floor(Math.random());
-    const view = new View($('input[type="range"]'));
     const options = {
       ...defaultOptions,
       value,
       showBubble: true,
     };
+    const view = new View($('input[type="range"]'), options);
 
-    view.update(options);
+    const $slider = $('.js-range-slider');
 
-    const $slider = $('.range-slider');
-
-    expect($slider.hasClass('range-slider--with-bubble')).toBeTruthy();
-    expect($slider.find('.range-slider__bubble').length).toEqual(1);
-    expect($slider.find('.range-slider__bubble').text()).toEqual(value.toString());
+    expect($slider.find('.js-range-slider__bubble').length).toEqual(1);
+    expect($slider.find('.js-range-slider__bubble').text()).toEqual(value.toString());
   });
 });

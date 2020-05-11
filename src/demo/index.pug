@@ -20,25 +20,25 @@ html(lang='en')
     .container
       +slider-group({
         title: 'Simple',
+        attr: {'show-config': true}
       })
       +slider-group({
         title: 'With step',
-        attr: { step: 10 },
+        attr: { step: 10, 'show-config': true },
       })
       +slider-group({
         title: 'With range',
-        attr: { range: true },
+        attr: { range: true, 'show-config': true },
       })
       +slider-group({
         title: 'Vertical',
-        attr: { vertical: true },
+        attr: { vertical: true, range: true, value: 30, value2: 50, 'show-bubble': true, 'show-config': true },
       })
       +slider-group({
         title: 'With bubble',
-        attr: { value: 20, 'show-bubble': true },
+        attr: { value: 20, 'show-bubble': true, 'show-config': true },
       })
       +slider-group({
         title: 'Without config',
-        showConfig: false,
       })
     script(src='./jquery.min.js')
