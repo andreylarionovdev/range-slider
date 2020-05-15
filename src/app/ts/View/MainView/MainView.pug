@@ -1,0 +1,9 @@
+- const blockModifiers = [];
+- const { range, value, value2, vertical, showBubble, showConfig } = state;
+
+if vertical
+  - blockModifiers.push('range-slider_orientation_vertical')
+  - blockModifiers.push('js-range-slider_orientation_vertical')
+
+.range-slider.js-range-slider(class=blockModifiers)
+  .range-slider__track.js-range-slider__track

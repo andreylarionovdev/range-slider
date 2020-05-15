@@ -6,6 +6,7 @@ import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
 import Observable from '../Interfaces/Observable';
 import SliderModel from '../Interfaces/SliderModel';
 import SliderModelObservable from '../Interfaces/SliderModelObservable';
+import SliderModelExtraData from '../Interfaces/SliderModelExtraData';
 
 class Model implements SliderModel, SliderModelObservable {
   announcer: Observable;
@@ -31,52 +32,51 @@ class Model implements SliderModel, SliderModelObservable {
     return this;
   }
 
-  updateStateProp(prop: string, value: null|number|boolean, extra?: SliderViewExtraData): this {
-    const state = { ...this.state };
-    let event = 'change.state';
-    let newValue = value;
-    switch (prop) {
+  update(state: State, viewExtra?: SliderViewExtraData): this {
+    const [stateProperty, stateValue] = Object.entries(state)[0];
+    const thisState: State = { ...this.state };
+    const modelExtra: SliderModelExtraData = { redraw: true };
+
+    const { percent } = viewExtra || {};
+    let newValue = stateValue;
+
+    switch (stateProperty) {
       case 'value':
       case 'value2':
-        if (newValue === null) {
-          event = `change.${prop}`;
-          newValue = this.positionToValue(extra.percent);
+        modelExtra.redraw = false;
+        if (typeof percent !== 'undefined') {
+          newValue = this.percentToValue(percent);
         }
-        state[prop] = Model.validateValue(prop, Number(newValue), state);
+        thisState[stateProperty] = Model.validateValue(stateProperty, Number(newValue), thisState);
         break;
       case 'min':
       case 'max':
       case 'step':
-        state[prop] = Number(newValue);
+        thisState[stateProperty] = Number(newValue);
         break;
       default:
-        state[prop] = newValue;
+        thisState[stateProperty] = newValue;
     }
 
-    this.state = Model.validateState(state);
+    this.state = Model.validateState(thisState);
 
-    this.announcer.trigger(event, { ...this.state });
+    this.announcer.trigger('change.state', { ...this.state }, modelExtra);
 
     return this;
   }
 
   emitChangeState(): void {
-    this.announcer.trigger(
-      'change.state',
-      { ...this.state },
-    );
+    const state: State = { ...this.state };
+    const extra: SliderModelExtraData = { redraw: false };
+
+    this.announcer.trigger('change.state', state, extra);
   }
 
-  onChangeState(callback): void {
+  onChange(callback): void {
     this.announcer.on('change.state', callback);
   }
 
-  onChangeValue(callback): void {
-    this.announcer.on('change.value', callback);
-    this.announcer.on('change.value2', callback);
-  }
-
-  private positionToValue(percent: number): number {
+  private percentToValue(percent: number): number {
     const { min, max } = this.state;
     const range = max - min;
 

@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import State from '../Interfaces/State';
-import View from './View';
+import State from '../../Interfaces/State';
+import MainView from './MainView';
 import {
   DEFAULT_MAX,
   DEFAULT_MIN,
@@ -11,7 +11,7 @@ import {
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
   DEFAULT_SHOW_CONFIG,
-} from '../const';
+} from '../../const';
 
 
 const defaultOptions: State = {
@@ -35,7 +35,7 @@ describe('View', () => {
   });
 
   it('rendered properly with default options', () => {
-    const view = new View($('input[type="range"]'), defaultOptions);
+    const view = new MainView($('input[type="range"]'), defaultOptions);
 
     const $slider = $('.js-range-slider');
 
@@ -46,7 +46,7 @@ describe('View', () => {
 
   it('rendered properly with `vertical` option', () => {
     const options = { ...defaultOptions, vertical: true };
-    const view = new View($('input[type="range"]'), options);
+    const view = new MainView($('input[type="range"]'), options);
 
     const $slider = $('.js-range-slider');
 
@@ -55,7 +55,7 @@ describe('View', () => {
 
   it('rendered properly with `range` option', () => {
     const options = { ...defaultOptions, range: true };
-    const view = new View($('input[type="range"]'), options);
+    const view = new MainView($('input[type="range"]'), options);
 
     const $slider = $('.js-range-slider');
 
@@ -66,7 +66,7 @@ describe('View', () => {
 
   it('rendered properly with `showConfig` option', () => {
     const options = { ...defaultOptions, showConfig: true };
-    const view = new View($('input[type="range"]'), options);
+    const view = new MainView($('input[type="range"]'), options);
 
     const $slider = $('.js-range-slider');
 
@@ -82,7 +82,7 @@ describe('View', () => {
       value,
       showBubble: true,
     };
-    const view = new View($('input[type="range"]'), options);
+    const view = new MainView($('input[type="range"]'), options);
 
     const $slider = $('.js-range-slider');
 

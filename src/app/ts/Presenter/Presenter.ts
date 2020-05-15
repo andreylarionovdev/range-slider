@@ -1,41 +1,30 @@
-import View from '../View/View';
+import SliderView from '../View/MainView/MainView';
 import Model from '../Model/Model';
 import State from '../Interfaces/State';
 import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
+import SliderModelExtraData from '../Interfaces/SliderModelExtraData';
 
 class Presenter {
-  private view: View;
+  private view: SliderView;
 
   private model: Model;
 
-  constructor(view: View, model: Model) {
+  constructor(view: SliderView, model: Model) {
     this.view = view;
     this.model = model;
 
     this.view.onChange((state, extra) => this.updateState(state, extra));
-
-    this.model.onChangeState((state) => this.updateView(state));
-    this.model.onChangeValue((state) => this.updateHandle(state));
-    this.model.onChangeValue((state) => this.updateViewValues(state));
+    this.model.onChange((state, extra) => this.updateView(state, extra));
 
     this.model.emitChangeState();
   }
 
   updateState(state: State, extra?: SliderViewExtraData): void {
-    const [key, value] = Object.entries(state)[0];
-    this.model.updateStateProp(key, value, extra);
+    this.model.update(state, extra);
   }
 
-  updateHandle(state: State): void {
-    this.view.moveHandle(state);
-  }
-
-  updateView(state: State): void {
-    this.view.update(state);
-  }
-
-  updateViewValues(state: State): void {
-    this.view.updateValues(state);
+  updateView(state: State, extra: SliderModelExtraData): void {
+    this.view.update(state, extra);
   }
 }
 

@@ -53,23 +53,25 @@ describe('Model', () => {
 
   it('has correct values after setting random property', () => {
     const model = new Model(defaultOptions);
-    const value = Math.floor(Math.random() * 100);
-    const key = 'value';
+    const stateProperty = 'value';
+    const stateValue = Math.floor(Math.random() * 100);
+    const state: State = { [stateProperty]: stateValue };
 
-    model.updateStateProp(key, value);
+    model.update(state);
 
-    expect(model.get(key)).toEqual(value);
+    expect(model.get(stateProperty)).toEqual(stateValue);
   });
 
   it('has correct value2 after setting `range` true', () => {
     const model = new Model(defaultOptions);
-    const key = 'value2';
 
-    expect(model.get(key)).toEqual(null);
+    expect(model.get('value2')).toEqual(null);
 
-    model.updateStateProp('range', true);
+    const state: State = { range: true };
 
-    expect(model.get(key)).toEqual(DEFAULT_MAX);
+    model.update(state);
+
+    expect(model.get('value2')).toEqual(DEFAULT_MAX);
   });
 
   it('has correct values with specified `step` parameter', () => {
@@ -78,11 +80,11 @@ describe('Model', () => {
 
     expect(model.get('value')).toEqual(20);
 
-    model.updateStateProp('value2', 46);
+    model.update({ value2: 46 });
 
     expect(model.get('value2')).toEqual(45);
 
-    model.updateStateProp('step', 10);
+    model.update({ step: 10 });
 
     expect(model.get('value')).toEqual(20);
     expect(model.get('value2')).toEqual(40);
@@ -107,7 +109,7 @@ describe('Model', () => {
     expect(model.get('value')).toEqual(12);
     expect(model.get('value2')).toEqual(21);
 
-    model.updateStateProp('value', 25);
+    model.update({ value: 25 });
 
     expect(model.get('value')).toEqual(21);
   });
@@ -121,7 +123,7 @@ describe('Model', () => {
     expect(model.get('value')).toEqual(24);
     expect(model.get('value2')).toEqual(42);
 
-    model.updateStateProp('value2', 20);
+    model.update({ value2: 20 });
 
     expect(model.get('value2')).toEqual(24);
   });
@@ -140,7 +142,7 @@ describe('Model', () => {
 
     expect(model.get('value')).toEqual(1234);
 
-    model.updateStateProp('value2', 12345);
+    model.update({ value2: 12345 });
 
     expect(model.get('value2')).toEqual(1234);
   });
@@ -151,7 +153,7 @@ describe('Model', () => {
 
     expect(model.get('value')).toEqual(-1234);
 
-    model.updateStateProp('value2', -12345);
+    model.update({ value2: -12345 });
 
     expect(model.get('value2')).toEqual(-1234);
   });
@@ -160,17 +162,17 @@ describe('Model', () => {
     const options = { ...defaultOptions, min: 1000, max: 2000 };
     const model = new Model(options);
 
-    model.updateStateProp('value', null, { percent: 50 });
+    model.update({ value: null }, { percent: 50 });
 
     expect(model.get('value')).toEqual(1500);
 
-    model.updateStateProp('value', null, { percent: 25 });
-    model.updateStateProp('value2', null, { percent: 75 });
+    model.update({ value: null }, { percent: 25 });
+    model.update({ value2: null }, { percent: 75 });
 
     expect(model.get('value')).toEqual(1250);
     expect(model.get('value2')).toEqual(1750);
 
-    model.updateStateProp('value', null, { percent: 85 });
+    model.update({ value: null }, { percent: 85 });
 
     expect(model.get('value2')).toEqual(1750);
   });

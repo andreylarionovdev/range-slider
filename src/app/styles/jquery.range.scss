@@ -83,7 +83,7 @@ $railWeight: 0.5rem;
   &_orientation {
     &_vertical {
       min-width: auto;
-      height: 100%;
+      height: auto;
       grid-template-columns: 10px auto;
       grid-template-rows: auto;
       grid-template-areas: 'track config';

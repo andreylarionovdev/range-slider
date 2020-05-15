@@ -13,7 +13,11 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
-    files: ['src/**/*.spec.ts', 'src/**/*.spec.js'],
+    files: [
+      'src/**/*.spec.ts',
+      'src/**/*.spec.js',
+      'node_modules/jquery/dist/jquery.min.js',
+    ],
 
     // list of files / patterns to exclude
     exclude: [],

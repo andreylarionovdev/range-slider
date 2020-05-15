@@ -26,7 +26,7 @@ const fetchOptionsFromDataAttr = (attr: State): State => Object.assign(
   )),
 );
 
-$.fn.range = function (this: JQuery, options?: State): JQuery {
+$.fn.range = function range(this: JQuery, options?: State): JQuery {
   const defaults: State = {
     min: DEFAULT_MIN,
     max: DEFAULT_MAX,
@@ -41,8 +41,8 @@ $.fn.range = function (this: JQuery, options?: State): JQuery {
 
   const dataAttrOptions: State = fetchOptionsFromDataAttr(this.data());
 
-  return this.each(function () {
-    new App($(this), { ...defaults, ...options, ...dataAttrOptions });
+  return this.each((_, element) => {
+    $(element).data('range', new App($(element), { ...defaults, ...options, ...dataAttrOptions }));
   });
 };
 

@@ -27,7 +27,8 @@
     ],
     "semi": "off",
     "@typescript-eslint/semi": ["error"],
-    "@typescript-eslint/no-var-requires": 0
+    "@typescript-eslint/no-var-requires": 0,
+    "no-undef": "off"
   },
   "env": {
     "browser": true,
