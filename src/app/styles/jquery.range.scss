@@ -61,25 +61,6 @@ $railWeight: 0.5rem;
     font-size: 0.875rem;
     font-family: monospace;
   }
-  &__config {
-    grid-area: config;
-    font-family: monospace, sans-serif;
-    color: $color-dark-100;
-    padding: $handleDiam / 2 - 0.0625rem;
-  }
-  &__config-input-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 6px 0;
-    padding-left: 1.25rem;
-  }
-  &__config-input {
-    color: $color-dark-75;
-    font-size: 1rem;
-    font-family: monospace, sans-serif;
-    border-radius: 0.25rem;
-  }
   &_orientation {
     &_vertical {
       min-width: auto;

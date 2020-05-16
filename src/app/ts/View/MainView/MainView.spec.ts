@@ -10,7 +10,6 @@ import {
   DEFAULT_RANGE,
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
-  DEFAULT_SHOW_CONFIG,
 } from '../../const';
 
 
@@ -23,7 +22,6 @@ const defaultOptions: State = {
   range: DEFAULT_RANGE,
   vertical: DEFAULT_VERTICAL,
   showBubble: DEFAULT_SHOW_BUBBLE,
-  showConfig: DEFAULT_SHOW_CONFIG,
 };
 
 describe('View', () => {
@@ -62,17 +60,6 @@ describe('View', () => {
     expect($slider.find('.js-range-slider__handle').length).toEqual(2);
     expect($slider.find('.js-range-slider__handle_type_from').length).toEqual(1);
     expect($slider.find('.js-range-slider__handle_type_to').length).toEqual(1);
-  });
-
-  it('rendered properly with `showConfig` option', () => {
-    const options = { ...defaultOptions, showConfig: true };
-    const view = new MainView($('input[type="range"]'), options);
-
-    const $slider = $('.js-range-slider');
-
-    expect($slider.find('.js-range-slider__config').length).toEqual(1);
-    expect($slider.find('.js-range-slider__config-input-group').length)
-      .toEqual(Object.entries(defaultOptions).length - 1);
   });
 
   it('rendered properly with `showBubble` option', () => {

@@ -1,7 +1,12 @@
+include ../slider-config/slider-config
+
 mixin slider-group(options)
   - const { title, attr = {}, showConfig = true } = options || {};
   - const dataAttributes = Object.assign({}, ...Object.keys(attr).map(key => ({[`data-${key}`]: attr[key]})));
 
-  .slider-group
+  .slider-group.js-slider-group
     h3.slider-group__title= title
     input.slider-group__target-input.js-slider-group__target-input(type='range')&attributes(dataAttributes)
+    if showConfig === true
+      .slider-group__config
+        +slider-config(attr)

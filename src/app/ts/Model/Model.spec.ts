@@ -10,7 +10,6 @@ import {
   DEFAULT_RANGE,
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
-  DEFAULT_SHOW_CONFIG,
 } from '../const';
 
 const defaultOptions: State = {
@@ -22,7 +21,6 @@ const defaultOptions: State = {
   range: DEFAULT_RANGE,
   vertical: DEFAULT_VERTICAL,
   showBubble: DEFAULT_SHOW_BUBBLE,
-  showConfig: DEFAULT_SHOW_CONFIG,
 };
 
 describe('Model', () => {
@@ -33,7 +31,6 @@ describe('Model', () => {
     // compare state object and options
     expect(defaultOptions).toEqual(state);
     // compare some properties from state and options
-    expect(defaultOptions.showConfig).toEqual(state.showConfig);
     expect(defaultOptions.min).toEqual(state.min);
   });
 
@@ -46,7 +43,6 @@ describe('Model', () => {
     // compare state object and options
     expect(options).toEqual(state);
     // compare random properties from state and options
-    expect(options.showConfig).toEqual(state.showConfig);
     expect(options.min).toEqual(state.min);
     expect(state.max).toEqual(max);
   });

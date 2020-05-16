@@ -10,7 +10,6 @@ import {
   DEFAULT_RANGE,
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
-  DEFAULT_SHOW_CONFIG,
 } from './const';
 import '../styles/jquery.range.scss';
 
@@ -36,7 +35,6 @@ $.fn.range = function range(this: JQuery, options?: State): JQuery {
     range: DEFAULT_RANGE,
     vertical: DEFAULT_VERTICAL,
     showBubble: DEFAULT_SHOW_BUBBLE,
-    showConfig: DEFAULT_SHOW_CONFIG,
   };
 
   const dataAttrOptions: State = fetchOptionsFromDataAttr(this.data());

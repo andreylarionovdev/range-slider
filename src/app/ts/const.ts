@@ -6,8 +6,6 @@ const DEFAULT_VALUE_2 = null;
 const DEFAULT_RANGE = false;
 const DEFAULT_VERTICAL = false;
 const DEFAULT_SHOW_BUBBLE = false;
-const DEFAULT_SHOW_CONFIG = false;
-const HANDLE_RADIUS = 7;
 
 export {
   DEFAULT_MIN,
@@ -18,6 +16,4 @@ export {
   DEFAULT_RANGE,
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
-  DEFAULT_SHOW_CONFIG,
-  HANDLE_RADIUS,
 };

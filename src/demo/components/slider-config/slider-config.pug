@@ -1,0 +1,39 @@
+mixin slider-config(fields)
+  -
+    const defaultFields = {
+      min: 0,
+      max: 100,
+      step: 1,
+      value: 0,
+      value2: null,
+      range: false,
+      vertical: false,
+      'show-bubble': false,
+    };
+    const toCamelCase = (s) => {
+      return s.replace(/([-_][a-z])/ig, ($1) => {
+        return $1.toUpperCase() .replace('-', '');
+      });
+    };
+
+  form.slider-config.js-slider-config
+    p.slider-config__header= 'const options = {'
+    -
+      const checkboxInputClasses = [
+        'slider-config__input',
+        'slider-config__input_type_checkbox',
+        'js-slider-config__input_type_checkbox',
+      ];
+      const textInputClasses = [
+        'slider-config__input',
+        'slider-config__input_type_text',
+        'js-slider-config__input_type_text',
+      ];
+    each val, key in Object.assign({}, defaultFields, fields)
+      p.slider-config__input-group.js-slider-config__input-group
+        label.slider-config__label= toCamelCase(key)
+        if typeof val === 'boolean'
+          input(name=key type='checkbox' checked=val class=checkboxInputClasses)
+        else
+          input(name=key type='text' value=val class=textInputClasses)
+    p.range-slider__footer= '}'

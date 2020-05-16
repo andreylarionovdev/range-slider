@@ -3,7 +3,6 @@ import State from './State';
 
 interface SliderModel {
   getState(): State;
-  setState(state: State): this;
   update(state: State, extra?: SliderViewExtraData): this;
 }
 

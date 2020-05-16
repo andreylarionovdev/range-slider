@@ -15,7 +15,7 @@ class Model implements SliderModel, SliderModelObservable {
 
   constructor(state: State) {
     this.announcer = new Observer();
-    this.setState(state);
+    this.init(state);
   }
 
   get(key: string): null|number|boolean {
@@ -24,12 +24,6 @@ class Model implements SliderModel, SliderModelObservable {
 
   getState(): State {
     return this.state;
-  }
-
-  setState(state: State): this {
-    this.state = Model.validateState({ ...this.state, ...state });
-
-    return this;
   }
 
   update(state: State, viewExtra?: SliderViewExtraData): this {
@@ -61,6 +55,9 @@ class Model implements SliderModel, SliderModelObservable {
     this.state = Model.validateState(thisState);
 
     this.announcer.trigger('change.state', { ...this.state }, modelExtra);
+    if (typeof this.state.onChange === 'function') {
+      this.state.onChange(this.state);
+    }
 
     return this;
   }
@@ -74,6 +71,15 @@ class Model implements SliderModel, SliderModelObservable {
 
   onChange(callback): void {
     this.announcer.on('change.state', callback);
+  }
+
+  private init(state: State): this {
+    this.state = Model.validateState({ ...this.state, ...state });
+    if (typeof this.state.onCreate === 'function') {
+      this.state.onCreate(this.state);
+    }
+
+    return this;
   }
 
   private percentToValue(percent: number): number {

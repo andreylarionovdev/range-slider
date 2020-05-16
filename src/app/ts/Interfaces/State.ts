@@ -7,7 +7,8 @@ interface State {
   range?: boolean;
   vertical?: boolean;
   showBubble?: boolean;
-  showConfig?: boolean;
+  onCreate?: Function;
+  onChange?: Function;
 }
 
 export default State;

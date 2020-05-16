@@ -7,7 +7,6 @@ import SliderView from '../../Interfaces/SliderView';
 import SliderViewObservable from '../../Interfaces/SliderViewObservable';
 import Observable from '../../Interfaces/Observable';
 import SliderViewExtraData from '../../Interfaces/SliderViewExtraData';
-import ConfigView from '../ConfigView/ConfigView';
 import SliderModelExtraData from '../../Interfaces/SliderModelExtraData';
 import HandleView from '../HandleView/HandleView';
 import SelectionView from '../SelectionView/SelectionView';
@@ -38,8 +37,6 @@ class MainView implements SliderView, SliderViewObservable {
   private handleToView: HandleView;
 
   private selectionView: SelectionView;
-
-  private configView: ConfigView;
 
   private handleJump = (e): void => this.jump(e);
 
@@ -78,10 +75,6 @@ class MainView implements SliderView, SliderViewObservable {
       this.selectionView.update(fromPosition, toPosition);
     }
 
-    if (typeof this.configView !== 'undefined') {
-      this.configView.update(state);
-    }
-
     return this;
   }
 
@@ -96,21 +89,12 @@ class MainView implements SliderView, SliderViewObservable {
     this.$element = $(template({ state }));
     this.$target.after(this.$element).hide();
 
-    const { showConfig, range } = state;
+    const { range } = state;
 
     this.handleFromView = new HandleView(this.$element, state);
     if (range) {
       this.handleToView = new HandleView(this.$element, state);
       this.selectionView = new SelectionView(this.$element);
-    }
-    /**
-     * TODO: remove from App to plugin callbacks
-     */
-    if (showConfig === true) {
-      this.configView = new ConfigView(this.$element, state);
-      this.configView.onChange((_state: State) => {
-        this.announcer.trigger('change.view', _state);
-      });
     }
 
     this.$track = this.$element.find('.js-range-slider__track');
@@ -118,14 +102,12 @@ class MainView implements SliderView, SliderViewObservable {
     this.$handleTo = this.$element.find('.js-range-slider__handle_type_to');
     this.$selection = this.$element.find('.js-range-slider__selection');
 
-    this.$config = this.$element.find('.js-range-slider__config');
-
     this.bindDocumentEvents();
   }
 
   private jump(e: MouseEvent): void {
     const cursorPosition = this.getCursorPosition(e);
-    let key = 'value';
+    let stateProp = 'value';
 
     if (typeof this.handleToView !== 'undefined') {
       const fromHandlePercent = this.handleFromView.getCurrentPosition();
@@ -135,11 +117,11 @@ class MainView implements SliderView, SliderViewObservable {
       const distTo = Math.abs(cursorPosition - toHandlePercent);
 
       if (distFrom > distTo) {
-        key = 'value2';
+        stateProp = 'value2';
       }
     }
 
-    const state: State = { [key]: null };
+    const state: State = { [stateProp]: null };
     const extra: SliderViewExtraData = { percent: cursorPosition };
 
     this.announcer.trigger('change.view', state, extra);
