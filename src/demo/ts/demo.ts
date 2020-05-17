@@ -14,12 +14,14 @@ $('.js-slider-group__target-input').each((_, input) => {
     });
   };
 
-  $input.range({
+  const rangeSliderAPI = $input.range({
     onChange(state) {
       updateForm($configForm, state);
     },
     onCreate(state) {
       updateForm($configForm, state);
     },
-  });
+  }).data('api');
+
+  rangeSliderAPI.update();
 });

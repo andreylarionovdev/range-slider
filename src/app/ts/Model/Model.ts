@@ -26,6 +26,12 @@ class Model implements SliderModel, SliderModelObservable {
     return this.state;
   }
 
+  setState(state: State): void {
+    this.init(state);
+
+    this.announcer.trigger('change.state', { ...this.state }, { redraw: true });
+  }
+
   update(state: State, viewExtra?: SliderViewExtraData): this {
     const [stateProperty, stateValue] = Object.entries(state)[0];
     const thisState: State = { ...this.state };

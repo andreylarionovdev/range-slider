@@ -12,6 +12,10 @@ class App {
       new Model(options),
     );
   }
+
+  update(state: State): void {
+    this.presenter.update(state);
+  }
 }
 
 export default App;

@@ -40,7 +40,7 @@ $.fn.range = function range(this: JQuery, options?: State): JQuery {
   const dataAttrOptions: State = fetchOptionsFromDataAttr(this.data());
 
   return this.each((_, element) => {
-    $(element).data('range', new App($(element), { ...defaults, ...options, ...dataAttrOptions }));
+    $(element).data('api', new App($(element), { ...defaults, ...options, ...dataAttrOptions }));
   });
 };
 
