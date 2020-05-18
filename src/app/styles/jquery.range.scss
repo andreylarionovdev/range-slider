@@ -8,20 +8,17 @@ $railWeight: 0.5rem;
 .range-slider {
   $blockClass: &;
   box-sizing: border-box;
-  display: grid;
-  min-width: 10rem;
-  grid-template-rows: 10px auto;
-  grid-template-areas:
-      'track'
-      'config';
+  display: flex;
+  width: 100%;
+  height: auto;
   &__track {
     border: 1px solid $color-dark-25;
     border-radius: 0.25rem;
-    grid-area: track;
     cursor: pointer;
     position: relative;
     display: flex;
     align-items: center;
+    height: $railWeight;
     width: 100%;
   }
   &__selection {
@@ -63,26 +60,20 @@ $railWeight: 0.5rem;
   }
   &_orientation {
     &_vertical {
-      min-width: auto;
-      height: auto;
-      grid-template-columns: 10px auto;
-      grid-template-rows: auto;
-      grid-template-areas: 'track config';
-
+      height: 100%;
+      width: auto;
       #{$blockClass}__track {
+        width: $railWeight;
         height: 100%;
         justify-content: center;
       }
-
       #{$blockClass}__handle {
         transform: translateX(0) translateY(-50%);
       }
-
       #{$blockClass}__bubble {
         top: initial;
         right: 1.25rem;
       }
-
       #{$blockClass}__selection {
         width: 0.5rem;
         height: auto;

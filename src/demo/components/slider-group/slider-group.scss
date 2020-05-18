@@ -1,5 +1,40 @@
+$color-dark-75: rgba(31, 32, 65, .75);
+
 .slider-group {
+  $blockClass: &;
+  display: grid;
+  grid-template-areas:
+    'title title'
+    'slider config';
+  grid-column-gap: 2rem;
+  grid-template-columns: 4fr 3fr;
   &__title {
-    margin: 0 auto 2.5rem auto;
+    grid-area: title;
+    grid-column-start: 2;
+  }
+  &__range-slider {
+    grid-area: slider;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  &__config {
+    grid-area: config;
+    font-weight: bold;
+    padding: 0.625rem 2rem 0.25rem 2rem;
+    border: 0.1875rem dashed $color-dark-75;
+    border-radius: 1.25rem;
+    background: aliceblue;
+  }
+  &_reversed {
+    grid-template-areas:
+      'title title'
+      'config slider';
+    grid-template-columns: 3fr 4fr;
+    #{$blockClass}__title {
+      align-self: flex-start;
+      grid-column-start: 1;
+    }
   }
 }

@@ -10,11 +10,7 @@ mixin slider-config(fields)
       vertical: false,
       'show-bubble': false,
     };
-    const toCamelCase = (s) => {
-      return s.replace(/([-_][a-z])/ig, ($1) => {
-        return $1.toUpperCase() .replace('-', '');
-      });
-    };
+    const toCamelCase = (s) => s.replace(/([-][a-z])/ig, ($1) => $1.toUpperCase().replace('-', ''));
 
   form.slider-config.js-slider-config
     p.slider-config__header= 'const options = {'

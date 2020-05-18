@@ -1,21 +1,16 @@
-$color-green: #6FCF97;
-$color-dark-25: rgba(31, 32, 65, 0.25);
-$color-dark-50: rgba(31, 32, 65, 0.5);
 $color-dark-75: rgba(31, 32, 65, 0.75);
 $color-dark-100: rgba(31, 32, 65, 1);
-$handleDiam: 0.875rem;
-$railWeight: 0.5rem;
 
 .slider-config {
   font-family: monospace, sans-serif;
   color: $color-dark-100;
-  padding: $handleDiam / 2 - 0.0625rem;
 
   &__input-group {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 6px 0;
+    margin: 0;
+    min-height: 2rem;
     padding-left: 1.25rem;
   }
 
@@ -24,6 +19,5 @@ $railWeight: 0.5rem;
     font-size: 1rem;
     font-family: monospace, sans-serif;
     border-radius: 0.25rem;
-
   }
 }

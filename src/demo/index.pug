@@ -25,6 +25,7 @@ html(lang='en')
       +slider-group({
         title: 'With step',
         attr: { step: 10 },
+        reverse: true,
       })
       +slider-group({
         title: 'With range',
@@ -33,6 +34,7 @@ html(lang='en')
       +slider-group({
         title: 'Vertical',
         attr: { vertical: true, range: true, value: 30, value2: 50, 'show-bubble': true },
+        reverse: true,
       })
       +slider-group({
         title: 'With bubble',
@@ -40,5 +42,6 @@ html(lang='en')
       })
       +slider-group({
         title: 'Without config',
+        reverse: true,
       })
     script(src='./jquery.min.js')
