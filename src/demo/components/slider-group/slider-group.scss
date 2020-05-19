@@ -1,4 +1,4 @@
-$color-dark-75: rgba(31, 32, 65, .75);
+@import '../../../app/styles/vars';
 
 .slider-group {
   $blockClass: &;
@@ -8,6 +8,7 @@ $color-dark-75: rgba(31, 32, 65, .75);
     'slider config';
   grid-column-gap: 2rem;
   grid-template-columns: 4fr 3fr;
+  font-family: monospace, sans-serif;
   &__title {
     grid-area: title;
     grid-column-start: 2;
@@ -21,9 +22,8 @@ $color-dark-75: rgba(31, 32, 65, .75);
   }
   &__config {
     grid-area: config;
-    font-weight: bold;
     padding: 0.625rem 2rem 0.25rem 2rem;
-    border: 0.1875rem dashed $color-dark-75;
+    border: 0.1875rem dashed $color-primary-75;
     border-radius: 1.25rem;
     background: aliceblue;
   }
@@ -35,6 +35,23 @@ $color-dark-75: rgba(31, 32, 65, .75);
     #{$blockClass}__title {
       align-self: flex-start;
       grid-column-start: 1;
+    }
+  }
+  @media (max-width: 767px) {
+    grid-template-areas:
+      'title'
+      'slider'
+      'config';
+    grid-template-rows: auto 25rem auto;
+    grid-row-gap: 2rem;
+    grid-template-columns: auto;
+    &__title {
+      grid-column-start: 1;
+      margin: 0;
+    }
+    &__range-slider {
+      border-radius: 1.25rem;
+      border: 0.1875rem dashed $color-primary-75;
     }
   }
 }

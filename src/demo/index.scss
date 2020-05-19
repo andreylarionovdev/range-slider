@@ -1,0 +1,8 @@
+@import '../app/styles/vars';
+@import './pages/demo-page/demo-page';
+
+html {
+  color: $color-primary-100;
+  font-family: Monospaced, sans-serif;
+  font-size: 16px;
+}

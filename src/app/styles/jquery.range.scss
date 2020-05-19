@@ -1,10 +1,5 @@
-$color-green: #6FCF97;
-$color-dark-25: rgba(31, 32, 65, 0.25);
-$color-dark-50: rgba(31, 32, 65, 0.5);
-$color-dark-75: rgba(31, 32, 65, 0.75);
-$color-dark-100: rgba(31, 32, 65, 1);
-$handleDiam: 0.875rem;
-$railWeight: 0.5rem;
+@import './vars';
+
 .range-slider {
   $blockClass: &;
   box-sizing: border-box;
@@ -12,8 +7,8 @@ $railWeight: 0.5rem;
   width: 100%;
   height: auto;
   &__track {
-    border: 1px solid $color-dark-25;
-    border-radius: 0.25rem;
+    border: .0625rem solid $color-primary-25;
+    border-radius: .25rem;
     cursor: pointer;
     position: relative;
     display: flex;
@@ -24,7 +19,7 @@ $railWeight: 0.5rem;
   &__selection {
     height: $railWeight;
     width: auto;
-    background: #6FCF97;
+    background: $color-green;
     position: absolute;
     bottom: 0;
   }
@@ -37,25 +32,25 @@ $railWeight: 0.5rem;
     width: $handleDiam;
     height: $handleDiam;
     transform: translateX(-50%) translateY(0);
-    border: 2px solid white;
+    border: .125rem solid white;
     border-radius: 50%;
-    background: #6FCF97;
+    background: $color-green;
     &:hover {
-      border-color: #6FCF97;
+      border-color: $color-green;
     }
   }
   &__bubble {
     position: absolute;
     min-width: $handleDiam;
-    padding: 0.125rem;
+    padding: .125rem;
     height: 1rem;
-    border: 1px solid $color-dark-25;
-    color: $color-dark-50;
+    border: 1px solid $color-primary-25;
+    color: $color-primary-50;
     background: white;
-    border-radius: 0.25rem;
+    border-radius: .25rem;
     top: -2rem;
     text-align: center;
-    font-size: 0.875rem;
+    font-size: .875rem;
     font-family: monospace;
   }
   &_orientation {
@@ -75,7 +70,7 @@ $railWeight: 0.5rem;
         right: 1.25rem;
       }
       #{$blockClass}__selection {
-        width: 0.5rem;
+        width: .5rem;
         height: auto;
       }
     }

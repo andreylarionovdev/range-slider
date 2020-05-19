@@ -1,6 +1,5 @@
 import $ from 'jquery';
-import '../styles/style.scss';
-import '../../app/ts/jquery.range';
+import '../../../app/ts/jquery.range';
 
 const updateForm = ($form, state): void => {
   const $textInputs = $form.find('.js-slider-config__input_type_text');

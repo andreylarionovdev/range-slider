@@ -8,7 +8,7 @@ const devMode = process.env.NODE_ENV === 'development';
 const config = {
   entry: {
     'jquery.range': './src/app/ts/jquery.range.ts',
-    demo: './src/demo/ts/demo.ts',
+    demo: './src/demo/index.ts',
   },
   output: {
     filename: devMode ? '[name].js' : '[name].[hash].js',

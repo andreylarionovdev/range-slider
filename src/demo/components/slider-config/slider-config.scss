@@ -1,9 +1,8 @@
-$color-dark-75: rgba(31, 32, 65, 0.75);
-$color-dark-100: rgba(31, 32, 65, 1);
+@import '../../../app/styles/vars';
 
 .slider-config {
   font-family: monospace, sans-serif;
-  color: $color-dark-100;
+  color: $color-primary-100;
 
   &__input-group {
     display: flex;
@@ -15,9 +14,17 @@ $color-dark-100: rgba(31, 32, 65, 1);
   }
 
   &__input {
-    color: $color-dark-75;
+    color: $color-primary-75;
     font-size: 1rem;
     font-family: monospace, sans-serif;
     border-radius: 0.25rem;
+    margin-left: 1rem;
+    @media (max-width: 767px) {
+      &_type {
+        &_text {
+          width: 45%;
+        }
+      }
+    }
   }
 }

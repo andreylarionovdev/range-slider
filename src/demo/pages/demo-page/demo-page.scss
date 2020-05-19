@@ -1,0 +1,13 @@
+@import '../../components/slider-group/slider-group';
+@import '../../components/slider-config/slider-config';
+
+.demo-page {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 3rem;
+  color: rgba(31, 32, 65, 1);
+  &__title {
+
+  }
+}
