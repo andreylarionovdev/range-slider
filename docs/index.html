@@ -13,35 +13,275 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <title>Range slider jQuery plugin, written in TypeScript.</title>
-  <link href="demo.87b214f692bce4427501.css" rel="stylesheet"></head>
+  <link href="demo.5c9ef4dffde20438b7e3.css" rel="stylesheet"></head>
   <body>
-    <h1>Range slider demo.</h1>
-    <div class="container">
-      <div class="range-slider-group">
-        <h3>Simple</h3>
-        <input id="simple" type="range">
+    <div class="demo-page">
+      <h1 class="demo-page__title">Range slider demo.</h1>
+      <div class="slider-group js-slider-group">
+        <h3 class="slider-group__title">With bubble</h3>
+        <div class="slider-group__range-slider">
+          <input class="slider-group__target-input js-slider-group__target-input" type="range" data-value="42" data-show-bubble>
+        </div>
+        <div class="slider-group__config">
+          <form class="slider-config js-slider-config">
+            <p class="slider-config__header">const options = {</p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">min</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="min" type="text" value="0">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">max</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="max" type="text" value="100">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">step</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="step" type="text" value="1">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value" type="text" value="42">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value2</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value2" type="text">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">range</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="range" type="checkbox">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">vertical</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="vertical" type="checkbox">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">showBubble</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="show-bubble" type="checkbox" checked>
+            </p>
+            <p class="range-slider__footer">}</p>
+          </form>
+        </div>
       </div>
-      <div class="range-slider-group">
-        <h3>With step</h3>
-        <input id="with-step" type="range">
+      <div class="slider-group js-slider-group slider-group_reversed">
+        <h3 class="slider-group__title">With step</h3>
+        <div class="slider-group__range-slider">
+          <input class="slider-group__target-input js-slider-group__target-input" type="range" data-step="10">
+        </div>
+        <div class="slider-group__config">
+          <form class="slider-config js-slider-config">
+            <p class="slider-config__header">const options = {</p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">min</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="min" type="text" value="0">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">max</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="max" type="text" value="100">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">step</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="step" type="text" value="10">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value" type="text" value="0">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value2</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value2" type="text">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">range</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="range" type="checkbox">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">vertical</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="vertical" type="checkbox">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">showBubble</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="show-bubble" type="checkbox">
+            </p>
+            <p class="range-slider__footer">}</p>
+          </form>
+        </div>
       </div>
-      <div class="range-slider-group">
-        <h3>With range</h3>
-        <input id="with-range" type="range">
+      <div class="slider-group js-slider-group">
+        <h3 class="slider-group__title">With range</h3>
+        <div class="slider-group__range-slider">
+          <input class="slider-group__target-input js-slider-group__target-input" type="range" data-range>
+        </div>
+        <div class="slider-group__config">
+          <form class="slider-config js-slider-config">
+            <p class="slider-config__header">const options = {</p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">min</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="min" type="text" value="0">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">max</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="max" type="text" value="100">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">step</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="step" type="text" value="1">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value" type="text" value="0">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value2</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value2" type="text">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">range</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="range" type="checkbox" checked>
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">vertical</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="vertical" type="checkbox">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">showBubble</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="show-bubble" type="checkbox">
+            </p>
+            <p class="range-slider__footer">}</p>
+          </form>
+        </div>
       </div>
-      <div class="range-slider-group">
-        <h3>Vertical</h3>
-        <input id="vertical" type="range">
+      <div class="slider-group js-slider-group slider-group_reversed">
+        <h3 class="slider-group__title">Vertical</h3>
+        <div class="slider-group__range-slider">
+          <input class="slider-group__target-input js-slider-group__target-input" type="range" data-vertical data-value="42">
+        </div>
+        <div class="slider-group__config">
+          <form class="slider-config js-slider-config">
+            <p class="slider-config__header">const options = {</p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">min</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="min" type="text" value="0">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">max</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="max" type="text" value="100">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">step</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="step" type="text" value="1">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value" type="text" value="42">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value2</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value2" type="text">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">range</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="range" type="checkbox">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">vertical</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="vertical" type="checkbox" checked>
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">showBubble</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="show-bubble" type="checkbox">
+            </p>
+            <p class="range-slider__footer">}</p>
+          </form>
+        </div>
       </div>
-      <div class="range-slider-group">
-        <h3>With bubble</h3>
-        <input id="with-bubble" type="range">
+      <div class="slider-group js-slider-group slider-group_reversed">
+        <h3 class="slider-group__title">Vertical w/ bubbles and range</h3>
+        <div class="slider-group__range-slider">
+          <input class="slider-group__target-input js-slider-group__target-input" type="range" data-value="42" data-show-bubble data-vertical data-range>
+        </div>
+        <div class="slider-group__config">
+          <form class="slider-config js-slider-config">
+            <p class="slider-config__header">const options = {</p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">min</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="min" type="text" value="0">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">max</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="max" type="text" value="100">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">step</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="step" type="text" value="1">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value" type="text" value="42">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value2</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value2" type="text">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">range</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="range" type="checkbox" checked>
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">vertical</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="vertical" type="checkbox" checked>
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">showBubble</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="show-bubble" type="checkbox" checked>
+            </p>
+            <p class="range-slider__footer">}</p>
+          </form>
+        </div>
       </div>
-      <div class="range-slider-group">
-        <h3>With empty params</h3>
-        <input id="empty-params" type="range">
+      <div class="slider-group js-slider-group">
+        <h3 class="slider-group__title">From 1 to 10</h3>
+        <div class="slider-group__range-slider">
+          <input class="slider-group__target-input js-slider-group__target-input" type="range" data-min="1" data-max="10">
+        </div>
+        <div class="slider-group__config">
+          <form class="slider-config js-slider-config">
+            <p class="slider-config__header">const options = {</p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">min</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="min" type="text" value="1">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">max</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="max" type="text" value="10">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">step</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="step" type="text" value="1">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value" type="text" value="0">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">value2</label>
+              <input class="slider-config__input slider-config__input_type_text js-slider-config__input_type_text" name="value2" type="text">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">range</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="range" type="checkbox">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">vertical</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="vertical" type="checkbox">
+            </p>
+            <p class="slider-config__input-group js-slider-config__input-group">
+              <label class="slider-config__label">showBubble</label>
+              <input class="slider-config__input slider-config__input_type_checkbox js-slider-config__input_type_checkbox" name="show-bubble" type="checkbox">
+            </p>
+            <p class="range-slider__footer">}</p>
+          </form>
+        </div>
       </div>
     </div>
     <script src="./jquery.min.js"></script>
-  <script type="text/javascript" src="demo.87b214f692bce4427501.js"></script></body>
+  <script type="text/javascript" src="demo.5c9ef4dffde20438b7e3.js"></script></body>
 </html>
