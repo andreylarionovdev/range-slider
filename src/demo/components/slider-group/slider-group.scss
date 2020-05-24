@@ -8,7 +8,6 @@
     'slider config';
   grid-column-gap: 2rem;
   grid-template-columns: 4fr 3fr;
-  font-family: monospace, sans-serif;
   &__title {
     grid-area: title;
     grid-column-start: 2;
@@ -21,6 +20,8 @@
     padding: 1rem;
   }
   &__config {
+    font-weight: bold;
+    font-family: monospace, sans-serif;
     grid-area: config;
     padding: 0.625rem 2rem 0.25rem 2rem;
     border: 0.1875rem dashed $color-primary-75;

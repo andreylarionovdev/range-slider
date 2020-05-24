@@ -5,28 +5,29 @@ mixin demo-page()
   .demo-page
     h1.demo-page__title= 'Range slider demo.'
     +slider-group({
-      title: 'Simple',
-      attr: {value: 10, range: true}
+      title: 'With bubble',
+      attr: { value: 42, 'show-bubble': true }
     })
     +slider-group({
       title: 'With step',
-      attr: {step: 10},
+      attr: { step: 10 },
       reverse: true,
     })
     +slider-group({
       title: 'With range',
-      attr: {range: true},
+      attr: { range: true },
     })
     +slider-group({
       title: 'Vertical',
-      attr: {vertical: true, range: true, value: 30, value2: 50, 'show-bubble': true},
+      attr: { vertical: true, value: 42 },
       reverse: true,
     })
     +slider-group({
-      title: 'With bubble',
-      attr: {value: 20, 'show-bubble': true},
+      title: 'Vertical w/ bubbles and range',
+      attr: { value: 42, 'show-bubble': true, vertical: true, range: true },
+      reverse: true,
     })
     +slider-group({
-      title: 'Without config',
-      reverse: true,
+      title: 'From 1 to 10',
+      attr: { min: 1, max: 10 },
     })
