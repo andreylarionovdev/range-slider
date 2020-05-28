@@ -1,16 +1,17 @@
 import $ from 'jquery';
 import '../../../app/ts/jquery.range';
 
+const toCamelCase = (s): string => s.replace(/([-][a-z])/ig, ($1) => $1.toUpperCase().replace('-', ''));
+
 const updateForm = ($form, state): void => {
   const $textInputs = $form.find('.js-slider-config__input_type_text');
   $textInputs.each((_, configInput) => {
-    const name = $(configInput).attr('name');
+    const name = toCamelCase($(configInput).attr('name'));
     $(configInput).val(state[name]);
   });
 };
 
 const setEventListeners = ($form, api): void => {
-  const toCamelCase = (s) => s.replace(/([-][a-z])/ig, ($1) => $1.toUpperCase().replace('-', ''));
   $form.find('.js-slider-config__input_type_text').each((_, textInput) => {
     $(textInput).on('blur', (event) => {
       const propName = toCamelCase($(event.target).attr('name'));

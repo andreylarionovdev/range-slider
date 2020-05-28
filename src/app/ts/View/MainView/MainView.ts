@@ -10,6 +10,7 @@ import SliderViewExtraData from '../../Interfaces/SliderViewExtraData';
 import SliderModelExtraData from '../../Interfaces/SliderModelExtraData';
 import HandleView from '../HandleView/HandleView';
 import SelectionView from '../SelectionView/SelectionView';
+import GridView from '../GridView/GridView';
 
 const template = require('./MainView.pug');
 
@@ -37,6 +38,8 @@ class MainView implements SliderView, SliderViewObservable {
   private handleToView: HandleView;
 
   private selectionView: SelectionView;
+
+  private gridView: GridView;
 
   private handleJump = (e): void => this.jump(e);
 
@@ -89,12 +92,16 @@ class MainView implements SliderView, SliderViewObservable {
     this.$element = $(template({ state }));
     this.$target.after(this.$element).hide();
 
-    const { range } = state;
-
     this.handleFromView = new HandleView(this.$element, state);
+
+    const { range, showGrid } = state;
+
     if (range) {
       this.handleToView = new HandleView(this.$element, state);
       this.selectionView = new SelectionView(this.$element);
+    }
+    if (showGrid) {
+      this.gridView = new GridView(this.$element, state);
     }
 
     this.$track = this.$element.find('.js-range-slider__track');

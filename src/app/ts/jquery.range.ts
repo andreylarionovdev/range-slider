@@ -10,6 +10,7 @@ import {
   DEFAULT_RANGE,
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
+  DEFAULT_SHOW_GRID,
 } from './const';
 import '../styles/jquery.range.scss';
 
@@ -21,6 +22,7 @@ declare global {
 
 const fetchOptionsFromDataAttr = (attr: State): State => Object.assign(
   {}, ...Object.keys(attr).map((key) => (
+    /** Interpret empty `data-something` as boolean true */
     { [key]: attr[key] === '' ? true : attr[key] }
   )),
 );
@@ -35,6 +37,7 @@ $.fn.range = function range(this: JQuery, options?: State): JQuery {
     range: DEFAULT_RANGE,
     vertical: DEFAULT_VERTICAL,
     showBubble: DEFAULT_SHOW_BUBBLE,
+    showGrid: DEFAULT_SHOW_GRID,
   };
 
   const dataAttrOptions: State = fetchOptionsFromDataAttr(this.data());

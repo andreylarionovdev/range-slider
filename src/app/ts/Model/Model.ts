@@ -45,7 +45,8 @@ class Model implements SliderModel, SliderModelObservable {
       case 'value2':
         modelExtra.redraw = false;
         if (typeof percent !== 'undefined') {
-          newValue = this.percentToValue(percent);
+          const { min, max } = thisState;
+          newValue = Model.percentToValue(min, max, percent);
         }
         thisState[stateProperty] = Model.validateValue(stateProperty, Number(newValue), thisState);
         break;
@@ -79,6 +80,14 @@ class Model implements SliderModel, SliderModelObservable {
     this.announcer.on('change.state', callback);
   }
 
+  static percentToValue(min: number, max: number, percent: number): number {
+    const range = max - min;
+
+    const value = percent * (range / 100) + min;
+
+    return Math.round(value);
+  }
+
   private init(state: State): this {
     this.state = Model.validateState({ ...this.state, ...state });
     if (typeof this.state.onCreate === 'function') {
@@ -86,15 +95,6 @@ class Model implements SliderModel, SliderModelObservable {
     }
 
     return this;
-  }
-
-  private percentToValue(percent: number): number {
-    const { min, max } = this.state;
-    const range = max - min;
-
-    const value = percent * (range / 100) + min;
-
-    return Math.round(value);
   }
 
   private static validateState(state: State): State {

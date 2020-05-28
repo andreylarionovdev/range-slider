@@ -6,7 +6,7 @@ mixin demo-page()
     h1.demo-page__title= 'Range slider demo.'
     +slider-group({
       title: 'With bubble',
-      attr: { value: 42, 'show-bubble': true }
+      attr: { value: 42, 'show-bubble': true, 'show-grid': true, 'grid-density': 10 }
     })
     +slider-group({
       title: 'With step',

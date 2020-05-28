@@ -7,6 +7,8 @@ interface State {
   range?: boolean;
   vertical?: boolean;
   showBubble?: boolean;
+  showGrid?: boolean;
+  gridDensity?: number;
   onCreate?: Function;
   onChange?: Function;
 }
