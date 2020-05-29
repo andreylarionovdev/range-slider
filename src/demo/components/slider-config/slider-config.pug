@@ -6,11 +6,11 @@ mixin slider-config(fields)
       step: 1,
       value: 0,
       value2: null,
+      'grid-density': null,
       range: false,
       vertical: false,
       'show-bubble': false,
       'show-grid': false,
-      'grid-density': null,
     };
     const toCamelCase = (s) => s.replace(/([-][a-z])/ig, ($1) => $1.toUpperCase().replace('-', ''));
 

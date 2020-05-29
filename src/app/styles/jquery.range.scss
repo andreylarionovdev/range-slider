@@ -8,7 +8,7 @@
   width: 100%;
   height: auto;
   &__track {
-    border: .0625rem solid $color-primary-25;
+    border: .0625rem solid $color-primary-100;
     border-radius: .25rem;
     cursor: pointer;
     position: relative;
@@ -33,18 +33,15 @@
     width: $handleDiam;
     height: $handleDiam;
     transform: translateX(-50%) translateY(0);
-    border: .125rem solid white;
+    border: .125rem solid $color-primary-100;
     border-radius: 50%;
     background: $color-green;
-    &:hover {
-      border-color: $color-green;
-    }
   }
   &__bubble {
     position: absolute;
     min-width: $handleDiam;
     padding: .125rem;
-    color: $color-primary-50;
+    color: $color-primary-100;
     background: white;
     top: -2rem;
     text-align: center;
