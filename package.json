@@ -4,6 +4,7 @@
   "description": "Range slider jQuery plugin, written in TypeScript.",
   "scripts": {
     "build": "rm -rf ./docs && webpack -p",
+    "deploy": "gh-pages -d docs",
     "watch": "cross-env NODE_ENV=development webpack-dev-server",
     "test": "./node_modules/karma/bin/karma start karma.conf.js",
     "lint": "eslint -c .eslintrc src/ --ext .js --ext .ts"
@@ -11,17 +12,18 @@
   "author": "Andrey Larionov",
   "license": "Apache-2.0",
   "devDependencies": {
-    "cross-env": "^7.0.2",
-    "eslint": "^6.7.2",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.19.1",
     "@types/jasmine": "^3.4.6",
     "@types/jquery": "^3.3.31",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
     "@typescript-eslint/parser": "^2.12.0",
     "autoprefixer": "^9.7.4",
     "copy-webpack-plugin": "^5.1.1",
+    "cross-env": "^7.0.2",
     "css-loader": "^3.2.0",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.19.1",
+    "gh-pages": "^3.1.0",
     "html-webpack-plugin": "^3.2.0",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
@@ -31,13 +33,13 @@
     "karma-webpack": "^4.0.2",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.13.0",
+    "pug": "^2.0.4",
+    "pug-loader": "^2.4.0",
     "sass-loader": "^8.0.0",
     "ts-loader": "^5.4.5",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0",
-    "pug": "^2.0.4",
-    "pug-loader": "^2.4.0"
+    "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
     "jquery": "^3.4.1",
