@@ -49,10 +49,12 @@ const config = {
     extensions: ['.ts', '.js'],
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: './node_modules/jquery/dist/jquery.min.js', to: './jquery.min.js' },
-      { from: './src/demo/favicons', to: './favicons' },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: './node_modules/jquery/dist/jquery.min.js', to: './jquery.min.js' },
+        { from: './src/demo/favicons', to: './favicons' },
+      ],
+    }),
     new HtmlWebpackPlugin({
       template: './src/demo/index.pug',
       chunks: ['demo'],
