@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "description": "Range slider jQuery plugin, written in TypeScript.",
   "scripts": {
-    "build": "rm -rf ./docs && webpack -p",
+    "prod": "rm -rf ./docs && webpack -p",
     "deploy": "gh-pages -d docs",
-    "watch": "cross-env NODE_ENV=development webpack-dev-server",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server",
+    "test": "cross-env ./node_modules/karma/bin/karma start karma.conf.js",
     "lint": "eslint -c .eslintrc src/ --ext .js --ext .ts"
   },
   "author": "Andrey Larionov",
