@@ -62,7 +62,7 @@ npm run prod
 ```
 To run dev server with hot reloading: 
 ```$xslt
-npm run watch
+npm run dev
 ```
 ### Tests
 To run tests:
