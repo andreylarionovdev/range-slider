@@ -31,8 +31,6 @@ class MainView implements SliderView, SliderViewObservable {
 
   private $draggingHandle: JQuery;
 
-  private $config: JQuery;
-
   private handleFromView: HandleView;
 
   private handleToView: HandleView;
@@ -41,11 +39,11 @@ class MainView implements SliderView, SliderViewObservable {
 
   private gridView: GridView;
 
-  private handleJump = (e): void => this.jump(e);
+  private handleJump = (e): void => this.announceJump(e);
 
   private handleDragStart = (e): void => this.dragStart(e);
 
-  private handleDrag = (e): void => this.drag(e);
+  private handleDrag = (e): void => this.announceDrag(e);
 
   private handleDragEnd = (e): void => this.dragEnd(e);
 
@@ -102,6 +100,7 @@ class MainView implements SliderView, SliderViewObservable {
     }
     if (showGrid) {
       this.gridView = new GridView(this.$element, state);
+      this.gridView.onClickTick((value) => this.announceClickTick(value));
     }
 
     this.$track = this.$element.find('.js-range-slider__track');
@@ -112,40 +111,42 @@ class MainView implements SliderView, SliderViewObservable {
     this.bindDocumentEvents();
   }
 
-  private jump(e: MouseEvent): void {
+  private announceJump(e: MouseEvent): void {
     const cursorPosition = this.getCursorPosition(e);
-    let stateProp = 'value';
+    const statePropName = typeof this.handleToView !== 'undefined'
+      ? MainView.getClosestValuePropName(cursorPosition,
+        this.handleFromView.getCurrentPosition(),
+        this.handleToView.getCurrentPosition())
+      : 'value';
 
-    if (typeof this.handleToView !== 'undefined') {
-      const fromHandlePercent = this.handleFromView.getCurrentPosition();
-      const toHandlePercent = this.handleToView.getCurrentPosition();
-
-      const distFrom = Math.abs(cursorPosition - fromHandlePercent);
-      const distTo = Math.abs(cursorPosition - toHandlePercent);
-
-      if (distFrom > distTo) {
-        stateProp = 'value2';
-      }
-    }
-
-    const state: State = { [stateProp]: null };
+    const state: State = { [statePropName]: null };
     const extra: SliderViewExtraData = { percent: cursorPosition };
 
     this.announcer.trigger('change.view', state, extra);
   }
 
-  private drag(e: MouseEvent): void {
+  private announceDrag(e: MouseEvent): void {
     e.preventDefault();
     if (this.$draggingHandle) {
-      const stateProp = this.$draggingHandle.hasClass('js-range-slider__handle_type_to')
+      const statePropName = this.$draggingHandle.hasClass('js-range-slider__handle_type_to')
         ? 'value2'
         : 'value';
 
-      const state: State = { [stateProp]: null };
+      const state: State = { [statePropName]: null };
       const extra: SliderViewExtraData = { percent: this.getCursorPosition(e) };
 
       this.announcer.trigger('change.view', state, extra);
     }
+  }
+
+  private announceClickTick(value: number): void {
+    const statePropName = typeof this.handleToView !== 'undefined'
+      ? MainView.getClosestValuePropName(value,
+        this.handleFromView.getCurrentValue(),
+        this.handleToView.getCurrentValue())
+      : 'value';
+    const state: State = { [statePropName]: value };
+    this.announcer.trigger('change.view', state);
   }
 
   private dragStart(e): void {
@@ -210,6 +211,17 @@ class MainView implements SliderView, SliderViewObservable {
     const range = max - min;
 
     return MainView.checkBoundaries(((value - min) * 100) / range);
+  }
+
+  static getClosestValuePropName(target: number, fromValue: number, toValue: number): string {
+    const distFrom = Math.abs(target - fromValue);
+    const distTo = Math.abs(target - toValue);
+
+    if (distFrom > distTo) {
+      return 'value2';
+    }
+
+    return 'value';
   }
 }
 

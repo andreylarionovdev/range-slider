@@ -22,6 +22,7 @@ class HandleView {
 
   update(state: State, position: number): void {
     this.move(position);
+    this.updateDataset(state);
     this.updateBubbles(state);
   }
 
@@ -29,6 +30,10 @@ class HandleView {
     const prop = this.isVertical() ? 'top' : 'left';
 
     return parseInt(this.$element.prop('style')[prop], 10);
+  }
+
+  getCurrentValue(): number {
+    return Number(this.$element.attr('data-value'));
   }
 
   private init(state: State): void {
@@ -42,6 +47,13 @@ class HandleView {
   private move(position: number): void {
     const prop = this.isVertical() ? 'top' : 'left';
     this.$element.css({ [prop]: `${position}%` });
+  }
+
+  private updateDataset(state: State) {
+    const { value, value2 } = state;
+    const val = this.$element.hasClass('js-range-slider__handle_type_to') ? value2 : value;
+
+    this.$element.attr('data-value', val);
   }
 
   private updateBubbles(state: State): void {
