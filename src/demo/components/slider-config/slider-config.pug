@@ -33,5 +33,5 @@ mixin slider-config(fields)
         if typeof val === 'boolean'
           input(name=key type='checkbox' checked=val class=checkboxInputClasses)
         else
-          input(name=key type='text' value=val class=textInputClasses)
+          input(name=key type='number' value=val class=textInputClasses)
     p.range-slider__footer= '}'

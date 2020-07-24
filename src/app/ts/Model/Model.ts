@@ -81,9 +81,8 @@ class Model implements SliderModel, SliderModelObservable {
   }
 
   static percentToValue(min: number, max: number, percent: number): number {
-    const range = max - min;
-
-    const value = percent * (range / 100) + min;
+    const range = Number(max) - Number(min);
+    const value = Number(percent) * (range / 100) + Number(min);
 
     return Math.round(value);
   }
@@ -114,7 +113,10 @@ class Model implements SliderModel, SliderModelObservable {
   }
 
   private static validateMinMax(state: State): State {
-    const { min, max } = state;
+    let { min, max } = state;
+
+    min = Number(min);
+    max = Number(max);
 
     return {
       min: min > max ? Math.round(Math.min(max, min)) : min,

@@ -172,4 +172,33 @@ describe('Model', () => {
 
     expect(model.get('value2')).toEqual(1750);
   });
+
+  it('convert percent to values correct with negative minmax', () => {
+    const options = { ...defaultOptions, min: -50, max: 50 };
+    const model = new Model(options);
+
+    model.update({ value: null }, { percent: 50 });
+    expect(model.get('value')).toEqual(0);
+
+    model.update({ value: null }, { percent: 0 });
+    expect(model.get('value')).toEqual(-50);
+
+    model.update({ value: null }, { percent: 100 });
+    expect(model.get('value')).toEqual(50);
+  });
+
+  it('handle negative minmax correct', () => {
+    const min = -50;
+    const max = 50;
+    const options = { ...defaultOptions, min, max };
+    const model: Model = new Model(options);
+
+    expect(model.getState()).toEqual(options);
+
+    model.update({ value: -100 });
+    expect(model.getState().value).toEqual(min);
+
+    model.update({ value: 100 });
+    expect(model.getState().value).toEqual(max);
+  });
 });
