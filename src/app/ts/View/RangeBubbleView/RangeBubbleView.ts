@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import State from '../../Interfaces/State';
 
-const template = require('./BubbleView.pug');
+const template = require('./RangeBubbleView.pug');
 
-class BubbleView {
+class RangeBubbleView {
   private $handle: JQuery;
 
   private $element: JQuery;
@@ -17,18 +17,13 @@ class BubbleView {
   update(state: State): void {
     const { value, value2 } = state;
 
-    this.$element.text(
-      this.$handle.hasClass('js-range-slider__handle_type_to')
-        ? value2
-        : value,
-    );
+    this.$element.text(`${value}-${value2}`);
   }
 
   private init(state: State): void {
-    const type = this.$handle.hasClass('js-range-slider__handle_type_to') ? 'to' : 'from';
-    this.$element = $(template({ state, type }));
+    this.$element = $(template({ state }));
     this.$handle.append(this.$element);
   }
 }
 
-export default BubbleView;
+export default RangeBubbleView;

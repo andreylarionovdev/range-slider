@@ -2,6 +2,7 @@ import $ from 'jquery';
 import State from '../../Interfaces/State';
 import Observer from '../../Observer/Observer';
 import BubbleView from '../BubbleView/BubbleView';
+import RangeBubbleView from '../RangeBubbleView/RangeBubbleView';
 
 const template = require('./HandleView.pug');
 
@@ -16,6 +17,10 @@ class HandleView {
 
   private bubbleView: BubbleView;
 
+  private rangeBubbleView: RangeBubbleView;
+
+  private type: 'from' | 'to';
+
   constructor($slider, state: State) {
     this.announcer = new Observer();
     this.$slider = $slider;
@@ -27,10 +32,13 @@ class HandleView {
     this.move(position);
     this.updateDataset(state);
 
-    const { showBubble } = state;
+    const { showBubble, range } = state;
 
     if (showBubble) {
       this.bubbleView.update(state);
+      if (range && this.type === 'from') {
+        this.rangeBubbleView.update(state);
+      }
     }
   }
 
@@ -45,14 +53,16 @@ class HandleView {
   }
 
   private init(state: State): void {
-    const type = this.$track.find('.js-range-slider__handle').length === 0
+    this.type = this.$track.find('.js-range-slider__handle').length === 0
       ? 'from'
       : 'to';
-    this.$element = $(template({ state, type }));
+    this.$element = $(template({ state, type: this.type }));
 
-    const { showBubble } = state;
-
+    const { showBubble, range } = state;
     this.bubbleView = showBubble === true ? new BubbleView(this.$element, state) : null;
+
+    const showRangeBubble = range && this.type === 'from';
+    this.rangeBubbleView = showRangeBubble ? new RangeBubbleView(this.$element, state) : null;
 
     this.$track.append(this.$element);
   }
@@ -64,9 +74,8 @@ class HandleView {
 
   private updateDataset(state: State): void {
     const { value, value2 } = state;
-    const val = this.$element.hasClass('js-range-slider__handle_type_to') ? value2 : value;
 
-    this.$element.attr('data-value', val);
+    this.$element.attr('data-value', this.type === 'from' ? value : value2);
   }
 
   private isVertical(): boolean {

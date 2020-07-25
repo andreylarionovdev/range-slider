@@ -47,6 +47,14 @@
     text-align: center;
     font-size: 1.125rem;
     font-family: monospace;
+    white-space: nowrap;
+    border: .0625rem solid $color-primary-50;
+    border-radius: 0.25rem;
+    &_type {
+      &_range {
+        visibility: hidden;
+      }
+    }
   }
   &__grid {
     font-family: monospace, sans-serif;
