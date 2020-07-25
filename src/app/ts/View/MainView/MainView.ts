@@ -9,7 +9,7 @@ import Observable from '../../Interfaces/Observable';
 import SliderViewExtraData from '../../Interfaces/SliderViewExtraData';
 import SliderModelExtraData from '../../Interfaces/SliderModelExtraData';
 import HandleView from '../HandleView/HandleView';
-import SelectionView from '../SelectionView/SelectionView';
+import BarView from '../BarView/BarView';
 import GridView from '../GridView/GridView';
 
 const template = require('./MainView.pug');
@@ -35,7 +35,7 @@ class MainView implements SliderView, SliderViewObservable {
 
   private handleToView: HandleView;
 
-  private selectionView: SelectionView;
+  private barView: BarView;
 
   private gridView: GridView;
 
@@ -70,8 +70,8 @@ class MainView implements SliderView, SliderViewObservable {
       this.handleToView.update(state, toPosition);
     }
 
-    if (this.selectionView) {
-      this.selectionView.update(
+    if (this.barView) {
+      this.barView.update(
         this.handleToView ? fromPosition : 0,
         this.handleToView ? toPosition : fromPosition,
       );
@@ -96,7 +96,7 @@ class MainView implements SliderView, SliderViewObservable {
     const { range, showGrid, showBar } = state;
 
     this.handleToView = range === true ? new HandleView(this.$element, state) : null;
-    this.selectionView = showBar === true ? new SelectionView(this.$element) : null;
+    this.barView = showBar === true ? new BarView(this.$element) : null;
 
     if (showGrid) {
       this.gridView = new GridView(this.$element, state);
@@ -108,7 +108,7 @@ class MainView implements SliderView, SliderViewObservable {
     this.$track = this.$element.find('.js-range-slider__track');
     this.$handleFrom = this.$element.find('.js-range-slider__handle_type_from');
     this.$handleTo = this.$element.find('.js-range-slider__handle_type_to');
-    this.$selection = this.$element.find('.js-range-slider__selection');
+    this.$selection = this.$element.find('.js-range-slider__bar');
 
     this.bindDocumentEvents();
   }

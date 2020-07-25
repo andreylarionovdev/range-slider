@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
-const template = require('./SelectionView.pug');
+const template = require('./BarView.pug');
 
-class SelectionView {
+class BarView {
   private $slider: JQuery;
 
   private $track: JQuery;
@@ -32,4 +32,4 @@ class SelectionView {
   }
 }
 
-export default SelectionView;
+export default BarView;

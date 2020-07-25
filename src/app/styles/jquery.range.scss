@@ -17,7 +17,7 @@
     height: $railWeight;
     width: 100%;
   }
-  &__selection {
+  &__bar {
     height: $railWeight;
     width: auto;
     background: $color-green;
@@ -94,7 +94,7 @@
         top: initial;
         right: 1.25rem;
       }
-      #{$blockClass}__selection {
+      #{$blockClass}__bar {
         width: .5rem;
         height: auto;
       }
