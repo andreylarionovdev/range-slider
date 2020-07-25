@@ -39,9 +39,7 @@ class MainView implements SliderView, SliderViewObservable {
 
   private gridView: GridView;
 
-  private handleJump = (e): void => this.announceJump(e);
-
-  private handleDragStart = (e): void => this.dragStart(e);
+  private handleDragStart = (e): void => this.announceJump(e);
 
   private handleDrag = (e): void => this.announceDrag(e);
 
@@ -113,11 +111,17 @@ class MainView implements SliderView, SliderViewObservable {
 
   private announceJump(e: MouseEvent): void {
     const cursorPosition = this.getCursorPosition(e);
-    const statePropName = typeof this.handleToView !== 'undefined'
-      ? MainView.getClosestValuePropName(cursorPosition,
+
+    let statePropName = 'value';
+
+    if (typeof this.handleToView !== 'undefined') {
+      statePropName = MainView.getClosestValuePropName(
+        cursorPosition,
         this.handleFromView.getCurrentPosition(),
-        this.handleToView.getCurrentPosition())
-      : 'value';
+        this.handleToView.getCurrentPosition(),
+      );
+    }
+    this.$draggingHandle = statePropName === 'value' ? this.$handleFrom : this.$handleTo;
 
     const state: State = { [statePropName]: null };
     const extra: SliderViewExtraData = { percent: cursorPosition };
@@ -149,13 +153,6 @@ class MainView implements SliderView, SliderViewObservable {
     this.announcer.trigger('change.view', state);
   }
 
-  private dragStart(e): void {
-    e.stopPropagation();
-    e.preventDefault();
-
-    this.$draggingHandle = $(e.currentTarget);
-  }
-
   private dragEnd(e: MouseEvent): void {
     e.preventDefault();
     if (this.$draggingHandle) {
@@ -178,11 +175,7 @@ class MainView implements SliderView, SliderViewObservable {
   }
 
   private bindDocumentEvents(): void {
-    this.$track.on('mousedown', this.handleJump);
-    this.$handleFrom.on('mousedown', this.handleDragStart);
-    if (this.$handleTo.length === 1) {
-      this.$handleTo.on('mousedown', this.handleDragStart);
-    }
+    this.$track.on('mousedown', this.handleDragStart);
 
     $(document)
       .off('mouseup', this.handleDragEnd)
