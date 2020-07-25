@@ -6,8 +6,5 @@
     `js-range-slider__handle_type_${type}`,
   ];
   const { value, value2, showBubble } = state;
-  const val = type === 'from' ? value : value2;
 
-a(class=handleClasses data-value=val)
-  if showBubble
-    .range-slider__bubble.js-range-slider__bubble= val
+a(class=handleClasses data-value= type === 'from' ? value : value2)

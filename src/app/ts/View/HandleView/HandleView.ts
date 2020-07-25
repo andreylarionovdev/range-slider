@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import State from '../../Interfaces/State';
 import Observer from '../../Observer/Observer';
+import BubbleView from '../BubbleView/BubbleView';
 
 const template = require('./HandleView.pug');
 
@@ -13,6 +14,8 @@ class HandleView {
 
   private $element: JQuery;
 
+  private bubbleView: BubbleView;
+
   constructor($slider, state: State) {
     this.announcer = new Observer();
     this.$slider = $slider;
@@ -23,7 +26,12 @@ class HandleView {
   update(state: State, position: number): void {
     this.move(position);
     this.updateDataset(state);
-    this.updateBubbles(state);
+
+    const { showBubble } = state;
+
+    if (showBubble) {
+      this.bubbleView.update(state);
+    }
   }
 
   getCurrentPosition(): number {
@@ -41,6 +49,11 @@ class HandleView {
       ? 'from'
       : 'to';
     this.$element = $(template({ state, type }));
+
+    const { showBubble } = state;
+
+    this.bubbleView = showBubble === true ? new BubbleView(this.$element, state) : null;
+
     this.$track.append(this.$element);
   }
 
@@ -49,24 +62,11 @@ class HandleView {
     this.$element.css({ [prop]: `${position}%` });
   }
 
-  private updateDataset(state: State) {
+  private updateDataset(state: State): void {
     const { value, value2 } = state;
     const val = this.$element.hasClass('js-range-slider__handle_type_to') ? value2 : value;
 
     this.$element.attr('data-value', val);
-  }
-
-  private updateBubbles(state: State): void {
-    const {
-      value, value2, showBubble,
-    } = state;
-
-    const val = this.$element.hasClass('js-range-slider__handle_type_to') ? value2 : value;
-
-    if (showBubble) {
-      const $bubble = this.$element.find('.js-range-slider__bubble');
-      $bubble.text(val);
-    }
   }
 
   private isVertical(): boolean {
