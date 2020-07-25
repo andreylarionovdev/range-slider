@@ -66,12 +66,15 @@ class MainView implements SliderView, SliderViewObservable {
     const toPosition = MainView.valueToPercent(min, max, value2);
 
     this.handleFromView.update(state, fromPosition);
-    if (typeof this.handleToView !== 'undefined') {
+    if (this.handleToView) {
       this.handleToView.update(state, toPosition);
     }
 
-    if (typeof this.selectionView !== 'undefined') {
-      this.selectionView.update(fromPosition, toPosition);
+    if (this.selectionView) {
+      this.selectionView.update(
+        this.handleToView ? fromPosition : 0,
+        this.handleToView ? toPosition : fromPosition,
+      );
     }
 
     return this;
@@ -90,15 +93,16 @@ class MainView implements SliderView, SliderViewObservable {
 
     this.handleFromView = new HandleView(this.$element, state);
 
-    const { range, showGrid } = state;
+    const { range, showGrid, showBar } = state;
 
-    if (range) {
-      this.handleToView = new HandleView(this.$element, state);
-      this.selectionView = new SelectionView(this.$element);
-    }
+    this.handleToView = range === true ? new HandleView(this.$element, state) : null;
+    this.selectionView = showBar === true ? new SelectionView(this.$element) : null;
+
     if (showGrid) {
       this.gridView = new GridView(this.$element, state);
       this.gridView.onClickTick((value) => this.announceClickTick(value));
+    } else {
+      this.gridView = null;
     }
 
     this.$track = this.$element.find('.js-range-slider__track');
@@ -114,7 +118,7 @@ class MainView implements SliderView, SliderViewObservable {
 
     let statePropName = 'value';
 
-    if (typeof this.handleToView !== 'undefined') {
+    if (this.handleToView) {
       statePropName = MainView.getClosestValuePropName(
         cursorPosition,
         this.handleFromView.getCurrentPosition(),
@@ -144,7 +148,7 @@ class MainView implements SliderView, SliderViewObservable {
   }
 
   private announceClickTick(value: number): void {
-    const statePropName = typeof this.handleToView !== 'undefined'
+    const statePropName = this.handleToView
       ? MainView.getClosestValuePropName(value,
         this.handleFromView.getCurrentValue(),
         this.handleToView.getCurrentValue())

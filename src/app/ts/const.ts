@@ -7,6 +7,7 @@ const DEFAULT_RANGE = false;
 const DEFAULT_VERTICAL = false;
 const DEFAULT_SHOW_BUBBLE = false;
 const DEFAULT_SHOW_GRID = false;
+const DEFAULT_SHOW_BAR = false;
 
 export {
   DEFAULT_MIN,
@@ -18,4 +19,5 @@ export {
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
   DEFAULT_SHOW_GRID,
+  DEFAULT_SHOW_BAR,
 };

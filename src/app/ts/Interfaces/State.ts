@@ -8,9 +8,10 @@ interface State {
   vertical?: boolean;
   showBubble?: boolean;
   showGrid?: boolean;
+  showBar?: boolean;
   gridDensity?: number;
-  onCreate?: Function;
-  onChange?: Function;
+  onCreate?: (state: this) => void;
+  onChange?: (state: this) => void;
 }
 
 export default State;

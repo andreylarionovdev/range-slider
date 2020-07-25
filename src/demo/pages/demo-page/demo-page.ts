@@ -13,7 +13,7 @@ const updateForm = ($form, state): void => {
 
 const setEventListeners = ($form, api): void => {
   $form.find('.js-slider-config__input_type_text').each((_, textInput) => {
-    $(textInput).on('blur', (event) => {
+    $(textInput).on('blur change', (event) => {
       const propName = toCamelCase($(event.target).attr('name'));
       const propValue = $(event.target).val();
       api.update({
