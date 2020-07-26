@@ -1,7 +1,5 @@
 import $ from 'jquery';
 import State from '../../Interfaces/State';
-import Observable from '../../Interfaces/Observable';
-import Observer from '../../Observer/Observer';
 
 const template = require('./BubbleView.pug');
 
@@ -11,8 +9,6 @@ class BubbleView {
   protected $element: JQuery;
 
   protected type: 'from' | 'to' | 'range';
-
-  private announcer: Observable;
 
   constructor($handle, state: State) {
     this.$handle = $handle;
@@ -25,50 +21,41 @@ class BubbleView {
 
     this.$element.text(this.type === 'from' ? value : value2);
     if (this.type !== 'range') {
-      this.detectCollision();
+      this.handleCollision();
     }
   }
 
-  onCollision(callback): void {
-    if (this.type !== 'range') {
-      this.announcer.on('bubble.collision', callback);
-    }
-  }
-
-  hide(): void {
-    this.$element.addClass('range-slider__bubble_hidden');
-  }
-
-  show(): void {
-    this.$element.removeClass('range-slider__bubble_hidden');
-  }
-
-  private detectCollision(): void {
+  private handleCollision(): void {
     const oppositeType = this.type === 'from' ? 'to' : 'from';
-    const oppositeBubble = this.$handle.closest('.js-range-slider__track')
-      .find(`.js-range-slider__bubble_type_${oppositeType}`);
+    const $track = this.$handle.closest('.js-range-slider__track');
+    const $oppositeBubble = $track.find(`.js-range-slider__bubble_type_${oppositeType}`);
 
-    if (oppositeBubble.length === 0) {
+    if ($oppositeBubble.length === 0) {
       return;
     }
 
     const thisBubbleClientRect = this.$element[0].getBoundingClientRect();
-    const oppositeBubbleClientRect = oppositeBubble[0].getBoundingClientRect();
+    const oppositeBubbleClientRect = $oppositeBubble[0].getBoundingClientRect();
 
     const isOverlapping = thisBubbleClientRect.right > oppositeBubbleClientRect.left
       && thisBubbleClientRect.left < oppositeBubbleClientRect.right
       && thisBubbleClientRect.bottom > oppositeBubbleClientRect.top
       && thisBubbleClientRect.top < oppositeBubbleClientRect.bottom;
 
+    const $rangeBubble = $track.find('.js-range-slider__bubble_type_range');
+
     if (isOverlapping) {
-      this.announcer.trigger('bubble.collision', true);
+      this.$element.addClass('range-slider__bubble_hidden');
+      $oppositeBubble.addClass('range-slider__bubble_hidden');
+      $rangeBubble.removeClass('range-slider__bubble_hidden');
     } else {
-      this.announcer.trigger('bubble.collision', false);
+      this.$element.removeClass('range-slider__bubble_hidden');
+      $oppositeBubble.removeClass('range-slider__bubble_hidden');
+      $rangeBubble.addClass('range-slider__bubble_hidden');
     }
   }
 
   protected init(state: State): void {
-    this.announcer = new Observer();
     this.type = this.$handle.hasClass('js-range-slider__handle_type_to') ? 'to' : 'from';
     this.$element = $(template({ state, type: this.type }));
     this.$handle.append(this.$element);
