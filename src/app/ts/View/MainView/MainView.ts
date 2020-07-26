@@ -119,13 +119,17 @@ class MainView implements SliderView, SliderViewObservable {
     let statePropName = 'value';
 
     if (this.handleToView) {
-      statePropName = MainView.getClosestValuePropName(
+      statePropName = this.getClosestValuePropName(
         cursorPosition,
         this.handleFromView.getCurrentPosition(),
         this.handleToView.getCurrentPosition(),
       );
     }
     this.$draggingHandle = statePropName === 'value' ? this.$handleFrom : this.$handleTo;
+
+    this.$handleFrom.removeClass('range-slider__handle_active js-range-slider__handle_active');
+    this.$handleTo.removeClass('range-slider__handle_active js-range-slider__handle_active');
+    this.$draggingHandle.addClass('range-slider__handle_active js-range-slider__handle_active');
 
     const state: State = { [statePropName]: null };
     const extra: SliderViewExtraData = { percent: cursorPosition };
@@ -149,7 +153,7 @@ class MainView implements SliderView, SliderViewObservable {
 
   private announceClickTick(value: number): void {
     const statePropName = this.handleToView
-      ? MainView.getClosestValuePropName(value,
+      ? this.getClosestValuePropName(value,
         this.handleFromView.getCurrentValue(),
         this.handleToView.getCurrentValue())
       : 'value';
@@ -210,12 +214,17 @@ class MainView implements SliderView, SliderViewObservable {
     return MainView.checkBoundaries(((value - min) * 100) / range);
   }
 
-  static getClosestValuePropName(target: number, fromValue: number, toValue: number): string {
+  private getClosestValuePropName(target: number, fromValue: number, toValue: number): string {
     const distFrom = Math.abs(target - fromValue);
     const distTo = Math.abs(target - toValue);
 
     if (distFrom > distTo) {
       return 'value2';
+    }
+    if (distFrom === distTo) {
+      const $activeHandle = this.$track.find('.js-range-slider__handle_active');
+
+      return $activeHandle.hasClass('js-range-slider__handle_type_from') ? 'value' : 'value2';
     }
 
     return 'value';
