@@ -1,3 +1,10 @@
 - const { value, value2 } = state;
+-
+  const classes = [
+    'range-slider__bubble',
+    'js-range-slider__bubble',
+    `range-slider__bubble_type_${type}`,
+    `js-range-slider__bubble_type_${type}`,
+  ];
 
-.range-slider__bubble.js-range-slider__bubble= type === 'from' ? value : value2
+span(class=classes)= type === 'from' ? value : value2

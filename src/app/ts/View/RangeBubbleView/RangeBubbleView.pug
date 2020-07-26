@@ -1,3 +1,11 @@
 - const { value, value2 } = state;
+-
+  const classes = [
+    'range-slider__bubble',
+    'js-range-slider__bubble',
+    'range-slider__bubble_type_range',
+    'js-range-slider__bubble_type_range',
+    'range-slider__bubble_hidden',
+  ];
 
-.range-slider__bubble.range-slider__bubble_type_range.js-range-slider__bubble= `${value}-${value2}`
+span(class=classes)= `${value}-${value2}`

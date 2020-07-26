@@ -59,7 +59,12 @@ class HandleView {
     this.$element = $(template({ state, type: this.type }));
 
     const { showBubble, range } = state;
-    this.bubbleView = showBubble === true ? new BubbleView(this.$element, state) : null;
+    if (showBubble) {
+      this.bubbleView = new BubbleView(this.$element, state);
+      this.bubbleView.onCollision((isCollided) => this.announceBubblesCollision(isCollided));
+    } else {
+      this.bubbleView = null;
+    }
 
     const showRangeBubble = range && this.type === 'from';
     this.rangeBubbleView = showRangeBubble ? new RangeBubbleView(this.$element, state) : null;
@@ -80,6 +85,20 @@ class HandleView {
 
   private isVertical(): boolean {
     return this.$slider.hasClass('js-range-slider_orientation_vertical');
+  }
+
+  private announceBubblesCollision(isCollided: boolean): void {
+    if (isCollided) {
+      if (this.rangeBubbleView) {
+        this.rangeBubbleView.show();
+      }
+      this.bubbleView.hide();
+    } else {
+      if (this.rangeBubbleView) {
+        this.rangeBubbleView.hide();
+      }
+      this.bubbleView.show();
+    }
   }
 }
 
