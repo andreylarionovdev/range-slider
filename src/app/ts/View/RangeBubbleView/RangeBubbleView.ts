@@ -8,7 +8,7 @@ class RangeBubbleView extends BubbleView {
   update(state: State): void {
     const { value, value2 } = state;
 
-    this.$element.text(`${value}-${value2}`);
+    this.$element.text(value === value2 ? value : `${value}-${value2}`);
   }
 
   protected init(state: State): void {
