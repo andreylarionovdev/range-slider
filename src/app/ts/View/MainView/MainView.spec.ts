@@ -12,7 +12,6 @@ import {
   DEFAULT_SHOW_BUBBLE,
 } from '../../const';
 
-
 const defaultOptions: State = {
   min: DEFAULT_MIN,
   max: DEFAULT_MAX,
@@ -60,10 +59,14 @@ describe('View', () => {
     expect($slider.find('.js-range-slider__handle').length).toEqual(2);
     expect($slider.find('.js-range-slider__handle_type_from').length).toEqual(1);
     expect($slider.find('.js-range-slider__handle_type_to').length).toEqual(1);
+
+    view.update({ ...options, value2: 50 }, { redraw: true });
+
+    expect($('.js-range-slider .js-range-slider__handle_type_to').css('left')).toEqual('50%');
   });
 
   it('rendered properly with `showBubble` option', () => {
-    const value = Math.floor(Math.random());
+    const value = 42;
     const options = {
       ...defaultOptions,
       value,
@@ -71,9 +74,49 @@ describe('View', () => {
     };
     const view = new MainView($('input[type="range"]'), options);
 
-    const $slider = $('.js-range-slider');
+    expect($('.js-range-slider .js-range-slider__bubble').length).toEqual(1);
+    expect($('.js-range-slider .js-range-slider__bubble').text()).toEqual(value.toString());
 
-    expect($slider.find('.js-range-slider__bubble').length).toEqual(1);
-    expect($slider.find('.js-range-slider__bubble').text()).toEqual(value.toString());
+    const updatedValue = 43;
+    view.update({ ...options, value: updatedValue }, { redraw: false });
+
+    expect($('.js-range-slider .js-range-slider__bubble').text()).toEqual(updatedValue.toString());
+
+    view.update({ ...options, range: true }, { redraw: true });
+
+    expect($('.js-range-slider .js-range-slider__bubble').length).toEqual(3);
+
+    view.update({ ...options, range: true, value: 40, value2: 45 }, { redraw: false });
+    expect($('.js-range-slider .js-range-slider__bubble_type_range').text()).toEqual('40-45');
+  });
+
+  it('rendered properly with `showBar` option', () => {
+    const options = { ...defaultOptions, showBar: true };
+
+    const view = new MainView($('input[type="range"]'), options);
+
+    expect($('.js-range-slider .js-range-slider__bar').length).toEqual(1);
+
+    view.update({ ...defaultOptions, showBar: false }, { redraw: true });
+    expect($('.js-range-slider .js-range-slider__bar').length).toEqual(0);
+  });
+
+  it('value to percent converted properly', () => {
+    expect(MainView.valueToPercent(0, 1000, 500)).toEqual(50);
+    expect(MainView.valueToPercent(0, 1000, 1500)).toEqual(100);
+    expect(MainView.valueToPercent(0, 1000, -500)).toEqual(0);
+  });
+
+  it('rendered properly with `showGrid` option', () => {
+    const options = { ...defaultOptions, showGrid: true };
+
+    const view = new MainView($('input[type="range"]'), options);
+
+    expect($('.js-range-slider .js-range-slider__grid').length).toEqual(1);
+
+    const gridDensity = 5;
+    view.update({ ...options, gridDensity }, { redraw: true });
+
+    expect($('.js-range-slider .js-range-slider__grid-point').length).toEqual(gridDensity + 1);
   });
 });
