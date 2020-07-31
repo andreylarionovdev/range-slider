@@ -1,36 +1,25 @@
-module.exports = function (config) {
+const webpackConfig = require('./webpack.config');
+
+module.exports = (config) => {
   config.set({
-
-    frameworks: ['jasmine', 'karma-typescript'],
-
-    files: [
-      'src/app/**/*.ts',
-    ],
-
-    preprocessors: {
-      '**/*.ts': ['karma-typescript'],
-    },
-
-    reporters: ['progress', 'karma-typescript'],
-
     browsers: ['ChromeHeadless'],
-
-    logLevel: config.LOG_INFO,
-
-    singleRun: true,
-
-    karmaTypescriptConfig: {
-      bundlerOptions: {
-        noParse: 'jquery',
-        entrypoints: /\.spec\.ts$/,
-      },
-      compilerOptions: {
-        allowSyntheticDefaultImports: true,
-        esModuleInterop: true,
-      },
-      reports: {
-        text: '',
-      },
+    frameworks: ['jasmine'],
+    reporters: ['spec', 'coverage-istanbul'],
+    files: [
+      { pattern: 'src/**/*.spec.ts', watched: false },
+      { pattern: 'node_modules/jquery/dist/jquery.min.js', watched: false },
+    ],
+    preprocessors: {
+      'src/**/*.ts': ['webpack'],
     },
+    webpack: webpackConfig,
+    webpackMiddleware: {
+      noInfo: true,
+    },
+    coverageIstanbulReporter: {
+      reports: ['text'],
+      fixWebpackSourcePaths: true,
+    },
+    singleRun: true,
   });
 };

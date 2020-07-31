@@ -43,6 +43,17 @@ const config = {
           'sass-loader',
         ],
       },
+      {
+        test: /\.ts$/,
+        enforce: 'post',
+        exclude: /node_modules|\.spec\.ts?$/,
+        use: {
+          loader: 'istanbul-instrumenter-loader',
+          options: {
+            esModules: true,
+          },
+        },
+      },
     ],
   },
   resolve: {
