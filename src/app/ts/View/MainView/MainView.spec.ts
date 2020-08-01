@@ -73,32 +73,44 @@ describe('View', () => {
       showBubble: true,
     };
     const view = new MainView($('input[type="range"]'), options);
+    const bubbleSelector = '.js-range-slider .js-range-slider__bubble';
 
-    expect($('.js-range-slider .js-range-slider__bubble').length).toEqual(1);
-    expect($('.js-range-slider .js-range-slider__bubble').text()).toEqual(value.toString());
+    expect($(bubbleSelector).length).toEqual(1);
+    expect($(bubbleSelector).text()).toEqual(value.toString());
 
     const updatedValue = 43;
     view.update({ ...options, value: updatedValue }, { redraw: false });
 
-    expect($('.js-range-slider .js-range-slider__bubble').text()).toEqual(updatedValue.toString());
+    expect($(bubbleSelector).text()).toEqual(updatedValue.toString());
 
     view.update({ ...options, range: true }, { redraw: true });
 
-    expect($('.js-range-slider .js-range-slider__bubble').length).toEqual(3);
+    expect($(bubbleSelector).length).toEqual(3);
 
-    view.update({ ...options, range: true, value: 40, value2: 45 }, { redraw: false });
+    view.update({
+      ...options,
+      range: true,
+      value: 40,
+      value2: 45,
+    }, {
+      redraw: false,
+    });
     expect($('.js-range-slider .js-range-slider__bubble_type_range').text()).toEqual('40-45');
   });
 
   it('rendered properly with `showBar` option', () => {
-    const options = { ...defaultOptions, showBar: true };
+    const options = { ...defaultOptions };
 
     const view = new MainView($('input[type="range"]'), options);
+    const barSelector = '.js-range-slider .js-range-slider__bar';
 
-    expect($('.js-range-slider .js-range-slider__bar').length).toEqual(1);
+    expect($(barSelector).length).toEqual(0);
 
-    view.update({ ...defaultOptions, showBar: false }, { redraw: true });
-    expect($('.js-range-slider .js-range-slider__bar').length).toEqual(0);
+    view.update({ ...defaultOptions, showBar: true }, { redraw: true });
+    expect($(barSelector).length).toEqual(1);
+
+    view.update({ ...defaultOptions, showBar: true, vertical: true }, { redraw: true });
+    expect($(barSelector).length).toEqual(1);
   });
 
   it('value to percent converted properly', () => {
