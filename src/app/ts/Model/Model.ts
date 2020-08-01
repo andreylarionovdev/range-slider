@@ -143,7 +143,7 @@ class Model implements SliderModel, SliderModelObservable {
   private static validateStep(state: State): number {
     const { step } = state;
 
-    return Number(step) < DEFAULT_STEP ? DEFAULT_STEP : Math.round(step);
+    return Number(step) < DEFAULT_STEP ? DEFAULT_STEP : step;
   }
 
   private static validateMinMax(state: State): State {

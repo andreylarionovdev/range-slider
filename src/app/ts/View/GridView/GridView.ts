@@ -44,12 +44,18 @@ class GridView {
   };
 
   private getTicks(state: State): Array<Tick> {
-    const { min, max, gridDensity } = state;
+    const {
+      min, max, step, gridDensity,
+    } = state;
     const ticks = [];
-    const step = Math.round((max - min) / gridDensity);
+    const delta = (max - min) / gridDensity;
     const cssProp = this.isVertical() ? 'top' : 'left';
 
-    for (let currentValue = min; currentValue < max; currentValue += step > 0 ? step : 1) {
+    for (
+      let currentValue = min;
+      currentValue < max;
+      currentValue = GridView.getNextTickValue(currentValue, delta, step)
+    ) {
       const position = GridView.valueToPercent(min, max, currentValue);
       ticks.push({
         position: `${cssProp}:${position}%`,
@@ -57,14 +63,18 @@ class GridView {
       });
     }
 
-    if (ticks.length > gridDensity) ticks.pop();
-
     ticks.push({
       position: `${cssProp}:100%`,
       value: max,
     });
 
     return ticks;
+  }
+
+  private static getNextTickValue(value: number, delta: number, step: number): number {
+    const nextValue = Math.floor((value + delta) / step) * step;
+
+    return nextValue > value ? nextValue : Number(value) + Number(step);
   }
 
   private isVertical(): boolean {
