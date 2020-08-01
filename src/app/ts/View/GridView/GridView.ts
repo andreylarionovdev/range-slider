@@ -5,6 +5,11 @@ import Observable from '../../Interfaces/Observable';
 
 const template = require('./GridView.pug');
 
+interface Tick {
+  position: string,
+  value: number,
+}
+
 class GridView {
   private $slider: JQuery;
 
@@ -39,11 +44,11 @@ class GridView {
     this.announcer.trigger('click.tick', value);
   };
 
-  private getTicks(state: State): Array<object> {
-    const { min, max, gridDensity = 1 } = state;
+  private getTicks(state: State): Array<Tick> {
+    const { min, max, gridDensity } = state;
     const ticks = [];
     /** % */
-    const step = Math.floor(100 / gridDensity);
+    const step = Number(100 / gridDensity);
     const cssProp = this.isVertical() ? 'top' : 'left';
     for (let progress = 0; progress < 100; progress += step) {
       ticks.push({

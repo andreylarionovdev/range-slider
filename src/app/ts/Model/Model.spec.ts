@@ -2,14 +2,17 @@ import Model from './Model';
 import State from '../Interfaces/State';
 
 import {
-  DEFAULT_MAX,
   DEFAULT_MIN,
+  DEFAULT_MAX,
   DEFAULT_STEP,
   DEFAULT_VALUE,
   DEFAULT_VALUE_2,
+  DEFAULT_GRID_DENSITY,
   DEFAULT_RANGE,
   DEFAULT_VERTICAL,
   DEFAULT_SHOW_BUBBLE,
+  DEFAULT_SHOW_GRID,
+  DEFAULT_SHOW_BAR,
 } from '../const';
 
 const defaultOptions: State = {
@@ -18,9 +21,12 @@ const defaultOptions: State = {
   step: DEFAULT_STEP,
   value: DEFAULT_VALUE,
   value2: DEFAULT_VALUE_2,
+  gridDensity: DEFAULT_GRID_DENSITY,
   range: DEFAULT_RANGE,
   vertical: DEFAULT_VERTICAL,
   showBubble: DEFAULT_SHOW_BUBBLE,
+  showGrid: DEFAULT_SHOW_GRID,
+  showBar: DEFAULT_SHOW_BAR,
 };
 
 describe('Model', () => {

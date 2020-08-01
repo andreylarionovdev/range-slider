@@ -99,11 +99,30 @@ class Model implements SliderModel, SliderModelObservable {
   private static validateState(state: State): State {
     const { min, max } = Model.validateMinMax(state);
     const step = Model.validateStep(state);
-    const { value, value2 } = Model.validateValues(state);
+    const { value, value2 } = Model.validateValues({ ...state, max });
+    const gridDensity = Model.validateGridDensity({ ...state, min, max });
 
     return {
-      ...state, min, max, step, value, value2,
+      ...state, min, max, step, value, value2, gridDensity,
     };
+  }
+
+  private static validateGridDensity(state: State): number {
+    const {
+      showGrid, gridDensity, min, max,
+    } = state;
+
+    if (!showGrid) {
+      return gridDensity;
+    }
+    if (gridDensity < 1) {
+      return 1;
+    }
+
+    const range = Math.abs(max - min);
+    const gridStep = range / Number(gridDensity);
+
+    return gridStep < 1 ? range : gridDensity;
   }
 
   private static validateStep(state: State): number {
