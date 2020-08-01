@@ -1,5 +1,4 @@
 import State from '../../Interfaces/State';
-import Model from '../../Model/Model';
 import Observer from '../../Observer/Observer';
 import Observable from '../../Interfaces/Observable';
 
@@ -23,7 +22,7 @@ class GridView {
     this.init(state);
   }
 
-  onClickTick(callback): void {
+  onClickTick(callback: (number) => void): void {
     this.announcer.on('click.tick', callback);
   }
 
@@ -47,27 +46,19 @@ class GridView {
   private getTicks(state: State): Array<Tick> {
     const { min, max, gridDensity } = state;
     const ticks = [];
-    /** % */
-    const step = Number(100 / gridDensity);
+    const step = Math.round((max - min) / gridDensity);
     const cssProp = this.isVertical() ? 'top' : 'left';
 
-    let currentPosition = 0;
-    let prevPosition = 0;
-    while (currentPosition < 100) {
+    for (let currentValue = min; currentValue < max; currentValue += step > 0 ? step : 1) {
+      const position = GridView.valueToPercent(min, max, currentValue);
       ticks.push({
-        position: `${cssProp}:${currentPosition}%`,
-        value: Model.percentToValue(min, max, currentPosition),
+        position: `${cssProp}:${position}%`,
+        value: currentValue,
       });
-      prevPosition = currentPosition;
-      currentPosition = Math.round(currentPosition + step);
-      if (currentPosition === prevPosition) {
-        currentPosition += 1;
-        prevPosition += 1;
-      }
     }
-    if (ticks.length > gridDensity) {
-      ticks.pop();
-    }
+
+    if (ticks.length > gridDensity) ticks.pop();
+
     ticks.push({
       position: `${cssProp}:100%`,
       value: max,
@@ -78,6 +69,19 @@ class GridView {
 
   private isVertical(): boolean {
     return this.$slider.hasClass('range-slider_orientation_vertical');
+  }
+
+  private static valueToPercent(min: number, max: number, value: number): number {
+    const range = max - min;
+    const boundStart = 0;
+    const boundEnd = 100;
+
+    const percent = ((value - min) * 100) / range;
+
+    if (percent > boundEnd) return boundEnd;
+    if (percent < boundStart) return boundStart;
+
+    return percent;
   }
 }
 

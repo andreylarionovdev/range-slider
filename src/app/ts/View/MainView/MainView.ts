@@ -52,18 +52,11 @@ class MainView implements SliderView, SliderViewObservable {
   }
 
   update(state: State, extra: SliderModelExtraData): this {
-    const { redraw } = extra;
+    const { redraw, fromPosition, toPosition } = extra;
 
     if (redraw === true) {
       this.init(state);
     }
-
-    const {
-      min, max, value, value2,
-    } = state;
-
-    const fromPosition = MainView.valueToPercent(min, max, value);
-    const toPosition = MainView.valueToPercent(min, max, value2);
 
     this.handleFromView.update(state, fromPosition);
     if (this.handleToView) {
@@ -190,28 +183,6 @@ class MainView implements SliderView, SliderViewObservable {
       .on('mouseup', this.handleDragEnd)
       .off('mousemove', this.handleDrag)
       .on('mousemove', this.handleDrag);
-  }
-
-  static checkBoundaries(position: number): number {
-    const boundStart = 0;
-    const boundEnd = 100;
-
-    let updatedPosition = position;
-
-    if (position > boundEnd) {
-      updatedPosition = boundEnd;
-    }
-    if (position < boundStart) {
-      updatedPosition = boundStart;
-    }
-
-    return updatedPosition;
-  }
-
-  static valueToPercent(min: number, max: number, value: number): number {
-    const range = max - min;
-
-    return MainView.checkBoundaries(((value - min) * 100) / range);
   }
 
   private getClosestValuePropName(target: number, fromValue: number, toValue: number): string {

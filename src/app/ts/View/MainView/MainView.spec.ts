@@ -59,10 +59,6 @@ describe('View', () => {
     expect($slider.find('.js-range-slider__handle').length).toEqual(2);
     expect($slider.find('.js-range-slider__handle_type_from').length).toEqual(1);
     expect($slider.find('.js-range-slider__handle_type_to').length).toEqual(1);
-
-    view.update({ ...options, value2: 50 }, { redraw: true });
-
-    expect($('.js-range-slider .js-range-slider__handle_type_to').css('left')).toEqual('50%');
   });
 
   it('rendered properly with `showBubble` option', () => {
@@ -111,12 +107,6 @@ describe('View', () => {
 
     view.update({ ...defaultOptions, showBar: true, vertical: true }, { redraw: true });
     expect($(barSelector).length).toEqual(1);
-  });
-
-  it('value to percent converted properly', () => {
-    expect(MainView.valueToPercent(0, 1000, 500)).toEqual(50);
-    expect(MainView.valueToPercent(0, 1000, 1500)).toEqual(100);
-    expect(MainView.valueToPercent(0, 1000, -500)).toEqual(0);
   });
 
   it('rendered properly with `showGrid` option', () => {

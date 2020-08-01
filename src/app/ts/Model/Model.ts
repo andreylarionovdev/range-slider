@@ -1,5 +1,9 @@
 import Observer from '../Observer/Observer';
-import { DEFAULT_STEP } from '../const';
+import {
+  DEFAULT_STEP,
+  GRID_DENSITY_MIN,
+  GRID_DENSITY_MAX,
+} from '../const';
 
 import State from '../Interfaces/State';
 import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
@@ -28,8 +32,13 @@ class Model implements SliderModel, SliderModelObservable {
 
   setState(state: State): void {
     this.init(state);
+    const extra: SliderModelExtraData = { redraw: true };
 
-    this.announcer.trigger('change.state', { ...this.state }, { redraw: true });
+    this.announcer.trigger(
+      'change.state',
+      { ...this.state },
+      this.updateModelExtraPosition(extra),
+    );
   }
 
   update(state: State, viewExtra?: SliderViewExtraData): this {
@@ -61,10 +70,13 @@ class Model implements SliderModel, SliderModelObservable {
 
     this.state = Model.validateState(thisState);
 
-    this.announcer.trigger('change.state', { ...this.state }, modelExtra);
-    if (typeof this.state.onChange === 'function') {
-      this.state.onChange(this.state);
-    }
+    this.announcer.trigger(
+      'change.state',
+      { ...this.state },
+      this.updateModelExtraPosition(modelExtra),
+    );
+
+    if (typeof this.state.onChange === 'function') this.state.onChange(this.state);
 
     return this;
   }
@@ -73,7 +85,11 @@ class Model implements SliderModel, SliderModelObservable {
     const state: State = { ...this.state };
     const extra: SliderModelExtraData = { redraw: false };
 
-    this.announcer.trigger('change.state', state, extra);
+    this.announcer.trigger(
+      'change.state',
+      state,
+      this.updateModelExtraPosition(extra),
+    );
   }
 
   onChange(callback): void {
@@ -85,6 +101,12 @@ class Model implements SliderModel, SliderModelObservable {
     const value = Number(percent) * (range / 100) + Number(min);
 
     return Math.round(value);
+  }
+
+  static valueToPercent(min: number, max: number, value: number): number {
+    const range = max - min;
+
+    return Model.checkBoundaries(((value - min) * 100) / range);
   }
 
   private init(state: State): this {
@@ -99,8 +121,10 @@ class Model implements SliderModel, SliderModelObservable {
   private static validateState(state: State): State {
     const { min, max } = Model.validateMinMax(state);
     const step = Model.validateStep(state);
-    const { value, value2 } = Model.validateValues({ ...state, max });
-    const gridDensity = Model.validateGridDensity({ ...state, min, max });
+    const { value, value2 } = Model.validateValues({
+      ...state, min, max, step,
+    });
+    const gridDensity = Model.validateGridDensity(state);
 
     return {
       ...state, min, max, step, value, value2, gridDensity,
@@ -108,21 +132,12 @@ class Model implements SliderModel, SliderModelObservable {
   }
 
   private static validateGridDensity(state: State): number {
-    const {
-      showGrid, gridDensity, min, max,
-    } = state;
+    const { gridDensity } = state;
 
-    if (!showGrid) {
-      return gridDensity;
-    }
-    if (gridDensity < 1) {
-      return 1;
-    }
+    if (gridDensity < GRID_DENSITY_MIN) return GRID_DENSITY_MIN;
+    if (gridDensity > GRID_DENSITY_MAX) return GRID_DENSITY_MAX;
 
-    const range = Math.abs(max - min);
-    const gridStep = range / Number(gridDensity);
-
-    return gridStep < 1 ? range : gridDensity;
+    return gridDensity;
   }
 
   private static validateStep(state: State): number {
@@ -191,6 +206,28 @@ class Model implements SliderModel, SliderModelObservable {
     }
 
     return Math.floor(outValue / step) * step;
+  }
+
+  private static checkBoundaries(position: number): number {
+    const boundStart = 0;
+    const boundEnd = 100;
+
+    if (position > boundEnd) return boundEnd;
+    if (position < boundStart) return boundStart;
+
+    return position;
+  }
+
+  private updateModelExtraPosition(extra: SliderModelExtraData): SliderModelExtraData {
+    const {
+      min, max, value, value2,
+    } = this.state;
+
+    return {
+      redraw: extra.redraw,
+      fromPosition: Model.valueToPercent(min, max, value),
+      toPosition: Model.valueToPercent(min, max, value2),
+    };
   }
 }
 

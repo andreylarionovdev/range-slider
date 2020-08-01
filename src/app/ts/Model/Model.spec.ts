@@ -207,4 +207,10 @@ describe('Model', () => {
     model.update({ value: 100 });
     expect(model.getState().value).toEqual(max);
   });
+
+  it('convert value to percent properly', () => {
+    expect(Model.valueToPercent(0, 1000, 500)).toEqual(50);
+    expect(Model.valueToPercent(0, 1000, 1500)).toEqual(100);
+    expect(Model.valueToPercent(0, 1000, -500)).toEqual(0);
+  });
 });
