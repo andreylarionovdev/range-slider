@@ -50,11 +50,23 @@ class GridView {
     /** % */
     const step = Number(100 / gridDensity);
     const cssProp = this.isVertical() ? 'top' : 'left';
-    for (let progress = 0; progress < 100; progress += step) {
+
+    let currentPosition = 0;
+    let prevPosition = 0;
+    while (currentPosition < 100) {
       ticks.push({
-        position: `${cssProp}:${progress}%`,
-        value: Model.percentToValue(min, max, progress),
+        position: `${cssProp}:${currentPosition}%`,
+        value: Model.percentToValue(min, max, currentPosition),
       });
+      prevPosition = currentPosition;
+      currentPosition = Math.round(currentPosition + step);
+      if (currentPosition === prevPosition) {
+        currentPosition += 1;
+        prevPosition += 1;
+      }
+    }
+    if (ticks.length > gridDensity) {
+      ticks.pop();
     }
     ticks.push({
       position: `${cssProp}:100%`,
