@@ -39,6 +39,8 @@ class MainView implements SliderView, SliderViewObservable {
 
   private gridView: GridView;
 
+  private handleCenterOffset = 0;
+
   private handleDragStart = (e): void => this.announceJump(e);
 
   private handleDrag = (e): void => this.announceDrag(e);
@@ -73,7 +75,7 @@ class MainView implements SliderView, SliderViewObservable {
     return this;
   }
 
-  onChange(callback): void {
+  onChange(callback: (state: State, extra?: SliderViewExtraData) => void): void {
     this.announcer.on('change.view', callback);
   }
 
@@ -107,6 +109,7 @@ class MainView implements SliderView, SliderViewObservable {
   }
 
   private announceJump(e: MouseEvent): void {
+    this.setHandleCenterOffset(e);
     const cursorPosition = this.getCursorPosition(e);
 
     let statePropName = 'value';
@@ -158,17 +161,35 @@ class MainView implements SliderView, SliderViewObservable {
     e.preventDefault();
     if (this.$draggingHandle) {
       this.$draggingHandle = null;
+      this.handleCenterOffset = 0;
     }
   }
 
   private getCursorPosition(e: MouseEvent): number {
     const $track = this.$element.find('.range-slider__track');
 
-    const cursorPositionPx = this.isVertical() ? e.pageY : e.pageX;
-    const trackOffsetPx = this.isVertical() ? $track.offset().top : $track.offset().left;
-    const percentUnitPx = this.isVertical() ? $track.height() / 100 : $track.width() / 100;
+    const cursorPositionPx = this.isVertical()
+      ? e.pageY
+      : e.pageX;
+    const trackOffsetPx = this.isVertical()
+      ? $track.offset().top
+      : $track.offset().left;
+    const percentUnitPx = this.isVertical()
+      ? $track.outerHeight() / 100
+      : $track.outerWidth() / 100;
 
-    return (cursorPositionPx - trackOffsetPx) / percentUnitPx;
+    return (cursorPositionPx - trackOffsetPx + this.handleCenterOffset) / percentUnitPx;
+  }
+
+  private setHandleCenterOffset(e: MouseEvent): void {
+    const $handle = $(e.target).closest('.js-range-slider__handle');
+    if ($handle.length === 1) {
+      const cursorPositionPx = this.isVertical() ? e.pageY : e.pageX;
+      const handleOffsetPx = this.isVertical() ? $handle.offset().top : $handle.offset().left;
+      const handleDimensionPx = this.isVertical() ? $handle.outerHeight() : $handle.outerWidth();
+
+      this.handleCenterOffset = handleOffsetPx - cursorPositionPx + handleDimensionPx / 2;
+    }
   }
 
   private isVertical(): boolean {
