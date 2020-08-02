@@ -18,7 +18,7 @@ module.exports = (config) => {
     },
     logLevel: config.LOG_INFO,
     coverageIstanbulReporter: {
-      reports: ['text'],
+      reports: ['text', 'text-summary'],
       fixWebpackSourcePaths: true,
     },
     singleRun: true,
