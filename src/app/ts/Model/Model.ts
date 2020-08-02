@@ -62,6 +62,7 @@ class Model implements SliderModel, SliderModelObservable {
       case 'min':
       case 'max':
       case 'step':
+      case 'gridDensity':
         thisState[stateProperty] = Number(newValue);
         break;
       default:
@@ -111,9 +112,8 @@ class Model implements SliderModel, SliderModelObservable {
 
   private init(state: State): this {
     this.state = Model.validateState({ ...this.state, ...state });
-    if (typeof this.state.onCreate === 'function') {
-      this.state.onCreate(this.state);
-    }
+
+    if (typeof this.state.onCreate === 'function') this.state.onCreate(this.state);
 
     return this;
   }

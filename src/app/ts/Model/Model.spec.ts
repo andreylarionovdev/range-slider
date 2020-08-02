@@ -13,6 +13,8 @@ import {
   DEFAULT_SHOW_BUBBLE,
   DEFAULT_SHOW_GRID,
   DEFAULT_SHOW_BAR,
+  GRID_DENSITY_MIN,
+  GRID_DENSITY_MAX,
 } from '../const';
 
 const defaultOptions: State = {
@@ -104,7 +106,7 @@ describe('Model', () => {
 
   it('bound `value` to `value2` if `value` > `value2` when updated single `value`', () => {
     const options = {
-      ...defaultOptions, range: true, value: 12, value2: 21,
+      ...defaultOptions, range: true, value: 21, value2: 12,
     };
     const model = new Model(options);
 
@@ -136,6 +138,11 @@ describe('Model', () => {
 
     expect(model.get('min')).toEqual(100);
     expect(model.get('max')).toEqual(200);
+
+    model.update({ min: 300 });
+
+    expect(model.get('min')).toEqual(200);
+    expect(model.get('max')).toEqual(300);
   });
 
   it('can not contain values greater than `max`', () => {
@@ -212,5 +219,50 @@ describe('Model', () => {
     expect(Model.valueToPercent(0, 1000, 500)).toEqual(50);
     expect(Model.valueToPercent(0, 1000, 1500)).toEqual(100);
     expect(Model.valueToPercent(0, 1000, -500)).toEqual(0);
+  });
+
+  it('call `onCreate` callback when init', () => {
+    let callbackAffectedNumber = 0;
+    const callback = (state: State) => {
+      callbackAffectedNumber += state.max;
+    };
+    const model: Model = new Model({ ...defaultOptions, onCreate: callback });
+
+    expect(callbackAffectedNumber).toEqual(DEFAULT_MAX);
+  });
+
+  it('call `onChange` callback when update', () => {
+    let callbackAffectedNumber = 0;
+    const value = 23;
+    const callback = (state: State) => {
+      callbackAffectedNumber += state.value;
+    };
+    const model: Model = new Model({ ...defaultOptions, onChange: callback });
+    model.update({ value });
+
+    expect(callbackAffectedNumber).toEqual(value);
+  });
+
+  it('update `gridDensity` properly', () => {
+    const model: Model = new Model({ ...defaultOptions, showGrid: true});
+
+    model.update({ gridDensity: 20 });
+    expect(model.getState().gridDensity).toEqual(20);
+
+    model.update({ gridDensity: -10 });
+    expect(model.getState().gridDensity).toEqual(GRID_DENSITY_MIN);
+
+    model.update({ gridDensity: 200 });
+    expect(model.getState().gridDensity).toEqual(GRID_DENSITY_MAX);
+  });
+
+  it('update `step` properly', () => {
+    const model: Model = new Model(defaultOptions);
+
+    model.update({ step: 20 });
+    expect(model.getState().step).toEqual(20);
+
+    model.update({ step: 0 });
+    expect(model.getState().step).toEqual(DEFAULT_STEP);
   });
 });

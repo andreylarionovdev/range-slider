@@ -16,6 +16,7 @@ module.exports = (config) => {
     webpackMiddleware: {
       noInfo: true,
     },
+    logLevel: config.LOG_INFO,
     coverageIstanbulReporter: {
       reports: ['text'],
       fixWebpackSourcePaths: true,
