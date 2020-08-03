@@ -163,19 +163,13 @@ class Model implements SliderModel, SliderModelObservable {
       value, value2, max, range,
     } = state;
 
-    let outValue = this.validateValue('value', value, state);
+    const outValue = this.validateValue('value', value, state);
     let outValue2 = this.validateValue('value2', value2, state);
 
     if (range) {
       if (outValue2 === null) {
         outValue2 = max;
       }
-      outValue = outValue > outValue2
-        ? Math.round(Math.min(outValue2, outValue))
-        : outValue;
-      outValue2 = outValue > outValue2
-        ? Math.round(Math.max(outValue2, outValue))
-        : outValue2;
     }
 
     return {

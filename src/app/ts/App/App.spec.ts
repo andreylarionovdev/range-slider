@@ -76,8 +76,6 @@ describe('App', () => {
     const $handle = $('.js-range-slider .js-range-slider__handle');
 
     expect($handle.css('left')).toEqual('50%');
-
-    app.update({ ...defaultOptions, range: true });
   });
 
   it('handle 1/4 track click with two handles properly', () => {
@@ -139,38 +137,61 @@ describe('App', () => {
 
     $track.trigger(event);
 
-    const $handleFrom = $('.js-range-slider .js-range-slider__handle_type_from');
-    const $handleTo = $('.js-range-slider .js-range-slider__handle_type_to');
+    const handleFrom = '.js-range-slider .js-range-slider__handle_type_from';
+    const handleTo = '.js-range-slider .js-range-slider__handle_type_to';
 
-    expect($handleFrom.css('left')).toEqual('0%');
-    expect($handleTo.css('left')).toEqual('50%');
+    expect($(handleFrom).css('left')).toEqual('0%');
+    expect($(handleTo).css('left')).toEqual('50%');
+
+    $(handleFrom).trigger('mousedown');
+    $(document).trigger('mousemove');
+    $(document).trigger('mouseup');
+
+    expect($(handleFrom).hasClass('js-range-slider__handle_active')).toBeTruthy();
+
+    event.pageX = $track.outerWidth() / 4 + $track.offset().left;
+    event.pageY = halfTrackClickY;
+
+    $track.trigger(event);
+
+    expect($(handleFrom).css('left')).toEqual('25%');
+    expect($(handleTo).css('left')).toEqual('50%');
   });
 
   it('handle tick click properly', () => {
-    const app: App = new App(
-      $('input[type="range"]'),
-      {
-        ...defaultOptions, showGrid: true, gridDensity: 5, showBubble: true,
-      },
-    );
+    const options = {
+      ...defaultOptions,
+      showGrid: true,
+      gridDensity: 5,
+      showBubble: true,
+    };
+    const app: App = new App($('input[type="range"]'), options);
     const $tickLabel = $('.js-range-slider').find('.js-range-slider__grid-label:eq(2)');
     const $bubble = $('.js-range-slider .js-range-slider__bubble');
 
     $tickLabel.trigger('click');
     expect($bubble.text()).toEqual('40');
+
+    app.update({ ...options, range: true });
+
+    const $tickLabelFirstQuarter = $('.js-range-slider').find('.js-range-slider__grid-label:eq(1)');
+    $tickLabelFirstQuarter.trigger('click');
+    expect($('.js-range-slider .js-range-slider__bubble_type_from').text()).toEqual('20');
+
+    const $tickLabelLastQuarter = $('.js-range-slider').find('.js-range-slider__grid-label:eq(4)');
+    $tickLabelLastQuarter.trigger('click');
+    expect($('.js-range-slider .js-range-slider__bubble_type_to').text()).toEqual('80');
   });
 
   it('render vertical grid properly', () => {
-    const app: App = new App(
-      $('input[type="range"]'),
-      {
-        ...defaultOptions,
-        showGrid: true,
-        showBubble: true,
-        vertical: true,
-        gridDensity: 5,
-      },
-    );
+    const options: State = {
+      ...defaultOptions,
+      showGrid: true,
+      showBubble: true,
+      vertical: true,
+      gridDensity: 5,
+    };
+    const app: App = new App($('input[type="range"]'), options);
     const $ticks = $('.js-range-slider .js-range-slider__grid-point');
 
     const tickLabels = [];
@@ -185,5 +206,25 @@ describe('App', () => {
 
     expect(tickLabels).toEqual([0, 20, 40, 60, 80, 100]);
     expect(tickPositions).toEqual(['0%', '20%', '40%', '60%', '80%', '100%']);
+  });
+
+  it('rendered properly with `showBar` option', () => {
+    const options: State = { ...defaultOptions, showBar: true, value: 50 };
+    const app: App = new App($('input[type="range"]'), options);
+
+    const barSelector = '.js-range-slider .js-range-slider__bar';
+
+    expect($(barSelector).length).toEqual(1);
+    expect($(barSelector).css('right')).toEqual('50%');
+
+    app.update({ ...options, vertical: true });
+
+    expect($(barSelector).css('bottom')).toEqual('50%');
+
+    app.update({
+      ...options, range: true, value: 50, value2: 100,
+    });
+    expect($(barSelector).css('left')).toEqual('50%');
+    expect($(barSelector).css('right')).toEqual('0%');
   });
 });

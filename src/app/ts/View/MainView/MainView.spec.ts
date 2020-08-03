@@ -83,30 +83,20 @@ describe('View', () => {
 
     expect($(bubbleSelector).length).toEqual(3);
 
+    const rangeBubble = '.js-range-slider .js-range-slider__bubble_type_range';
     view.update({
-      ...options,
-      range: true,
-      value: 40,
-      value2: 45,
+      ...options, range: true, value: 40, value2: 45,
     }, {
       redraw: false,
     });
-    expect($('.js-range-slider .js-range-slider__bubble_type_range').text()).toEqual('40-45');
-  });
+    expect($(rangeBubble).text()).toEqual('40-45');
 
-  it('rendered properly with `showBar` option', () => {
-    const options = { ...defaultOptions };
-
-    const view = new MainView($('input[type="range"]'), options);
-    const barSelector = '.js-range-slider .js-range-slider__bar';
-
-    expect($(barSelector).length).toEqual(0);
-
-    view.update({ ...defaultOptions, showBar: true }, { redraw: true });
-    expect($(barSelector).length).toEqual(1);
-
-    view.update({ ...defaultOptions, showBar: true, vertical: true }, { redraw: true });
-    expect($(barSelector).length).toEqual(1);
+    view.update({
+      ...options, range: true, value: 40, value2: 40,
+    }, {
+      redraw: false,
+    });
+    expect($(rangeBubble).text()).toEqual('40');
   });
 
   it('rendered properly with `showGrid` option', () => {

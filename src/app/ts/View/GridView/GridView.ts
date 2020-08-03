@@ -82,16 +82,7 @@ class GridView {
   }
 
   private static valueToPercent(min: number, max: number, value: number): number {
-    const range = max - min;
-    const boundStart = 0;
-    const boundEnd = 100;
-
-    const percent = ((value - min) * 100) / range;
-
-    if (percent > boundEnd) return boundEnd;
-    if (percent < boundStart) return boundStart;
-
-    return percent;
+    return ((value - min) * 100) / (max - min);
   }
 }
 
