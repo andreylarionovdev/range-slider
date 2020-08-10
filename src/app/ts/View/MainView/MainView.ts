@@ -115,7 +115,7 @@ class MainView implements SliderView, SliderViewObservable {
     let statePropName = 'value';
 
     if (this.handleToView) {
-      statePropName = this.getClosestValuePropName(
+      statePropName = MainView.getClosestValuePropName(
         cursorPosition,
         this.handleFromView.getCurrentPosition(),
         this.handleToView.getCurrentPosition(),
@@ -149,7 +149,7 @@ class MainView implements SliderView, SliderViewObservable {
 
   private announceClickTick(value: number): void {
     const statePropName = this.handleToView
-      ? this.getClosestValuePropName(value,
+      ? MainView.getClosestValuePropName(value,
         this.handleFromView.getCurrentValue(),
         this.handleToView.getCurrentValue())
       : 'value';
@@ -206,20 +206,18 @@ class MainView implements SliderView, SliderViewObservable {
       .on('mousemove', this.handleDrag);
   }
 
-  private getClosestValuePropName(target: number, fromValue: number, toValue: number): string {
-    const distFrom = Math.abs(target - fromValue);
-    const distTo = Math.abs(target - toValue);
+  private static getClosestValuePropName(target: number, from: number, to: number): string {
+    const distFrom = Math.abs(target - from);
+    const distTo = Math.abs(target - to);
 
-    if (distFrom > distTo) {
-      return 'value2';
-    }
     if (distFrom === distTo) {
-      const $activeHandle = this.$track.find('.js-range-slider__handle_active');
-
-      return $activeHandle.hasClass('js-range-slider__handle_type_from') ? 'value' : 'value2';
+      if (from === to) {
+        return target > from ? 'value2' : 'value';
+      }
+      return 'value';
     }
 
-    return 'value';
+    return distFrom > distTo ? 'value2' : 'value';
   }
 }
 

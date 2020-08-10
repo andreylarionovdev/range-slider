@@ -140,8 +140,8 @@ describe('App', () => {
     const handleFrom = '.js-range-slider .js-range-slider__handle_type_from';
     const handleTo = '.js-range-slider .js-range-slider__handle_type_to';
 
-    expect($(handleFrom).css('left')).toEqual('0%');
-    expect($(handleTo).css('left')).toEqual('50%');
+    expect($(handleFrom).css('left')).toEqual('50%');
+    expect($(handleTo).css('left')).toEqual('100%');
 
     $(handleFrom).trigger('mousedown');
     $(document).trigger('mousemove');
@@ -149,13 +149,13 @@ describe('App', () => {
 
     expect($(handleFrom).hasClass('js-range-slider__handle_active')).toBeTruthy();
 
-    event.pageX = $track.outerWidth() / 4 + $track.offset().left;
+    event.pageX = ($track.outerWidth() / 4) * 3 + $track.offset().left;
     event.pageY = halfTrackClickY;
 
     $track.trigger(event);
 
-    expect($(handleFrom).css('left')).toEqual('25%');
-    expect($(handleTo).css('left')).toEqual('50%');
+    expect($(handleFrom).css('left')).toEqual('75%');
+    expect($(handleTo).css('left')).toEqual('100%');
   });
 
   it('handle tick click properly', () => {
