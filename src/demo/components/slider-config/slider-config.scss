@@ -18,14 +18,14 @@
     font-family: monospace, sans-serif;
     border-radius: 0.25rem;
     margin-left: 1rem;
-    -moz-appearance: textfield;
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-    }
-    @media (max-width: 767px) {
-      &_type {
-        &_text {
+    &_type {
+      &_text {
+        -moz-appearance: textfield;
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+        }
+        @media (max-width: 767px) {
           width: 45%;
         }
       }
