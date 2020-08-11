@@ -211,10 +211,7 @@ class MainView implements SliderView, SliderViewObservable {
     const distTo = Math.abs(target - to);
 
     if (distFrom === distTo) {
-      if (from === to) {
-        return target > from ? 'value2' : 'value';
-      }
-      return 'value';
+      return from === to && target > from ? 'value2' : 'value';
     }
 
     return distFrom > distTo ? 'value2' : 'value';
