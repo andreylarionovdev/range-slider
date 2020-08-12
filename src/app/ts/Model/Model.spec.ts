@@ -265,4 +265,16 @@ describe('Model', () => {
     model.update({ step: 0 });
     expect(model.getState().step).toEqual(DEFAULT_STEP);
   });
+
+  it('validate state properly when `range` and  `value` > `max`', () => {
+    const model: Model = new Model({ ...defaultOptions, range: true, value: 999 });
+
+    expect(model.getState().value).toEqual(0);
+    expect(model.getState().value2).toEqual(100);
+
+    model.update({ value: 999 });
+
+    expect(model.getState().value).toEqual(100);
+    expect(model.getState().value2).toEqual(100);
+  });
 });

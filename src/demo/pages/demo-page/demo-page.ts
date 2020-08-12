@@ -6,25 +6,18 @@ const toCamelCase = (s): string => s.replace(/([-][a-z])/ig, ($1) => $1.toUpperC
 const updateForm = ($form, state): void => {
   const $textInputs = $form.find('.js-slider-config__input_type_text');
   $textInputs.each((_, configInput) => {
-    const name = toCamelCase($(configInput).attr('name'));
+    const name: string = toCamelCase($(configInput).attr('name'));
     $(configInput).val(state[name]);
   });
 };
 
 const setEventListeners = ($form, api): void => {
-  $form.find('.js-slider-config__input_type_text').each((_, textInput) => {
-    $(textInput).on('blur change', (event) => {
-      const propName = toCamelCase($(event.target).attr('name'));
-      const propValue = $(event.target).val();
-      api.update({
-        [propName]: propValue,
-      });
-    });
-  });
-  $form.find('.js-slider-config__input_type_checkbox').each((_, checkbox) => {
-    $(checkbox).on('change', (event) => {
-      const propName = toCamelCase($(event.target).attr('name'));
-      const propValue = $(event.target).is(':checked');
+  $form.find('.js-slider-config__input').each((_, input) => {
+    $(input).on('change', (event) => {
+      const propName: string = toCamelCase($(event.target).attr('name'));
+      const propValue: number|boolean = $(event.target).hasClass('js-slider-config__input_type_checkbox')
+        ? $(event.target).is(':checked')
+        : Number($(event.target).val());
       api.update({
         [propName]: propValue,
       });

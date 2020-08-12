@@ -187,9 +187,6 @@ class Model implements SliderModel, SliderModelObservable {
 
     let outValue = Number(valueToValidate);
 
-    outValue = outValue > max ? max : outValue;
-    outValue = outValue < min ? min : outValue;
-
     if (range) {
       if (prop === 'value' && outValue > value2) {
         outValue = value2;
@@ -198,6 +195,9 @@ class Model implements SliderModel, SliderModelObservable {
         outValue = value;
       }
     }
+
+    outValue = outValue > max ? max : outValue;
+    outValue = outValue < min ? min : outValue;
 
     return Math.floor(outValue / step) * step;
   }
