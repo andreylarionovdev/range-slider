@@ -185,21 +185,24 @@ class Model implements SliderModel, SliderModelObservable {
 
     if (valueToValidate === null) return null;
 
-    let outValue = Number(valueToValidate);
+    let outValue = Model.snapToStep(min, step, valueToValidate);
 
     if (range) {
-      if (prop === 'value' && outValue > value2) {
-        outValue = value2;
-      }
-      if (prop === 'value2' && outValue < value) {
-        outValue = value;
-      }
+      const valueAlignedToStep = Model.snapToStep(min, step, value);
+      const value2AlignedToStep = Model.snapToStep(min, step, value2);
+
+      if (prop === 'value' && outValue > value2AlignedToStep) outValue = value2AlignedToStep;
+      if (prop === 'value2' && outValue < valueAlignedToStep) outValue = valueAlignedToStep;
     }
 
     outValue = outValue > max ? max : outValue;
     outValue = outValue < min ? min : outValue;
 
-    return Math.floor(outValue / step) * step;
+    return outValue;
+  }
+
+  private static snapToStep(min: number, step: number, value: number): number {
+    return Math.round((value - min) / step) * step + min;
   }
 
   private static checkBoundaries(position: number): number {

@@ -82,7 +82,7 @@ describe('Model', () => {
     const options: State = { ...defaultOptions, step: 5, value: 23 };
     const model = new Model(options);
 
-    expect(model.get('value')).toEqual(20);
+    expect(model.get('value')).toEqual(25);
 
     model.update({ value2: 46 });
 
@@ -90,8 +90,8 @@ describe('Model', () => {
 
     model.update({ step: 10 });
 
-    expect(model.get('value')).toEqual(20);
-    expect(model.get('value2')).toEqual(40);
+    expect(model.get('value')).toEqual(30);
+    expect(model.get('value2')).toEqual(50);
   });
 
   it('switch `value` and `value2` if `value` > `value2` when init', () => {
