@@ -6,28 +6,77 @@ This repository contains a simple range slider app that implements MVP architect
 Compiled .js and .css files contains in `docs` folder. Make sure, you include `jQuery` and compiled files in your html page to make plugin working on page. Something like bellow:
 ```$xslt
 <html>
-    <head>
-        ...
-        <link href="jquery.range.css" rel="stylesheet"></head>
-    </head>
-    <body>
-        ...
-        <script type="text/javascript" src="jquery.min.js"></script>
-        <script type="text/javascript" src="jquery.range.js"></script>
-    </body>
+  <head>
+    ...
+    <link href="jquery.range.css" rel="stylesheet"></head>
+  </head>
+  <body>
+    ...
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.range.js"></script>
+  </body>
 </html>
 ```
 ### Usage
-Call the `.range()` function on any range input in jQuery to make element range-slider instance.
+Call the `.range()` function on any range input in jQuery to make element range slider instance.
 ```$xslt
 $('input[type="range"]').range();
-
-// or with custom parameters
-
+```
+### Setup with params
+It is possible to set variety of parameters to every range slider instance
+```$xslt
 $('input[type="range"]').range({
-    min: 5000,
-    max: 15000,
-    range: true
+  min: 5000,
+  max: 15000,
+  value: 5500,
+  value2: 10000,
+  range: true,
+  showGrid: true,
+});
+```
+### Setup with data-* attributes
+You can also modify every param using data-* attributes. If a boolean parameter specified, then it has true value.
+```$xslt
+<input type="range"
+  data-min="5000"
+  data-max="15000"
+  data-value="5500"
+  data-value2="10000"
+  data-range
+  data-show-grid
+/>
+```
+Then just call `range()` without arguments.
+### Public methods
+```$xslt
+// 1. Initialise range slider instance
+$('input[type="range"]').range();
+
+// 2. Save instance with public api methods to variable
+const slider = $('input[type="range"]').data('api');
+
+// 3. Update range slider content (this will change handles positions)
+slider.update({
+  value: 10,
+  value2: 20,
+  range: true,
+});
+```
+### Using callbacks
+There are two callbacks: `onCreate` and `onChange`. Each callback will receive data object with current range slider state.
+```$xslt
+$('input[type="range"]').range({
+  onCreate: (state) => {
+    // Called right after range slider instance initialised
+    console.log(state.min);
+    console.log(state.max);
+    console.log(state.value);
+  }
+  onChange: (state) => {
+    // Called every time range slider state is changed. For example, handle position is changed
+    console.log(state.value);
+    console.log(state.value2);
+  }
 });
 ```
 ### Plugin parameters
@@ -41,7 +90,10 @@ $('input[type="range"]').range({
 | range | boolean | false| Whether to allow the user to select a range between two values. |
 | vertical | boolean | false | Slider has vertical orientation.|
 | showBubble | boolean | false | Every handle has bubble displaying current value.|
-| showConfig | boolean | false | Show config form with parameter inputs for demo purposes.|
+| showGrid | boolean | false | Show grid of values.|
+| gridDensity | number | 1 | Number of grid units. For example, specify 10, if you want to divide range slider grid on 10 units. |
+| onCreate | function | null | Callback. Called right after range slider instance initialised. |
+| onChange | function | null | Callback. Called every time range slider state is changed. For example, handle position is changed. |
 
 ### Project build
 Clone repository:
