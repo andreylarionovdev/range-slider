@@ -35,9 +35,7 @@ interface Ticks {
   tickPositions: Array<string>,
 }
 
-const getTicks = (options: State): Ticks => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const app: App = new App($('input[type="range"]'), options);
+const getTicks = (app: App): Ticks => {
   const $ticks = $('.js-range-slider .js-range-slider__grid-point');
 
   const tickLabels = [];
@@ -215,7 +213,8 @@ describe('App', () => {
       gridDensity: 5,
     };
 
-    const { tickLabels, tickPositions } = getTicks(options);
+    const app = new App($('input[type="range"]'), options);
+    const { tickLabels, tickPositions } = getTicks(app);
 
     expect(tickLabels).toEqual([0, 20, 40, 60, 80, 100]);
     expect(tickPositions).toEqual(['0%', '20%', '40%', '60%', '80%', '100%']);
@@ -231,9 +230,22 @@ describe('App', () => {
       showBubble: true,
       gridDensity: 10,
     };
-    const { tickLabels } = getTicks(options);
+
+    const app = new App($('input[type="range"]'), options);
+    const { tickLabels } = getTicks(app);
 
     expect(tickLabels).toEqual([-1, 2, 5, 8, 10]);
+
+    app.update({ ...options, min: -3 });
+    const { tickLabels: tickLabelsAfterUpdate } = getTicks(app);
+
+    expect(tickLabelsAfterUpdate).toEqual([-3, 0, 3, 6, 9, 10]);
+
+    const $tickLabel = $('.js-range-slider').find('.js-range-slider__grid-label:last-child');
+    const $bubble = $('.js-range-slider .js-range-slider__bubble');
+
+    $tickLabel.trigger('click');
+    expect($bubble.text()).toEqual('10');
   });
 
   it('rendered properly with `showBar` option', () => {
