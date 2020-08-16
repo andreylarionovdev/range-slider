@@ -84,7 +84,7 @@ class Model implements SliderModel, SliderModelObservable {
 
   emitChangeState(): void {
     const state: State = { ...this.state };
-    const extra: SliderModelExtraData = { redraw: false };
+    const extra: SliderModelExtraData = { redraw: true };
 
     this.announcer.trigger(
       'change.state',
@@ -124,7 +124,9 @@ class Model implements SliderModel, SliderModelObservable {
     const { value, value2 } = Model.validateValues({
       ...state, min, max, step,
     });
-    const gridDensity = Model.validateGridDensity(state);
+    const gridDensity = Model.validateGridDensity({
+      ...state, min, max, step,
+    });
 
     return {
       ...state, min, max, step, value, value2, gridDensity,
@@ -132,12 +134,18 @@ class Model implements SliderModel, SliderModelObservable {
   }
 
   private static validateGridDensity(state: State): number {
-    const { gridDensity } = state;
+    const {
+      gridDensity, min, max, step,
+    } = state;
 
-    if (gridDensity < GRID_DENSITY_MIN) return GRID_DENSITY_MIN;
-    if (gridDensity > GRID_DENSITY_MAX) return GRID_DENSITY_MAX;
+    const autoGridDensity = Math.round((max - min) / step);
 
-    return gridDensity;
+    const validatedGridDensity = autoGridDensity < gridDensity ? autoGridDensity : gridDensity;
+
+    if (validatedGridDensity < GRID_DENSITY_MIN) return GRID_DENSITY_MIN;
+    if (validatedGridDensity > GRID_DENSITY_MAX) return GRID_DENSITY_MAX;
+
+    return validatedGridDensity;
   }
 
   private static validateStep(state: State): number {
@@ -163,18 +171,9 @@ class Model implements SliderModel, SliderModelObservable {
       value, value2, max, range,
     } = state;
 
-    const outValue = this.validateValue('value', value, state);
-    let outValue2 = this.validateValue('value2', value2, state);
-
-    if (range) {
-      if (outValue2 === null) {
-        outValue2 = max;
-      }
-    }
-
     return {
-      value: outValue,
-      value2: outValue2,
+      value: this.validateValue('value', value, state),
+      value2: range && value2 === null ? max : this.validateValue('value2', value2, state),
     };
   }
 
