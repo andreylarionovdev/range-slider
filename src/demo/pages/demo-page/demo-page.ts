@@ -11,17 +11,20 @@ const updateForm = ($form, state): void => {
   });
 };
 
+const handleConfigInputChange = (event, api) => {
+  const propName: string = toCamelCase($(event.target).attr('name'));
+  const propValue: number|boolean = $(event.target).hasClass('js-slider-config__input_type_checkbox')
+    ? $(event.target).is(':checked')
+    : Number($(event.target).val());
+
+  api.update({
+    [propName]: propValue,
+  });
+};
+
 const setEventListeners = ($form, api): void => {
   $form.find('.js-slider-config__input').each((_, input) => {
-    $(input).on('change', (event) => {
-      const propName: string = toCamelCase($(event.target).attr('name'));
-      const propValue: number|boolean = $(event.target).hasClass('js-slider-config__input_type_checkbox')
-        ? $(event.target).is(':checked')
-        : Number($(event.target).val());
-      api.update({
-        [propName]: propValue,
-      });
-    });
+    $(input).on('change', (event) => handleConfigInputChange(event, api));
   });
 };
 
