@@ -27,7 +27,7 @@ class Presenter {
     this.model.update(state, extra);
   }
 
-  private updateView(state: State, extra: SliderModelExtraData): void {
+  private updateView(state: State, extra?: SliderModelExtraData): void {
     this.view.update(state, extra);
   }
 }

@@ -244,7 +244,7 @@ describe('Model', () => {
   });
 
   it('update `gridDensity` properly', () => {
-    const model: Model = new Model({ ...defaultOptions, showGrid: true});
+    const model: Model = new Model({ ...defaultOptions, showGrid: true });
 
     model.update({ gridDensity: 20 });
     expect(model.getState().gridDensity).toEqual(20);
