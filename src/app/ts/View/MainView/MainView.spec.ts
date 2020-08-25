@@ -32,6 +32,7 @@ describe('View', () => {
   });
 
   it('rendered properly with default options', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const view = new MainView($('input[type="range"]'), defaultOptions);
 
     const $slider = $('.js-range-slider');
@@ -43,6 +44,7 @@ describe('View', () => {
 
   it('rendered properly with `vertical` option', () => {
     const options = { ...defaultOptions, isVertical: true };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const view = new MainView($('input[type="range"]'), options);
 
     const $slider = $('.js-range-slider');
@@ -52,6 +54,7 @@ describe('View', () => {
 
   it('rendered properly with `range` option', () => {
     const options = { ...defaultOptions, isRange: true };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const view = new MainView($('input[type="range"]'), options);
 
     const $slider = $('.js-range-slider');

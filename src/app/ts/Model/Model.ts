@@ -93,7 +93,7 @@ class Model implements SliderModel, SliderModelObservable {
     );
   }
 
-  onChange(callback): void {
+  onChange(callback: (state: State, extra?: SliderModelExtraData) => void): void {
     this.announcer.on('change.state', callback);
   }
 

@@ -226,6 +226,7 @@ describe('Model', () => {
     const callback = (state: State) => {
       callbackAffectedNumber += state.max;
     };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const model: Model = new Model({ ...defaultOptions, onCreate: callback });
 
     expect(callbackAffectedNumber).toEqual(DEFAULT_MAX);

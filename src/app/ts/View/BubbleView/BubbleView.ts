@@ -10,7 +10,7 @@ class BubbleView {
 
   protected type: 'from' | 'to' | 'range';
 
-  constructor($handle, state: State) {
+  constructor($handle: JQuery, state: State) {
     this.$handle = $handle;
 
     this.init(state);

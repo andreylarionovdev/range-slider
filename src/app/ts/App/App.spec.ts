@@ -35,7 +35,7 @@ interface Ticks {
   tickPositions: Array<string>,
 }
 
-const getTicks = (app: App): Ticks => {
+const getTicks = (): Ticks => {
   const $ticks = $('.js-range-slider .js-range-slider__grid-point');
 
   const tickLabels = [];
@@ -80,6 +80,7 @@ describe('App', () => {
   });
 
   it('handle 1/2 track click properly', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const app: App = new App($('input[type="range"]'), defaultOptions);
 
     const $track = $('.js-range-slider .js-range-slider__track');
@@ -100,6 +101,7 @@ describe('App', () => {
   });
 
   it('handle 1/4 track click with two handles properly', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const app: App = new App($('input[type="range"]'), { ...defaultOptions, isRange: true });
 
     const $track = $('.js-range-slider .js-range-slider__track');
@@ -122,6 +124,7 @@ describe('App', () => {
   });
 
   it('handle 3/4 track click with two handles properly', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const app: App = new App($('input[type="range"]'), { ...defaultOptions, isRange: true });
 
     const $track = $('.js-range-slider .js-range-slider__track');
@@ -144,6 +147,7 @@ describe('App', () => {
   });
 
   it('handle 1/2 track click with two handles', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const app: App = new App($('input[type="range"]'), { ...defaultOptions, isRange: true });
 
     const $track = $('.js-range-slider .js-range-slider__track');
@@ -212,9 +216,9 @@ describe('App', () => {
       isVertical: true,
       gridDensity: 5,
     };
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const app = new App($('input[type="range"]'), options);
-    const { tickLabels, tickPositions } = getTicks(app);
+    const { tickLabels, tickPositions } = getTicks();
 
     expect(tickLabels).toEqual([0, 20, 40, 60, 80, 100]);
     expect(tickPositions).toEqual(['0%', '20%', '40%', '60%', '80%', '100%']);
@@ -232,12 +236,12 @@ describe('App', () => {
     };
 
     const app = new App($('input[type="range"]'), options);
-    const { tickLabels } = getTicks(app);
+    const { tickLabels } = getTicks();
 
     expect(tickLabels).toEqual([-1, 2, 5, 8, 10]);
 
     app.update({ ...options, min: -3 });
-    const { tickLabels: tickLabelsAfterUpdate } = getTicks(app);
+    const { tickLabels: tickLabelsAfterUpdate } = getTicks();
 
     expect(tickLabelsAfterUpdate).toEqual([-3, 0, 3, 6, 9, 10]);
 

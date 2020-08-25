@@ -21,7 +21,7 @@ class HandleView {
 
   private type: 'from' | 'to';
 
-  constructor($slider, state: State) {
+  constructor($slider: JQuery, state: State) {
     this.announcer = new Observer();
     this.$slider = $slider;
     this.$track = this.$slider.find('.js-range-slider__track');
