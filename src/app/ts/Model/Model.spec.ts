@@ -24,8 +24,8 @@ const defaultOptions: State = {
   value: DEFAULT_VALUE,
   value2: DEFAULT_VALUE_2,
   gridDensity: DEFAULT_GRID_DENSITY,
-  range: DEFAULT_RANGE,
-  vertical: DEFAULT_VERTICAL,
+  isRange: DEFAULT_RANGE,
+  isVertical: DEFAULT_VERTICAL,
   showBubble: DEFAULT_SHOW_BUBBLE,
   showGrid: DEFAULT_SHOW_GRID,
   showBar: DEFAULT_SHOW_BAR,
@@ -71,7 +71,7 @@ describe('Model', () => {
 
     expect(model.get('value2')).toEqual(null);
 
-    const state: State = { range: true };
+    const state: State = { isRange: true };
 
     model.update(state);
 
@@ -96,7 +96,7 @@ describe('Model', () => {
 
   it('switch `value` and `value2` if `value` > `value2` when init', () => {
     const options = {
-      ...defaultOptions, range: true, value: 50, value2: 25,
+      ...defaultOptions, isRange: true, value: 50, value2: 25,
     };
     const model = new Model(options);
 
@@ -106,7 +106,7 @@ describe('Model', () => {
 
   it('bound `value` to `value2` if `value` > `value2` when updated single `value`', () => {
     const options = {
-      ...defaultOptions, range: true, value: 21, value2: 12,
+      ...defaultOptions, isRange: true, value: 21, value2: 12,
     };
     const model = new Model(options);
 
@@ -120,7 +120,7 @@ describe('Model', () => {
 
   it('bound `value2` to `value` if `value2` < `value` when updated single `value2`', () => {
     const options = {
-      ...defaultOptions, range: true, value: 24, value2: 42,
+      ...defaultOptions, isRange: true, value: 24, value2: 42,
     };
     const model = new Model(options);
 
@@ -267,7 +267,7 @@ describe('Model', () => {
   });
 
   it('validate state properly when `range` and  `value` > `max`', () => {
-    const model: Model = new Model({ ...defaultOptions, range: true, value: 999 });
+    const model: Model = new Model({ ...defaultOptions, isRange: true, value: 999 });
 
     expect(model.getState().value).toEqual(0);
     expect(model.getState().value2).toEqual(100);

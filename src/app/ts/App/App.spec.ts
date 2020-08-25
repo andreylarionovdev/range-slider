@@ -23,8 +23,8 @@ const defaultOptions: State = {
   value: DEFAULT_VALUE,
   value2: DEFAULT_VALUE_2,
   gridDensity: DEFAULT_GRID_DENSITY,
-  range: DEFAULT_RANGE,
-  vertical: DEFAULT_VERTICAL,
+  isRange: DEFAULT_RANGE,
+  isVertical: DEFAULT_VERTICAL,
   showBubble: DEFAULT_SHOW_BUBBLE,
   showGrid: DEFAULT_SHOW_GRID,
   showBar: DEFAULT_SHOW_BAR,
@@ -74,7 +74,7 @@ describe('App', () => {
 
     expect($(handleSelector).length).toEqual(1);
 
-    app.update({ ...defaultOptions, range: true });
+    app.update({ ...defaultOptions, isRange: true });
 
     expect($(handleSelector).length).toEqual(2);
   });
@@ -100,7 +100,7 @@ describe('App', () => {
   });
 
   it('handle 1/4 track click with two handles properly', () => {
-    const app: App = new App($('input[type="range"]'), { ...defaultOptions, range: true });
+    const app: App = new App($('input[type="range"]'), { ...defaultOptions, isRange: true });
 
     const $track = $('.js-range-slider .js-range-slider__track');
 
@@ -122,7 +122,7 @@ describe('App', () => {
   });
 
   it('handle 3/4 track click with two handles properly', () => {
-    const app: App = new App($('input[type="range"]'), { ...defaultOptions, range: true });
+    const app: App = new App($('input[type="range"]'), { ...defaultOptions, isRange: true });
 
     const $track = $('.js-range-slider .js-range-slider__track');
 
@@ -144,7 +144,7 @@ describe('App', () => {
   });
 
   it('handle 1/2 track click with two handles', () => {
-    const app: App = new App($('input[type="range"]'), { ...defaultOptions, range: true });
+    const app: App = new App($('input[type="range"]'), { ...defaultOptions, isRange: true });
 
     const $track = $('.js-range-slider .js-range-slider__track');
 
@@ -193,7 +193,7 @@ describe('App', () => {
     $tickLabel.trigger('click');
     expect($bubble.text()).toEqual('40');
 
-    app.update({ ...options, range: true });
+    app.update({ ...options, isRange: true });
 
     const $tickLabelFirstQuarter = $('.js-range-slider').find('.js-range-slider__grid-label:eq(1)');
     $tickLabelFirstQuarter.trigger('click');
@@ -209,7 +209,7 @@ describe('App', () => {
       ...defaultOptions,
       showGrid: true,
       showBubble: true,
-      vertical: true,
+      isVertical: true,
       gridDensity: 5,
     };
 
@@ -257,12 +257,12 @@ describe('App', () => {
     expect($(barSelector).length).toEqual(1);
     expect($(barSelector).css('right')).toEqual('50%');
 
-    app.update({ ...options, vertical: true });
+    app.update({ ...options, isVertical: true });
 
     expect($(barSelector).css('bottom')).toEqual('50%');
 
     app.update({
-      ...options, range: true, value: 50, value2: 100,
+      ...options, isRange: true, value: 50, value2: 100,
     });
     expect($(barSelector).css('left')).toEqual('50%');
     expect($(barSelector).css('right')).toEqual('0%');

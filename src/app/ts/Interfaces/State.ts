@@ -4,8 +4,8 @@ interface State {
   step?: number;
   value?: number;
   value2?: null|number;
-  range?: boolean;
-  vertical?: boolean;
+  isRange?: boolean;
+  isVertical?: boolean;
   showBubble?: boolean;
   showGrid?: boolean;
   showBar?: boolean;

@@ -168,25 +168,25 @@ class Model implements SliderModel, SliderModelObservable {
 
   private static validateValues(state: State): State {
     const {
-      value, value2, max, range,
+      value, value2, max, isRange,
     } = state;
 
     return {
       value: this.validateValue('value', value, state),
-      value2: range && value2 === null ? max : this.validateValue('value2', value2, state),
+      value2: isRange && value2 === null ? max : this.validateValue('value2', value2, state),
     };
   }
 
   private static validateValue(prop: string, valueToValidate: number, state: State): number {
     const {
-      min, max, value, value2, range, step,
+      min, max, value, value2, isRange, step,
     } = state;
 
     if (valueToValidate === null) return null;
 
     let outValue = Model.snapToStep(min, max, step, valueToValidate);
 
-    if (range) {
+    if (isRange) {
       const valueAlignedToStep = Model.snapToStep(min, max, step, value);
       const value2AlignedToStep = Model.snapToStep(min, max, step, value2);
 

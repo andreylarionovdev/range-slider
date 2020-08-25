@@ -32,11 +32,11 @@ class HandleView {
     this.move(position);
     this.updateDataset(state);
 
-    const { showBubble, range } = state;
+    const { showBubble, isRange } = state;
 
     if (showBubble) {
       this.bubbleView.update(state);
-      if (range && this.type === 'from') {
+      if (isRange && this.type === 'from') {
         this.rangeBubbleView.update(state);
       }
     }
@@ -58,10 +58,10 @@ class HandleView {
       : 'to';
     this.$element = $(template({ state, type: this.type }));
 
-    const { showBubble, range } = state;
+    const { showBubble, isRange } = state;
     this.bubbleView = showBubble === true ? new BubbleView(this.$element, state) : null;
 
-    const showRangeBubble = range && this.type === 'from';
+    const showRangeBubble = isRange && this.type === 'from';
     this.rangeBubbleView = showRangeBubble ? new RangeBubbleView(this.$element, state) : null;
 
     this.$track.append(this.$element);

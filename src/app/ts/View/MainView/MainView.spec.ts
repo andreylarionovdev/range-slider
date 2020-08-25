@@ -18,8 +18,8 @@ const defaultOptions: State = {
   step: DEFAULT_STEP,
   value: DEFAULT_VALUE,
   value2: DEFAULT_VALUE_2,
-  range: DEFAULT_RANGE,
-  vertical: DEFAULT_VERTICAL,
+  isRange: DEFAULT_RANGE,
+  isVertical: DEFAULT_VERTICAL,
   showBubble: DEFAULT_SHOW_BUBBLE,
 };
 
@@ -42,7 +42,7 @@ describe('View', () => {
   });
 
   it('rendered properly with `vertical` option', () => {
-    const options = { ...defaultOptions, vertical: true };
+    const options = { ...defaultOptions, isVertical: true };
     const view = new MainView($('input[type="range"]'), options);
 
     const $slider = $('.js-range-slider');
@@ -51,7 +51,7 @@ describe('View', () => {
   });
 
   it('rendered properly with `range` option', () => {
-    const options = { ...defaultOptions, range: true };
+    const options = { ...defaultOptions, isRange: true };
     const view = new MainView($('input[type="range"]'), options);
 
     const $slider = $('.js-range-slider');
@@ -79,20 +79,20 @@ describe('View', () => {
 
     expect($(bubbleSelector).text()).toEqual(updatedValue.toString());
 
-    view.update({ ...options, range: true }, { redraw: true });
+    view.update({ ...options, isRange: true }, { redraw: true });
 
     expect($(bubbleSelector).length).toEqual(3);
 
     const rangeBubble = '.js-range-slider .js-range-slider__bubble_type_range';
     view.update({
-      ...options, range: true, value: 40, value2: 45,
+      ...options, isRange: true, value: 40, value2: 45,
     }, {
       redraw: false,
     });
     expect($(rangeBubble).text()).toEqual('40-45');
 
     view.update({
-      ...options, range: true, value: 40, value2: 40,
+      ...options, isRange: true, value: 40, value2: 40,
     }, {
       redraw: false,
     });

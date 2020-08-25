@@ -88,9 +88,9 @@ class MainView implements SliderView, SliderViewObservable {
 
     this.handleFromView = new HandleView(this.$element, state);
 
-    const { range, showGrid, showBar } = state;
+    const { isRange, showGrid, showBar } = state;
 
-    this.handleToView = range === true ? new HandleView(this.$element, state) : null;
+    this.handleToView = isRange === true ? new HandleView(this.$element, state) : null;
     this.barView = showBar === true ? new BarView(this.$element) : null;
 
     if (showGrid) {

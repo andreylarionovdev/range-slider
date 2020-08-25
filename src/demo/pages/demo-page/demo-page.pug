@@ -15,16 +15,16 @@ mixin demo-page()
     })
     +slider-group({
       title: 'With range',
-      attr: { range: true },
+      attr: { 'is-range': true },
     })
     +slider-group({
       title: 'Vertical',
-      attr: { vertical: true, value: 42 },
+      attr: { 'is-vertical': true, value: 42 },
       reverse: true,
     })
     +slider-group({
       title: 'Vertical w/ bubbles and range',
-      attr: { value: 42, 'show-bubble': true, vertical: true, range: true },
+      attr: { value: 42, 'show-bubble': true, 'is-vertical': true, 'is-range': true },
     })
     +slider-group({
       title: 'From 1 to 10',
