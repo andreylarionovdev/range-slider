@@ -9,10 +9,10 @@ import State from '../Interfaces/State';
 import SliderViewExtraData from '../Interfaces/SliderViewExtraData';
 import Observable from '../Interfaces/Observable';
 import SliderModel from '../Interfaces/SliderModel';
-import SliderModelObservable from '../Interfaces/SliderModelObservable';
+import LayerObservable from '../Interfaces/LayerObservable';
 import SliderModelExtraData from '../Interfaces/SliderModelExtraData';
 
-class Model implements SliderModel, SliderModelObservable {
+class Model implements SliderModel, LayerObservable {
   announcer: Observable;
 
   private state: State;

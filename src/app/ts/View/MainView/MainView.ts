@@ -4,7 +4,7 @@ import Observer from '../../Observer/Observer';
 
 import State from '../../Interfaces/State';
 import SliderView from '../../Interfaces/SliderView';
-import SliderViewObservable from '../../Interfaces/SliderViewObservable';
+import LayerObservable from '../../Interfaces/LayerObservable';
 import Observable from '../../Interfaces/Observable';
 import SliderViewExtraData from '../../Interfaces/SliderViewExtraData';
 import SliderModelExtraData from '../../Interfaces/SliderModelExtraData';
@@ -14,7 +14,7 @@ import GridView from '../GridView/GridView';
 
 const template = require('./MainView.pug');
 
-class MainView implements SliderView, SliderViewObservable {
+class MainView implements SliderView, LayerObservable {
   announcer: Observable;
 
   private $target: JQuery;
